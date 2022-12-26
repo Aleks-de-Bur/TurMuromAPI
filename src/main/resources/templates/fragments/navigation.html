@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div class="container" th:fragment="navigation">
+    <header class="d-flex flex-wrap align-items-center justify-content-center justify-content-md-between py-3 mb-4 border-bottom">
+        <a href="/" class="d-flex align-items-center col-md-3 mb-2 mb-md-0 text-dark text-decoration-none">
+<!--            <svg class="bi me-2" width="40" height="32" role="img" aria-label="Bootstrap"><use xlink:href="../assets/brand/tur-murom-logo-white.svg"/></svg>-->
+            <img class="bi me-2" width="40" height="32" src="/assets/brand/tur-murom-logo-dark.svg">
+        </a>
+
+        <ul class="nav col-12 col-md-auto mb-2 justify-content-center mb-md-0">
+            <li><a th:href="@{/}" class="nav-link px-2 link-secondary">Главная</a></li>
+            <li th:class="${activePage == 'places'} ? 'nav-item active' : 'nav-item'"><a th:href="@{/places}" class="nav-link px-2 link-dark">Достопримечательности</a></li>
+            <li th:class="${activePage == 'routes'} ? 'nav-item active' : 'nav-item'"><a th:href="@{/routes}" class="nav-link px-2 link-dark">Маршруты</a></li>
+            <li><a th:href="@{/guides}" class="nav-link px-2 link-dark">Гиды</a></li>
+            <li><a th:href="@{/excursions}" class="nav-link px-2 link-dark">Экскурсии</a></li>
+            <li><a th:href="@{/about}" class="nav-link px-2 link-dark">About</a></li>
+        </ul>
+
+        <div class="col-md-3 text-end">
+            <button type="button" class="btn btn-outline-primary me-2">Login</button>
+            <button type="button" class="btn btn-primary">Sign-up</button>
+        </div>
+    </header>
+</div>
+</body>
+</html>
