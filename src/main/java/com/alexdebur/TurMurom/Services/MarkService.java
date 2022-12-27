@@ -41,10 +41,16 @@ public class MarkService {
     }
 
     public List<File> getPhotos(Mark mark) {
-        String path = mark.getMarkPhotos().get(0).getPathPhoto();
-        File photo = new File(path);
-        List<File> photos = new ArrayList<>();
-        photos.add(photo);
-        return photos;
+        var markPhotos = mark.getMarkPhotos();
+        if (markPhotos.size() == 0){
+            return new ArrayList<>();
+        }
+        else{
+            String path = markPhotos.get(0).getPathPhoto();
+            File photo = new File(path);
+            List<File> photos = new ArrayList<>();
+            photos.add(photo);
+            return photos;
+        }
     }
 }

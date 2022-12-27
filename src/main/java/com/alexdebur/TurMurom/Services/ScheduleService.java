@@ -1,5 +1,6 @@
 package com.alexdebur.TurMurom.Services;
 
+import com.alexdebur.TurMurom.Models.Mark;
 import com.alexdebur.TurMurom.Models.Schedule;
 import com.alexdebur.TurMurom.Repositories.ScheduleRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +24,10 @@ public class ScheduleService {
 
     public Optional<Schedule> getScheduleById(Long id) {
         return scheduleRepository.findById(id);
+    }
+
+    public List<Schedule> getSchedulesByMark(Mark mark) {
+        return scheduleRepository.findAllByMark(mark);
     }
 
     public void insertSchedule(Schedule schedule) {

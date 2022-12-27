@@ -24,7 +24,7 @@
         <div class="row g-5">
             <div class="col-md-11 col-lg-12">
                 <form class="needs-validation" action="#" th:action="@{/places/addingMark}"
-                      th:object="${mark}" enctype="multipart/form-data" method="post" novalidate>
+                      th:object="${selectedMark}" enctype="multipart/form-data" method="post" novalidate>
                     <div class="row g-3">
 
                         <div class="col-12">
@@ -47,10 +47,12 @@
 
                         <div class="col-12">
                             <label for="category" class="form-label">Категория</label>
-                            <select class="form-select" id="category" required th:field="*{category}">
-                                <option th:each="category : ${categories}" th:value="${category.title}"
-                                        th:text="${category.title}"></option>
-                            </select>
+                            <input type="text" class="form-control" id="category" th:field="*{category.title}"
+                                   placeholder="Категория" value="" required>
+<!--                            <select class="form-select" id="category" required th:field="*{category}">-->
+<!--                                <option th:each="category : ${categories}" th:value="${category.title}"-->
+<!--                                        th:text="${category.title}"></option>-->
+<!--                            </select>-->
                             <div class="invalid-feedback">
                                 Выберите категорию.
                             </div>

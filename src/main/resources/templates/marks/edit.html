@@ -23,8 +23,11 @@
 
         <div class="row g-5">
             <div class="col-md-11 col-lg-12">
-                <form class="needs-validation" action="#" th:action="@{/places/addingMark}"
+                <form class="needs-validation" action="#" th:action="@{/places/editMark}"
                       th:object="${mark}" method="post" enctype="multipart/form-data" novalidate>
+
+                    <input id="id" type="hidden" th:field="*{id}" />
+
                     <div class="row g-3">
 
                         <div class="col-12">
@@ -69,7 +72,7 @@
 
                         <div class="col-12">
                             <label for="photos" class="form-label">Фотографии</label>
-                            <input id="photos" class="form-control" type="file" name="upload" multiple required />
+                            <input id="photos" class="form-control" type="file" name="upload" multiple />
                             <div class="invalid-feedback">
                                 Требуется добавить фото.
                             </div>
@@ -99,12 +102,12 @@
                                             <h6>Понедельник</h6>
                                             <div class="col-sm-6">
                                                 <div class="cs-form">
-                                                    <input type="time" name="s1_start" class="form-control" value="00:00"/>
+                                                    <input type="time" name="s1_start" class="form-control" th:value="${schedule1.start}"/>
                                                 </div>
                                             </div>
                                             <div class="col-sm-6">
                                                 <div class="cs-form">
-                                                    <input type="time" name="s1_end" class="form-control" value="23:59"/>
+                                                    <input type="time" name="s1_end" class="form-control" th:value="${schedule1.end}"/>
                                                 </div>
                                             </div>
                                         </div>
@@ -114,12 +117,12 @@
                                             <h6>Вторник</h6>
                                             <div class="col-sm-6">
                                                 <div class="cs-form">
-                                                    <input type="time" name="s2_start" class="form-control" value="00:00"/>
+                                                    <input type="time" name="s2_start" class="form-control" th:value="${schedule2.start}"/>
                                                 </div>
                                             </div>
                                             <div class="col-sm-6">
                                                 <div class="cs-form">
-                                                    <input type="time" name="s2_end" class="form-control" value="23:59"/>
+                                                    <input type="time" name="s2_end" class="form-control" th:value="${schedule2.end}"/>
                                                 </div>
                                             </div>
                                         </div>
@@ -129,12 +132,12 @@
                                             <h6>Среда</h6>
                                             <div class="col-sm-6">
                                                 <div class="cs-form">
-                                                    <input type="time" name="s3_start" class="form-control" value="00:00"/>
+                                                    <input type="time" name="s3_start" class="form-control" th:value="${schedule3.start}"/>
                                                 </div>
                                             </div>
                                             <div class="col-sm-6">
                                                 <div class="cs-form">
-                                                    <input type="time" name="s3_end" class="form-control" value="23:59"/>
+                                                    <input type="time" name="s3_end" class="form-control" th:value="${schedule3.end}"/>
                                                 </div>
                                             </div>
                                         </div>
@@ -144,12 +147,12 @@
                                             <h6>Четверг</h6>
                                             <div class="col-sm-6">
                                                 <div class="cs-form">
-                                                    <input type="time" name="s4_start" class="form-control" value="00:00"/>
+                                                    <input type="time" name="s4_start" class="form-control" th:value="${schedule4.start}"/>
                                                 </div>
                                             </div>
                                             <div class="col-sm-6">
                                                 <div class="cs-form">
-                                                    <input type="time" name="s4_end" class="form-control" value="23:59"/>
+                                                    <input type="time" name="s4_end" class="form-control" th:value="${schedule4.end}"/>
                                                 </div>
                                             </div>
                                         </div>
@@ -159,12 +162,12 @@
                                             <h6>Пятница</h6>
                                             <div class="col-sm-6">
                                                 <div class="cs-form">
-                                                    <input type="time" name="s5_start" class="form-control" value="00:00"/>
+                                                    <input type="time" name="s5_start" class="form-control" th:value="${schedule5.start}"/>
                                                 </div>
                                             </div>
                                             <div class="col-sm-6">
                                                 <div class="cs-form">
-                                                    <input type="time" name="s5_end" class="form-control" value="23:59"/>
+                                                    <input type="time" name="s5_end" class="form-control" th:value="${schedule5.end}"/>
                                                 </div>
                                             </div>
                                         </div>
@@ -174,12 +177,12 @@
                                             <h6>Суббота</h6>
                                             <div class="col-sm-6">
                                                 <div class="cs-form">
-                                                    <input type="time" name="s6_start" class="form-control" value="00:00"/>
+                                                    <input type="time" name="s6_start" class="form-control" th:value="${schedule6.start}"/>
                                                 </div>
                                             </div>
                                             <div class="col-sm-6">
                                                 <div class="cs-form">
-                                                    <input type="time" name="s6_end" class="form-control" value="23:59"/>
+                                                    <input type="time" name="s6_end" class="form-control" th:value="${schedule6.end}"/>
                                                 </div>
                                             </div>
                                         </div>
@@ -189,12 +192,12 @@
                                             <h6>Воскресенье</h6>
                                             <div class="col-sm-6">
                                                 <div class="cs-form">
-                                                    <input type="time" name="s7_start" class="form-control" value="00:00"/>
+                                                    <input type="time" name="s7_start" class="form-control" th:value="${schedule7.start}"/>
                                                 </div>
                                             </div>
                                             <div class="col-sm-6">
                                                 <div class="cs-form">
-                                                    <input type="time" name="s7_end" class="form-control" value="23:59"/>
+                                                    <input type="time" name="s7_end" class="form-control" th:value="${schedule7.end}"/>
                                                 </div>
                                             </div>
                                         </div>
