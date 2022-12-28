@@ -74,16 +74,6 @@ public class GuideController {
 
     @PostMapping("/guides/addingGuide")
     public String insertGuide(@ModelAttribute Guide guide, @RequestParam("image")MultipartFile file){
-//        StringBuilder fileNames = new StringBuilder();
-//        String fileName = guide.getId() + file.getOriginalFilename().substring(file.getOriginalFilename().length()-4);
-//        Path fileNameAndPath = Paths.get(uploadDirectory, fileName);
-//        fileNames.append(fileName);
-//        try {
-//            Files.write(fileNameAndPath, file.getBytes());
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-
         StringBuilder fileNames = new StringBuilder();
         String fileName = "guide_" + guide.getLastName() + "_" +
                 (guideService.getAllGuides().size() + 1) +

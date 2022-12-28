@@ -1,11 +1,12 @@
 package com.alexdebur.TurMurom.Models;
 
-import lombok.Data;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
 @Getter
@@ -18,5 +19,11 @@ public class Route {
     private String title;
     private String description;
     private String duration;
-    private String photo;
+    private String pathPhoto;
+
+    @ManyToMany
+    @JsonManagedReference
+    private List<Mark> marks;
+
+
 }

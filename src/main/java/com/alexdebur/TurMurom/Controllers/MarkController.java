@@ -91,7 +91,7 @@ public class MarkController {
         mark.setElected(false);
         markService.insertMark(mark);
 
-        String path = System.getProperty("user.dir")+"/MarkPhotos/";
+        String path = System.getProperty("user.dir")+"/Photos/Marks";
 
         for (var item: upload){
             Path fileNameAndPath = Paths.get(path, item.getOriginalFilename());
@@ -227,9 +227,15 @@ public class MarkController {
         return "redirect:/places";
     }
 
-    @DeleteMapping("/places/delete/{id}")
+//    @DeleteMapping("/places/delete/{id}")
+//    public String deleteMarkById(@PathVariable("id") Long id){
+//        markService.deleteMarkById(id);
+//        return "redirect:/marks/places";
+//    }
+
+    @GetMapping("/places/delete/{id}")
     public String deleteMarkById(@PathVariable("id") Long id){
         markService.deleteMarkById(id);
-        return "redirect:/marks/places";
+        return "redirect:/places";
     }
 }
