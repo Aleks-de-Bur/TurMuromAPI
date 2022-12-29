@@ -68,8 +68,8 @@
                         <div class="col-sm-8">
                             <h4>Ключевые точки маршрута:</h4>
                             <hr class="my-4">
-                            <span th:if="${marks.size() == 0}">Список достопримечательностей пуст</span>
-                            <table th:if="${marks.size() > 0}" class="table table-hover col-sm-8">
+                            <span th:if="${marks?.size() == 0}">Список достопримечательностей пуст</span>
+                            <table th:if="${marks?.size() > 0}" class="table table-hover col-sm-8">
                                 <thead class="thead-dark">
                                 <tr>
                                     <td>ID</td>

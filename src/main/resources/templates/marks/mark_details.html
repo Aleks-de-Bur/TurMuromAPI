@@ -30,7 +30,7 @@
                         <div class="col-12">
                             <label for="title" class="form-label">Название</label>
                             <input type="text" class="form-control" id="title" th:field="*{title}"
-                                   placeholder="Название" value="" required>
+                                   placeholder="Название" value="" disabled readonly>
                             <div class="invalid-feedback">
                                 Требуется заполнить название.
                             </div>
@@ -39,7 +39,7 @@
                         <div class="col-12">
                             <label for="description" class="form-label">Описание</label>
                             <textarea class="form-control" id="description" th:field="*{description}"
-                                      rows="3" placeholder="Описание" required></textarea>
+                                      rows="3" placeholder="Описание" disabled readonly></textarea>
                             <div class="invalid-feedback">
                                 Требуется заполнить описание.
                             </div>
@@ -48,11 +48,11 @@
                         <div class="col-12">
                             <label for="category" class="form-label">Категория</label>
                             <input type="text" class="form-control" id="category" th:field="*{category.title}"
-                                   placeholder="Категория" value="" required>
-<!--                            <select class="form-select" id="category" required th:field="*{category}">-->
-<!--                                <option th:each="category : ${categories}" th:value="${category.title}"-->
-<!--                                        th:text="${category.title}"></option>-->
-<!--                            </select>-->
+                                   placeholder="Категория" value="" disabled readonly>
+                            <!--                            <select class="form-select" id="category" required th:field="*{category}">-->
+                            <!--                                <option th:each="category : ${categories}" th:value="${category.title}"-->
+                            <!--                                        th:text="${category.title}"></option>-->
+                            <!--                            </select>-->
                             <div class="invalid-feedback">
                                 Выберите категорию.
                             </div>
@@ -61,7 +61,7 @@
                         <div class="col-12">
                             <label for="address" class="form-label">Адрес</label>
                             <input type="text" class="form-control" id="address" th:field="*{address}"
-                                   placeholder="Муром, улица Орловская,23" value="" required>
+                                   placeholder="Муром, улица Орловская,23" value="" disabled readonly>
                             <div class="invalid-feedback">
                                 Требуется указать адрес.
                             </div>
@@ -99,14 +99,14 @@
                                             <div class="col-sm-6">
                                                 <div class="cs-form">
                                                     <input type="time" class="form-control"
-                                                           value="${schedule.start}"/>
+                                                           th:value="${schedule.start}" disabled readonly/>
                                                 </div>
                                             </div>
 
                                             <div class="col-sm-6">
                                                 <div class="cs-form">
                                                     <input type="time" class="form-control"
-                                                           value="${schedule.start}"/>
+                                                           th:value="${schedule.end}" disabled readonly/>
                                                 </div>
                                             </div>
                                         </div>
@@ -115,26 +115,20 @@
                                 </div>
                             </div>
                         </div>
+
+
+                        <hr class="my-4">
+
+                        <div class="col-12">
+                            <a th:href="@{/places}" class="w-100 btn btn-outline-secondary btn-lg"
+                               type="button">Назад</a>
+                        </div>
+
                     </div>
                 </form>
             </div>
         </div>
-
-
-        <hr class="my-4">
-
-        <div class="col-sm-3">
-            <a th:href="@{/places}" class="w-100 btn btn-outline-secondary btn-lg"
-               type="button">Назад</a>
-        </div>
-        <div class="col-sm-9">
-            <button class="w-100 btn btn-outline-success btn-lg" type="submit">Подтвердить</button>
-        </div>
-</div>
-</form>
-</div>
-</div>
-</main>
+    </main>
 </div>
 <div th:replace="~{fragments/footer :: footer}"></div>
 

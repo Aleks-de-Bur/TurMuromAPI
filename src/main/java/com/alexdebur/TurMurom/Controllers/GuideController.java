@@ -52,7 +52,11 @@ public class GuideController {
     @GetMapping("/guides/details/{id}")
     public String detailsPage(Model model, @PathVariable("id") Long id) {
         Guide selectedGuide = guideService.getGuideById(id).get();
-        String photo = "/photos/guides/" + selectedGuide.getPathPhoto(); //+ ".jpg";
+//        String photo = "/photos/guides/" + selectedGuide.getPathPhoto(); //+ ".jpg";
+
+        String path = System.getProperty("user.dir")+"/Photos/Guides/";
+        String photo = path + selectedGuide.getPathPhoto();
+
         //String photo = "/uploads/photos/guides/" + selectedGuide.getPathPhoto(); //+ ".jpg";
         List<Excursion> excursions = selectedGuide.getExcursions();
         model.addAttribute("selectedGuide", selectedGuide);
@@ -64,7 +68,8 @@ public class GuideController {
     @GetMapping("/guides/edit/{id}")
     public String editPage(Model model, @PathVariable("id") Long id) {
         Guide selectedGuide = guideService.getGuideById(id).get();
-        String photo = "/photos/guides/" + selectedGuide.getPathPhoto() + ".jpg";
+        String path = System.getProperty("user.dir")+"/Photos/Guides/";
+        String photo = path + selectedGuide.getPathPhoto();
         List<Excursion> excursions = selectedGuide.getExcursions();
         model.addAttribute("selectedGuide", selectedGuide);
         model.addAttribute("photo", photo);
@@ -78,7 +83,9 @@ public class GuideController {
         String fileName = "guide_" + guide.getLastName() + "_" +
                 (guideService.getAllGuides().size() + 1) +
                 file.getOriginalFilename().substring(file.getOriginalFilename().length()-4);
-        Path fileNameAndPath = Paths.get(uploadDirectory, fileName);
+
+        String path = System.getProperty("user.dir")+"/Photos/Guides";
+        Path fileNameAndPath = Paths.get(path, fileName);
         fileNames.append(file.getOriginalFilename());
         try {
             Files.write(fileNameAndPath, file.getBytes());
@@ -94,19 +101,20 @@ public class GuideController {
 
     @PostMapping("/uploadImage")
     //@ResponseBody
-    public String uploadImage(@ModelAttribute Guide guide, Model model, @RequestParam("image") MultipartFile file) throws IOException {
+    public String uploadImage(@ModelAttribute Guide guide, Model model, @RequestParam MultipartFile upload) throws IOException {
         StringBuilder fileNames = new StringBuilder();
-        String fileName = guide.getId() + file.getOriginalFilename().substring(file.getOriginalFilename().length()-4);
+        String fileName = guide.getId() + upload.getOriginalFilename().substring(upload.getOriginalFilename().length()-4);
         Path fileNameAndPath = Paths.get(uploadDirectory, fileName);
         fileNames.append(fileName);
-        Files.write(fileNameAndPath, file.getBytes());
+        Files.write(fileNameAndPath, upload.getBytes());
         model.addAttribute("photo", fileName);
         return "Successful";
     }
 
 
-    @PutMapping("/guides/editGuide")
-    public String updateMark(@ModelAttribute Guide guide){
+    @PostMapping("/guides/editGuide")
+    public String editGuide(Guide guide, @RequestParam("image") MultipartFile file){
+
         guideService.insertGuide(guide);
         return "redirect:/guides";
     }

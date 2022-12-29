@@ -26,7 +26,7 @@ public class Excursion {
     @JsonBackReference
     private Guide guide;
 
-    @OneToMany(mappedBy = "excursion")
+    @OneToMany(mappedBy = "excursion", cascade = CascadeType.ALL)
     @JsonManagedReference
     private List<ExcursionPhoto> excursionPhotos;
 }

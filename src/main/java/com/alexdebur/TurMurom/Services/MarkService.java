@@ -4,6 +4,7 @@ import com.alexdebur.TurMurom.Models.Mark;
 import com.alexdebur.TurMurom.Models.MarkPhoto;
 import com.alexdebur.TurMurom.Repositories.MarkRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Service;
 
 import java.io.File;

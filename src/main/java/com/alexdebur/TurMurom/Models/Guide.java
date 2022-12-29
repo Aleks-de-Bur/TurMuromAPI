@@ -22,7 +22,7 @@ public class Guide {
     private String email;
     private String telNumber;
     private String pathPhoto;
-    @OneToMany(mappedBy = "guide")
+    @OneToMany(mappedBy = "guide", cascade = CascadeType.ALL)
     @JsonManagedReference
     private List<Excursion> excursions;
 }

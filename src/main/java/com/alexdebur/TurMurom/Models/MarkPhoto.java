@@ -21,6 +21,5 @@ public class MarkPhoto {
     @ManyToOne
     @JsonBackReference
     private Mark mark;
-
     private String pathPhoto;
 }

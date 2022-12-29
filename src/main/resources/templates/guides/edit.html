@@ -23,13 +23,15 @@
 
         <div class="row g-5">
             <div class="col-md-11 col-lg-12">
-                <form class="needs-validation" action="#" th:action="@{/guides/addingGuide}" novalidate>
+                <form class="needs-validation" action="#" th:action="@{/guides/editGuide}"
+                      th:object="${selectedGuide}" enctype="multipart/form-data" method="post" novalidate>
                     <div class="row g-3">
 
                         <div class="col-sm-4">
                             <label for="lastName" class="form-label">Фамилия</label>
                             <input type="text" class="form-control" id="lastName" th:field="*{lastName}" placeholder=""
-                                   th:value="${selectedGuide.lastName}" required>
+                                   required>
+                            <!--th:value="${selectedGuide.lastName}" -->
                             <div class="invalid-feedback">
                                 Заполните фамилию.
                             </div>
@@ -37,7 +39,8 @@
 
                         <div class="col-sm-4">
                             <label for="firstName" class="form-label">Имя</label>
-                            <input type="text" class="form-control" id="firstName" th:field="*{firstName}" placeholder=""
+                            <input type="text" class="form-control" id="firstName" th:field="*{firstName}"
+                                   placeholder=""
                                    th:value="${selectedGuide.firstName}" required>
                             <div class="invalid-feedback">
                                 Заполните имя.
@@ -46,7 +49,8 @@
 
                         <div class="col-sm-4">
                             <label for="patronymic" class="form-label">Отчество</label>
-                            <input type="text" class="form-control" id="patronymic" th:field="*{patronymic}" placeholder=""
+                            <input type="text" class="form-control" id="patronymic" th:field="*{patronymic}"
+                                   placeholder=""
                                    th:value="${selectedGuide.patronymic}" required>
                             <div class="invalid-feedback">
                                 Заполните отчество.
@@ -55,7 +59,8 @@
 
                         <div class="col-12">
                             <label for="email" class="form-label">Email</label>
-                            <input type="email" class="form-control" id="email" th:field="*{email}" placeholder="you@example.com"
+                            <input type="email" class="form-control" id="email" th:field="*{email}"
+                                   placeholder="you@example.com"
                                    th:value="${selectedGuide.email}" required>
                             <div class="invalid-feedback">
                                 Заполните EMail.
@@ -64,7 +69,8 @@
 
                         <div class="col-12">
                             <label for="telNumber" class="form-label">Номер телефона</label>
-                            <input type="tel" class="form-control" id="telNumber" th:field="*{telNumber}" placeholder="89209437812"
+                            <input type="tel" class="form-control" id="telNumber" th:field="*{telNumber}"
+                                   placeholder="89209437812"
                                    th:value="${selectedGuide.telNumber}" required>
                             <div class="invalid-feedback">
                                 Заполните номер телефона.
@@ -82,11 +88,22 @@
                                 <!--                                        </div>-->
                                 <!--                                    </div>-->
                                 <!--                                </div>-->
+
+
+                            </div>
+                            <div class="input-group mb-3">
+                                <input type="file" class="form-control" name="upload">
                             </div>
                         </div>
 
                         <div class="col-sm-8">
-                            <h4>Экскурсии гида:</h4>
+                            <div class="col-6">
+                                <h4>Экскурсии гида:</h4>
+                            </div>
+                            <div class="col-6">
+                                <a th:href="@{'/guides/edit/' + ${selectedGuide.id} + '/excursion/create'}"
+                                   class="col-sm-3 btn-lg btn btn-outline-dark">Добавить</a>
+                            </div>
                             <hr class="my-4">
                             <span th:if="${excursions.size() == 0}">Список экскурсий пуст</span>
                             <table th:if="${excursions.size() > 0}" class="table table-hover col-sm-8">
@@ -104,9 +121,12 @@
                                     <td th:text="${excursion.title}"/>
                                     <td th:text="${excursion.price}"/>
                                     <td><a class="btn btn-secondary"
-                                           th:href="@{'/excursions/details/' + ${excursion.id}}">Подробнее</a></td>
-                                    <td><a class="btn btn-danger"
-                                           th:href="@{'/excursions/delete/' + ${excursion.id}}">Удалить</a></td>
+                                           th:href="@{'/guides/edit/' + ${excursion.guide.id} + '/excursion/' + ${excursion.id} + '/details}">Подробнее</a>
+                                        <a class="btn btn-secondary"
+                                           th:href="@{'/guides/edit/' + ${excursion.guide.id} + '/excursion/' + ${excursion.id} + '/edit}">Редактировать</a>
+                                        <a class="btn btn-danger"
+                                           th:href="@{'/guides/edit/' + ${excursion.guide.id} + '/excursion/' + ${excursion.id} + '/delete}">Удалить</a>
+                                    </td>
                                 </tr>
                                 </tbody>
                             </table>
@@ -116,7 +136,8 @@
                         <hr class="my-4">
 
                         <div class="col-sm-3">
-                            <a th:href="@{/guides}" class="w-100 btn btn-outline-secondary btn-lg" type="button">Назад</a>
+                            <a th:href="@{/guides}" class="w-100 btn btn-outline-secondary btn-lg"
+                               type="button">Назад</a>
                         </div>
                         <div class="col-sm-9">
                             <button class="w-100 btn btn-outline-success btn-lg" type="submit">Подтвердить</button>

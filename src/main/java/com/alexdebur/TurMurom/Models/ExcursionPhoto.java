@@ -15,9 +15,8 @@ public class ExcursionPhoto {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String title;
     @ManyToOne
     @JsonBackReference
     private Excursion excursion;
-    private String photo;
+    private String pathPhoto;
 }

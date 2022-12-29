@@ -30,11 +30,12 @@ public class Mark {
     private String address;
     private Boolean elected;
 
-    @OneToMany(mappedBy = "mark")
-    @OnDelete(action = OnDeleteAction.CASCADE)
+    //    @OnDelete(action = OnDeleteAction.CASCADE)
+    @OneToMany(mappedBy = "mark", cascade = CascadeType.ALL)
     private List<MarkPhoto> markPhotos;
-    @OneToMany(mappedBy = "mark")
-    @OnDelete(action = OnDeleteAction.CASCADE)
+
+    //    @OnDelete(action = OnDeleteAction.CASCADE)
+    @OneToMany(mappedBy = "mark", cascade = CascadeType.ALL)
     private List<Schedule> schedules;
 
     @ManyToMany
