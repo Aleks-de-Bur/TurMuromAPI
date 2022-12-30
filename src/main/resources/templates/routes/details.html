@@ -84,11 +84,7 @@
                                     <td th:text="${mark.title}"/>
                                     <td th:text="${mark.address}"/>
                                     <td><a class="btn btn-secondary"
-                                           th:href="@{'/places/mark_details/' + ${mark.id}}">Подробнее</a>
-                                        <a class="btn btn-secondary"
-                                           th:href="@{'/places/edit/' + ${mark.id}}">Изменить</a>
-                                        <a class="btn btn-danger"
-                                           th:href="@{'/places/delete/' + ${mark.id}}">Удалить</a></td>
+                                           th:href="@{'/places/details/' + ${mark.id}}">Подробнее</a></td>
                                 </tr>
                                 </tbody>
                             </table>

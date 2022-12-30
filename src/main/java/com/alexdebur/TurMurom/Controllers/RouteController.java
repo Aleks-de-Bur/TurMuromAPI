@@ -58,6 +58,9 @@ public class RouteController {
 //        List<Excursion> excursions = selectedGuide.getExcursions();
         model.addAttribute("photo", photo);
         model.addAttribute("selectedRoute", selectedRoute);
+
+
+        model.addAttribute("marks", routeService.getRouteById(id).get().getMarks());
         return "routes/details";
     }
 
