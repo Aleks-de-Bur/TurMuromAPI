@@ -19,8 +19,6 @@
         <div class="py-5 text-center">
             <img class="d-block mx-auto mb-4" src="/assets/brand/tur-murom-logo-dark.svg" alt="" width="72" height="57">
             <h2 th:text="${selectedExcursion.title}"></h2>
-            <p class="lead">При заполнении данных не забывайте сохранять пунктуацию и указывать только актуальные
-                данные.</p>
         </div>
 
         <div class="row g-5">
@@ -32,84 +30,29 @@
                             <label for="title" class="form-label">Название</label>
                             <input type="text" class="form-control" id="title" placeholder=""
                                    th:value="${selectedExcursion.title}" disabled readonly>
-                            <div class="invalid-feedback">
-                                Заполните название.
-                            </div>
                         </div>
 
                         <div class="col-sm-4">
                             <label for="duration" class="form-label">Длительность</label>
                             <input type="text" class="form-control" id="duration" placeholder=""
                                    th:value="${selectedExcursion.duration}" disabled readonly>
-                            <div class="invalid-feedback">
-                                Заполните продолжительность экскурсии.
-                            </div>
                         </div>
 
                         <div class="col-sm-4">
                             <label for="price" class="form-label">Стоимость</label>
                             <input type="text" class="form-control" id="price" placeholder=""
                                    th:value="${selectedExcursion.price}" disabled readonly>
-                            <div class="invalid-feedback">
-                                Заполните стоимость экскурсии.
-                            </div>
                         </div>
 
                         <div class="col-12">
                             <label for="description" class="form-label">Описание</label>
                             <textarea class="form-control" id="description" th:value="${selectedExcursion.description}"
-                                      rows="3" placeholder="Описание" required></textarea>
-                            <div class="invalid-feedback">
-                                Требуется заполнить описание.
-                            </div>
+                                      rows="3" placeholder="Описание" disabled readonly></textarea>
                         </div>
-
-                        <div class="col-sm-4">
-                            <div class="card shadow-sm">
-                                <img th:src="${photo}">
-                                <!--                                <div class="card-body">-->
-                                <!--                                    <div class="d-flex justify-content-between align-items-center">-->
-                                <!--                                        <div class="btn-group">-->
-                                <!--                                            <button type="button" class="btn btn-sm btn-outline-secondary">View</button>-->
-                                <!--                                            <button type="button" class="btn btn-sm btn-outline-secondary">Edit</button>-->
-                                <!--                                        </div>-->
-                                <!--                                    </div>-->
-                                <!--                                </div>-->
-                            </div>
-                        </div>
-
-                        <div class="col-sm-8">
-                            <h4>Экскурсии гида:</h4>
-                            <hr class="my-4">
-                            <span th:if="${excursions.size() == 0}">Список экскурсий пуст</span>
-                            <table th:if="${excursions.size() > 0}" class="table table-hover col-sm-8">
-                                <thead class="thead-dark">
-                                <tr>
-                                    <td>ID</td>
-                                    <td>Название</td>
-                                    <td>Стоимость</td>
-                                    <td></td>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                <tr th:each="excursion : ${excursions}">
-                                    <td th:text="${excursion.id}"/>
-                                    <td th:text="${excursion.title}"/>
-                                    <td th:text="${excursion.price}"/>
-                                    <td><a class="btn btn-secondary"
-                                           th:href="@{'/excursions/details/' + ${excursion.id}}">Подробнее</a></td>
-                                    <td><a class="btn btn-danger"
-                                           th:href="@{'/excursions/delete/' + ${excursion.id}}">Удалить</a></td>
-                                </tr>
-                                </tbody>
-                            </table>
-                        </div>
-
-
 
                         <hr class="my-4">
 
-                        <a th:href="@{'/guides/details/' + ${excursion.guide.id}}" class="w-100 btn btn-outline-secondary btn-lg" type="button">Назад</a>
+                        <a th:href="@{'/guides/details/' + ${selectedExcursion.guide.id}}" class="w-100 btn btn-outline-secondary btn-lg" type="button">Назад</a>
                     </div>
                 </form>
             </div>

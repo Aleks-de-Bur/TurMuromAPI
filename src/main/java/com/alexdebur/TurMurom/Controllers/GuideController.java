@@ -54,8 +54,8 @@ public class GuideController {
         Guide selectedGuide = guideService.getGuideById(id).get();
 //        String photo = "/photos/guides/" + selectedGuide.getPathPhoto(); //+ ".jpg";
 
-        String path = System.getProperty("user.dir")+"/Photos/Guides/";
-        String photo = path + selectedGuide.getPathPhoto();
+        //String path = System.getProperty("user.dir")+"/Photos/Guides/";
+        String photo = "../../../" + selectedGuide.getPathPhoto();
 
         //String photo = "/uploads/photos/guides/" + selectedGuide.getPathPhoto(); //+ ".jpg";
         List<Excursion> excursions = selectedGuide.getExcursions();
@@ -113,8 +113,26 @@ public class GuideController {
 
 
     @PostMapping("/guides/editGuide")
-    public String editGuide(Guide guide, @RequestParam("image") MultipartFile file){
+    public String editGuide(Guide guide, @RequestParam MultipartFile upload) throws IOException{
 
+        guideService.insertGuide(guide);
+        if (upload.getOriginalFilename() != "") {
+            StringBuilder fileNames = new StringBuilder();
+            String fileName = "guide_" + guide.getLastName() + "_" +
+                    (guideService.getAllGuides().size() + 1) +
+                    upload.getOriginalFilename().substring(upload.getOriginalFilename().length()-4);
+
+            String path = System.getProperty("user.dir")+"/Photos/Guides";
+            Path fileNameAndPath = Paths.get(path, fileName);
+            fileNames.append(upload.getOriginalFilename());
+            try {
+                Files.write(fileNameAndPath, upload.getBytes());
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+
+            guide.setPathPhoto(fileName);
+        }
         guideService.insertGuide(guide);
         return "redirect:/guides";
     }

@@ -92,17 +92,19 @@
 
                             </div>
                             <div class="input-group mb-3">
-                                <input type="file" class="form-control" name="upload">
+                                <input id="photos" class="form-control" type="file" name="upload">
                             </div>
                         </div>
 
                         <div class="col-sm-8">
-                            <div class="col-6">
-                                <h4>Экскурсии гида:</h4>
-                            </div>
-                            <div class="col-6">
-                                <a th:href="@{'/guides/edit/' + ${selectedGuide.id} + '/excursion/create'}"
-                                   class="col-sm-3 btn-lg btn btn-outline-dark">Добавить</a>
+                            <div class="row g-3">
+                                <div class="col-6">
+                                    <h4>Экскурсии гида:</h4>
+                                </div>
+                                <div class="col-6">
+                                    <a th:href="@{'/guides/edit/' + ${selectedGuide.id} + '/excursion/create'}"
+                                       class="col-8 btn-lg btn btn-outline-dark">Добавить</a>
+                                </div>
                             </div>
                             <hr class="my-4">
                             <span th:if="${excursions.size() == 0}">Список экскурсий пуст</span>
@@ -121,11 +123,11 @@
                                     <td th:text="${excursion.title}"/>
                                     <td th:text="${excursion.price}"/>
                                     <td><a class="btn btn-secondary"
-                                           th:href="@{'/guides/edit/' + ${excursion.guide.id} + '/excursion/' + ${excursion.id} + '/details}">Подробнее</a>
+                                           th:href="@{'/guides/edit/' + ${excursion.guide.id} + '/excursion/' + ${excursion.id} + '/details'}">Подробнее</a>
                                         <a class="btn btn-secondary"
-                                           th:href="@{'/guides/edit/' + ${excursion.guide.id} + '/excursion/' + ${excursion.id} + '/edit}">Редактировать</a>
+                                           th:href="@{'/guides/edit/' + ${excursion.guide.id} + '/excursion/' + ${excursion.id} + '/edit'}">Редактировать</a>
                                         <a class="btn btn-danger"
-                                           th:href="@{'/guides/edit/' + ${excursion.guide.id} + '/excursion/' + ${excursion.id} + '/delete}">Удалить</a>
+                                           th:href="@{'/guides/edit/' + ${excursion.guide.id} + '/excursion/' + ${excursion.id} + '/delete'}">Удалить</a>
                                     </td>
                                 </tr>
                                 </tbody>

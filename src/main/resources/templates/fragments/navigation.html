@@ -14,11 +14,11 @@
 
         <ul class="nav col-12 col-md-auto mb-2 justify-content-center mb-md-0">
             <li><a th:href="@{/}" class="nav-link px-2 link-secondary">Главная</a></li>
+            <li th:class="${activePage == 'categories'} ? 'nav-item active' : 'nav-item'"><a th:href="@{/categories}" class="nav-link px-2 link-dark">Категории</a></li>
             <li th:class="${activePage == 'places'} ? 'nav-item active' : 'nav-item'"><a th:href="@{/places}" class="nav-link px-2 link-dark">Достопримечательности</a></li>
             <li th:class="${activePage == 'routes'} ? 'nav-item active' : 'nav-item'"><a th:href="@{/routes}" class="nav-link px-2 link-dark">Маршруты</a></li>
             <li><a th:href="@{/guides}" class="nav-link px-2 link-dark">Гиды</a></li>
             <li><a th:href="@{/excursions}" class="nav-link px-2 link-dark">Экскурсии</a></li>
-            <li><a th:href="@{/about}" class="nav-link px-2 link-dark">About</a></li>
         </ul>
 
         <div class="col-md-3 text-end">

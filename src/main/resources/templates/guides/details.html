@@ -106,9 +106,8 @@
                                     <td th:text="${excursion.title}"/>
                                     <td th:text="${excursion.price}"/>
                                     <td><a class="btn btn-secondary"
-                                           th:href="@{'/excursions/details/' + ${excursion.id}}">Подробнее</a></td>
-                                    <td><a class="btn btn-danger"
-                                           th:href="@{'/excursions/delete/' + ${excursion.id}}">Удалить</a></td>
+                                           th:href="@{'/guides/edit/' + ${excursion.guide.id} + '/excursion/' + ${excursion.id} + '/details'}">Подробнее</a>
+                                    </td>
                                 </tr>
                                 </tbody>
                             </table>
