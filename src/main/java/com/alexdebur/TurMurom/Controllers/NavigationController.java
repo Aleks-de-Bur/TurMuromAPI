@@ -6,11 +6,11 @@ import org.springframework.web.bind.annotation.GetMapping;
 
 @Controller
 public class NavigationController {
-//    @GetMapping("/places")
-//    public String getPlaces(Model model){
-//        model.addAttribute("activePage", "places");
-//        return "marks/places";
-//    }
+    @GetMapping("/")
+    public String getHome(Model model){
+        model.addAttribute("activePage", "home");
+        return "index";
+    }
 //
 //    @GetMapping("/routes")
 //    public String getRoutes(Model model){

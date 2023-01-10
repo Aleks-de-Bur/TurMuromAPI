@@ -39,7 +39,7 @@ public class GuideController {
     public String placesPage(Model model) {
         List<Guide> allGuides = guideService.getAllGuides();
         model.addAttribute("guides", allGuides);
-        model.addAttribute("activePage", "places");
+        model.addAttribute("activePage", "guides");
         return "guides/guides";
     }
 

@@ -48,6 +48,7 @@ public class ExcursionController {
     public String excursionsPage(Model model) {
         List<Excursion> allExcursions = excursionService.getAllExcursions();
         model.addAttribute("excursions", allExcursions);
+        model.addAttribute("activePage", "excursions");
         return "excursions/excursions";
     }
 

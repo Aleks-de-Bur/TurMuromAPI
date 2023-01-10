@@ -47,6 +47,7 @@ public class RouteController {
     public String routesPage(Model model) {
         List<Route> allRoutes = routeService.getAllRoutes();
         model.addAttribute("routes", allRoutes);
+        model.addAttribute("activePage", "routes");
         return "routes/routes";
     }
 
