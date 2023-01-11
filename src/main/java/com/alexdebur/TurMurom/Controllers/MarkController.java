@@ -9,6 +9,8 @@ import com.alexdebur.TurMurom.Services.MarkPhotoService;
 import com.alexdebur.TurMurom.Services.MarkService;
 import com.alexdebur.TurMurom.Services.ScheduleService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -26,6 +28,13 @@ import java.util.List;
 
 @Controller
 public class MarkController {
+
+    private static final int BUTTONS_TO_SHOW = 3;
+    private static final int INITIAL_PAGE = 0;
+    private static final int INITIAL_PAGE_SIZE = 3;
+    private static final int[] PAGE_SIZES = { 3, 6, 9, 12 };
+
+
     private MarkService markService;
     private CategoryService categoryService;
     private ScheduleService scheduleService;
@@ -56,13 +65,53 @@ public class MarkController {
         model.addAttribute("schedule7", schedule7);
     }
 
-    @GetMapping("/places")
-    public String placesPage(Model model) {
-        List<Mark> allMarks = markService.getAllMarks();
+    @RequestMapping("/places/{pageNum}")
+    public String placesPage(Model model,
+                             @PathVariable(name = "pageNum") int pageNum,
+                             @Param("sortField") String sortField,
+                             @Param("sortDir") String sortDir) {
+
+        Page<Mark> page = markService.listAll(pageNum, sortField, sortDir);
+
+        List<Mark> allMarks = page.getContent();
         model.addAttribute("marks", allMarks);
         model.addAttribute("activePage", "places");
+
+        model.addAttribute("currentPage", pageNum);
+        model.addAttribute("totalPages", page.getTotalPages());
+        model.addAttribute("totalItems", page.getTotalElements());
+
+        model.addAttribute("sortField", sortField);
+        model.addAttribute("sortDir", sortDir);
+        model.addAttribute("reverseSortDir", sortDir.equals("asc") ? "desc" : "asc");
         return "marks/places";
     }
+
+
+
+//    @RequestMapping("/page/{pageNum}")
+//    public String viewPage(Model model,
+//                           @PathVariable(name = "pageNum") int pageNum,
+//                           @Param("sortField") String sortField,
+//                           @Param("sortDir") String sortDir) {
+//
+//        Page<Product> page = service.listAll(pageNum, sortField, sortDir);
+//
+//        List<Product> listProducts = page.getContent();
+//
+//        model.addAttribute("currentPage", pageNum);
+//        model.addAttribute("totalPages", page.getTotalPages());
+//        model.addAttribute("totalItems", page.getTotalElements());
+//
+//        model.addAttribute("sortField", sortField);
+//        model.addAttribute("sortDir", sortDir);
+//        model.addAttribute("reverseSortDir", sortDir.equals("asc") ? "desc" : "asc");
+//
+//        model.addAttribute("listProducts", listProducts);
+//
+//        return "index";
+//    }
+
 
     @GetMapping("/places/create")
     public String createMark(Model model) {
@@ -146,7 +195,7 @@ public class MarkController {
         schedule7.setDay(7);
         schedule7.setMark(mrk);
         scheduleService.insertSchedule(schedule7);
-        return "redirect:/places";
+        return "redirect:/places/1?sortField=title&sortDir=asc";
     }
 
 //    @PutMapping("/places/addingMark")
