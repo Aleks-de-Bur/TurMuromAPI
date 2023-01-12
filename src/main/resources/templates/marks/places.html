@@ -17,37 +17,59 @@
         <a href="/places/create" class="col-sm-3 btn-lg btn btn-outline-dark">Добавить</a>
     </div>
     <hr class="my-4">
-    <div class="row g-3">
-        <div class="col-sm-2">
-            <h5>Сортировать по:</h5>
+    <div class="row justify-content-between">
+        <div class="col-sm-4 col-md-3 col-lg-2">
+            <h5 style="white-space: nowrap;">Сортировать по:</h5>
         </div>
-        <div class="col-sm-8">
+        <div class="col-sm-6 col-md-7 col-lg-9">
             <div class="btn-group btn-group-sm" role="group" aria-label="Small button group">
-                <a th:href="@{'/places/' + ${currentPage} + '?sortField=id&sortDir=' + ${reverseSortDir}}" class="btn btn-outline-dark">
+                <a th:href="@{'/places/' + ${currentPage} + '?sortField=id&sortDir=' + ${reverseSortDir} + '&scheme=' + ${scheme}}"
+                   class="btn btn-outline-dark">
                     <span class="h6" th:if="${sortField} == 'id'"><em><strong>Id</strong></em></span>
                     <span class="h6" th:unless="${sortField} == 'id'"><small>Id</small></span>
                     <span th:if="${sortDir} == 'asc' and ${sortField} == 'id'">&#9650;</span>
                     <span th:if="${sortDir} == 'desc' and ${sortField} == 'id'">&#9660;</span>
-<!--                    <span th:unless="${reverseSortDir} == 'desc' and ${sortField} == 'id'">&#9660;</span>-->
                 </a>
-                <a th:href="@{'/places/' + ${currentPage} + '?sortField=title&sortDir=' + ${reverseSortDir}}" class="btn btn-outline-dark">
+                <a th:href="@{'/places/' + ${currentPage} + '?sortField=title&sortDir=' + ${reverseSortDir} + '&scheme=' + ${scheme}}"
+                   class="btn btn-outline-dark">
                     <span class="h6" th:if="${sortField} == 'title'"><em><strong>Названию</strong></em></span>
                     <span class="h6" th:unless="${sortField} == 'title'"><small>Названию</small></span>
                     <span th:if="${sortDir} == 'asc' and ${sortField} == 'title'">&#9650;</span>
                     <span th:if="${sortDir} == 'desc' and ${sortField} == 'title'">&#9660;</span>
-<!--                    <span th:unless="${reverseSortDir} == 'desc' and ${sortField} == 'title'">&#9660;</span>-->
                 </a>
-                <a th:href="@{'/places/' + ${currentPage} + '?sortField=category&sortDir=' + ${reverseSortDir}}" class="btn btn-outline-dark">
+                <a th:href="@{'/places/' + ${currentPage} + '?sortField=category&sortDir=' + ${reverseSortDir} + '&scheme=' + ${scheme}}"
+                   class="btn btn-outline-dark">
                     <span class="h6" th:if="${sortField} == 'category'"><em><strong>Категории</strong></em></span>
                     <span class="h6" th:unless="${sortField} == 'category'"><small>Категории</small></span>
                     <span th:if="${sortDir} == 'asc' and ${sortField} == 'category'">&#9650;</span>
                     <span th:if="${sortDir} == 'desc' and ${sortField} == 'category'">&#9660;</span>
-<!--                    <span th:unless="${reverseSortDir} == 'desc' and ${sortField} == 'category'">&#9660;</span>-->
                 </a>
             </div>
         </div>
-        <div class="col-sm-2">
 
+        <!--        Смена режима отображения каталога-->
+        <div class="col-sm-2 col-md-2 col-lg-1">
+            <div class="btn-group" role="group" aria-label="Basic radio toggle button group">
+                <input type="radio" class="btn-check" name="btnradio" id="btnRadioTableOn" autocomplete="off"
+                       th:if="${scheme} == 'table'" checked>
+                <a th:href="@{'/places/' + ${currentPage} + '?sortField=id&sortDir=' + ${sortDir} + '&scheme=table'}"
+                   th:if="${scheme} == 'table'" class="btn btn-outline-dark" for="btnRadioTableOn">&#9638;</a>
+
+                <input type="radio" class="btn-check" name="btnradio" id="btnRadioTable" autocomplete="off"
+                       th:unless="${scheme} == 'table'">
+                <a th:href="@{'/places/' + ${currentPage} + '?sortField=id&sortDir=' + ${sortDir} + '&scheme=table'}"
+                   th:unless="${scheme} == 'table'" class="btn btn-outline-dark" for="btnRadioTable">&#9638;</a>
+
+                <input type="radio" class="btn-check" name="btnradio" id="btnRadioListOn" autocomplete="off"
+                       th:if="${scheme} == 'list'" checked>
+                <a th:href="@{'/places/' + ${currentPage} + '?sortField=id&sortDir=' + ${sortDir} + '&scheme=list'}"
+                   th:if="${scheme} == 'list'" class="btn btn-outline-dark" for="btnRadioListOn">&#9636;</a>
+
+                <input type="radio" class="btn-check" name="btnradio" id="btnRadioList" autocomplete="off"
+                       th:unless="${scheme} == 'list'">
+                <a th:href="@{'/places/' + ${currentPage} + '?sortField=id&sortDir=' + ${sortDir} + '&scheme=list'}"
+                   th:unless="${scheme} == 'list'" class="btn btn-outline-dark" for="btnRadioList">&#9636;</a>
+            </div>
         </div>
 
         <!--        <div class="col-sm-8">-->
@@ -64,9 +86,12 @@
         <!--            </select>-->
         <!--        </div>-->
     </div>
+
     <hr class="my-4">
+
     <span th:if="${marks.size() == 0}">Список Достопримечательностей пуст</span>
-    <table th:if="${marks.size() > 0}" class="table table-hover">
+
+    <table th:if="${marks.size() > 0} and ${scheme} == 'table'" class="table table-hover">
 
         <!--        <tr>-->
         <!--            <th>-->
@@ -104,7 +129,7 @@
             <td th:text="${mark.category.title}"/>
             <td th:text="${mark.address}"/>
             <!--            <td><img src="/assets/static/photos/guides/${guide.pathPhoto}.jpg"></td>-->
-            <td><a type="button" class="btn btn-secondary"
+            <td class="align-self-end"><a type="button" class="btn btn-secondary"
                    th:href="@{'/places/details/' + ${mark.id}}">Подробнее</a>
                 <a type="button" class="btn btn-secondary"
                    th:href="@{'/places/edit/' + ${mark.id}}">Редактировать</a>
@@ -113,6 +138,92 @@
         </tr>
         </tbody>
     </table>
+
+
+    <!------------------------------------------------------------------------------------>
+    <!--    Отображение достопримечательностей списком-->
+    <!------------------------------------------------------------------------------------>
+
+    <div th:if="${marks.size() > 0}  and ${scheme} == 'list'" th:each="mark : ${marks}">
+        <div class="row featurette">
+            <div class="col-md-8 order-md-2">
+                <span class="badge rounded-pill text-bg-success" th:text="${mark.category.title}"></span>
+
+                <h2 class="featurette-heading fw-normal lh-1" th:text="${mark.title}"></h2>
+                <p class="lead" th:text="${mark.address}"></p>
+
+                <!-- Button trigger modal schedule-->
+                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                    Расписание
+                </button>
+
+                <!-- Modal schedule-->
+                <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h1 class="modal-title fs-5" id="scheduleModalLabel">Расписание</h1>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+
+                                <!--------------------------------------------------->
+
+                                <div th:each="schedule : ${mark.schedules}">
+                                    <div class="row justify-content-end">
+                                    <div class="col-6" th:switch="${schedule.day}">
+                                        <h6 class="text-end" th:case="1"> Понедельник</h6>
+                                        <h6 class="text-end" th:case="2"> Вторник</h6>
+                                        <h6 class="text-end" th:case="3"> Среда</h6>
+                                        <h6 class="text-end" th:case="4"> Четверг</h6>
+                                        <h6 class="text-end" th:case="5"> Пятница</h6>
+                                        <h6 class="text-end" th:case="6"> Суббота</h6>
+                                        <h6 class="text-end" th:case="7"> Воскресенье</h6>
+                                    </div>
+                                    </div>
+                                    <div class="row g-3">
+                                    <div class="col-6">
+                                        <div class="cs-form">
+                                            <input type="time" class="form-control"
+                                                   th:value="${schedule.start}" disabled readonly/>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-6">
+                                        <div class="cs-form">
+                                            <input type="time" class="form-control"
+                                                   th:value="${schedule.end}" disabled readonly/>
+                                        </div>
+                                    </div>
+                                    </div>
+                                    <hr class="featurette-divider">
+                                </div>
+                                <!--------------------------------------------------->
+                            </div>
+<!--                            <div class="modal-footer">-->
+<!--                                <button type="button" class="btn btn-secondary " data-bs-dismiss="modal">Закрыть</button>-->
+<!--                            </div>-->
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4 order-md-1">
+                <svg class="bd-placeholder-img bd-placeholder-img-lg featurette-image img-fluid mx-auto" width="500"
+                     height="500" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Placeholder: 500x500"
+                     preserveAspectRatio="xMidYMid slice" focusable="false"><title>Placeholder</title>
+                    <rect width="100%" height="100%" fill="#eee"/>
+                    <text x="50%" y="50%" fill="#aaa" dy=".3em">500x500</text>
+                </svg>
+
+            </div>
+        </div>
+
+        <hr class="featurette-divider">
+    </div>
+
+
+    <!------------------------------------------------------------------------------------>
 
 
     <div><i>Sorted by [[${sortField}]] in [[${sortDir}]] order</i></div>
@@ -125,12 +236,12 @@
             <li class="page-item">
                 <!--                <a class="page-link">Previous</a>-->
                 <a th:if="${currentPage > 1}"
-                   th:href="@{'/places/1' + '?sortField=' + ${sortField} + '&sortDir=' + ${sortDir}}" class="page-link">First</a>
+                   th:href="@{'/places/1' + '?sortField=' + ${sortField} + '&sortDir=' + ${sortDir} + '&scheme=' + ${scheme}}" class="page-link">First</a>
                 <span th:unless="${currentPage > 1}" class="page-link disabled">First</span>
             </li>
             <li class="page-item">
                 <a th:if="${currentPage > 1}"
-                   th:href="@{'/places/' + ${currentPage - 1} + '?sortField=' + ${sortField} + '&sortDir=' + ${sortDir}}"
+                   th:href="@{'/places/' + ${currentPage - 1} + '?sortField=' + ${sortField} + '&sortDir=' + ${sortDir} + '&scheme=' + ${scheme}}"
                    class="page-link">Previous</a>
                 <span th:unless="${currentPage > 1}" class="page-link disabled">Previous</span>
             </li>
@@ -138,7 +249,7 @@
             <ul class="pagination" th:each="i: ${#numbers.sequence(1, totalPages)}">
                 <li class="page-item">
                     <a th:if="${currentPage != i}"
-                       th:href="@{'/places/' + ${i} + '?sortField=' + ${sortField} + '&sortDir=' + ${sortDir}}"
+                       th:href="@{'/places/' + ${i} + '?sortField=' + ${sortField} + '&sortDir=' + ${sortDir} + '&scheme=' + ${scheme}}"
                        class="page-link">[[${i}]]</a>
                     <span th:unless="${currentPage != i}" class="page-link disabled">[[${i}]]</span>
                 </li>
@@ -148,13 +259,13 @@
 
             <li class="page-item">
                 <a th:if="${currentPage < totalPages}"
-                   th:href="@{'/places/' + ${currentPage + 1} + '?sortField=' + ${sortField} + '&sortDir=' + ${sortDir}}"
+                   th:href="@{'/places/' + ${currentPage + 1} + '?sortField=' + ${sortField} + '&sortDir=' + ${sortDir} + '&scheme=' + ${scheme}}"
                    class="page-link">Next</a>
                 <span th:unless="${currentPage < totalPages}" class="page-link disabled">Next</span>
             </li>
             <li class="page-item">
                 <a th:if="${currentPage < totalPages}"
-                   th:href="@{'/places/' + ${totalPages} + '?sortField=' + ${sortField} + '&sortDir=' + ${sortDir}}"
+                   th:href="@{'/places/' + ${totalPages} + '?sortField=' + ${sortField} + '&sortDir=' + ${sortDir} + '&scheme=' + ${scheme}}"
                    class="page-link">Last</a>
                 <span th:unless="${currentPage < totalPages}" class="page-link disabled">Last</span>
             </li>

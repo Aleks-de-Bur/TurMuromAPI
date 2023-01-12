@@ -69,7 +69,8 @@ public class MarkController {
     public String placesPage(Model model,
                              @PathVariable(name = "pageNum") int pageNum,
                              @Param("sortField") String sortField,
-                             @Param("sortDir") String sortDir) {
+                             @Param("sortDir") String sortDir,
+                             @Param("scheme") String scheme) {
 
         Page<Mark> page = markService.listAll(pageNum, sortField, sortDir);
 
@@ -83,6 +84,7 @@ public class MarkController {
 
         model.addAttribute("sortField", sortField);
         model.addAttribute("sortDir", sortDir);
+        model.addAttribute("scheme", scheme);
         model.addAttribute("reverseSortDir", sortDir.equals("asc") ? "desc" : "asc");
         return "marks/places";
     }
