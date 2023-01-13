@@ -4,13 +4,12 @@ import com.alexdebur.TurMurom.Models.*;
 import com.alexdebur.TurMurom.Services.ExcursionPhotoService;
 import com.alexdebur.TurMurom.Services.ExcursionService;
 import com.alexdebur.TurMurom.Services.GuideService;
+import com.alexdebur.TurMurom.WorkClasses.InteractionPhoto;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -25,6 +24,8 @@ public class ExcursionController {
     private ExcursionService excursionService;
     private ExcursionPhotoService excursionPhotoService;
     private GuideService guideService;
+
+    public static String UPLOAD_DIRECTORY = System.getProperty("user.dir") + "\\Photos\\Guides\\";
 
     @Autowired
     public void setExcursionService(ExcursionService excursionService, ExcursionPhotoService excursionPhotoService,
@@ -53,7 +54,13 @@ public class ExcursionController {
     }
 
     @GetMapping("/guides/edit/{guideId}/excursion/create")
-    public String createExcursion(Model model, @PathVariable("guideId") Long guideId) {
+    public String createExcursion(@RequestHeader(value = HttpHeaders.REFERER, required = false) final String referrer,
+                                  Model model, @PathVariable("guideId") Long guideId) {
+
+        if (referrer != null) {
+            model.addAttribute("previousUrl", referrer);
+        }
+
         fillModelWithNewExcursion(model, new Excursion(), guideId);
         return "excursions/insert";
     }
@@ -79,15 +86,27 @@ public class ExcursionController {
     }
 
     @GetMapping("/guides/edit/{guideId}/excursion/{excursionId}/details")
-    public String detailsPage(Model model, @PathVariable("excursionId") Long excursionId) {
+    public String detailsPage(@RequestHeader(value = HttpHeaders.REFERER, required = false) final String referrer,
+                              Model model, @PathVariable("excursionId") Long excursionId) {
+
+        if (referrer != null) {
+            model.addAttribute("previousUrl", referrer);
+        }
+
         Excursion selectedExcursion = excursionService.getExcursionById(excursionId).get();
         model.addAttribute("selectedExcursion", selectedExcursion);
         return "excursions/details";
     }
 
     @GetMapping("/guides/edit/{guideId}/excursion/{excursionId}/edit")
-    public String editExcursion(Model model, @PathVariable("guideId") Long guideId,
+    public String editExcursion(@RequestHeader(value = HttpHeaders.REFERER, required = false) final String referrer,
+                                Model model, @PathVariable("guideId") Long guideId,
                                 @PathVariable("excursionId") Long excursionId) {
+
+        if (referrer != null) {
+            model.addAttribute("previousUrl", referrer);
+        }
+
         List<ExcursionPhoto> photos = excursionService.getExcursionById(excursionId).get().getExcursionPhotos();
 
         fillModelWithExcursion(model, excursionService.getExcursionById(excursionId).get(), photos);
@@ -117,9 +136,19 @@ public class ExcursionController {
     }
 
     @GetMapping("/guides/edit/{guideId}/excursion/{excursionId}/delete")
-    public String deleteExcursionById(@PathVariable("excursionId") Long excursionId,
+    public String deleteExcursionById(@RequestHeader(value = HttpHeaders.REFERER, required = false) final String referrer,
+                                      @PathVariable("excursionId") Long excursionId,
                                       @PathVariable("guideId") Long guideId) {
+
+        Excursion excursion = excursionService.getExcursionById(excursionId).get();
+
+        String path;
+        for (var photo: excursion.getExcursionPhotos()){
+            path = "Excursions\\" + photo.getPathPhoto();
+            InteractionPhoto.deletePhoto(path);
+        }
+
         excursionService.deleteExcursionById(excursionId);
-        return "redirect:/guides/details/" + guideId;
+        return "redirect:" + referrer;
     }
 }

@@ -3,6 +3,7 @@ package com.alexdebur.TurMurom.Controllers;
 import com.alexdebur.TurMurom.Models.Category;
 import com.alexdebur.TurMurom.Services.CategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -31,13 +32,25 @@ public class CategoryController {
     }
 
     @GetMapping("/categories/create")
-    public String createCategory(Model model) {
+    public String createCategory(@RequestHeader(value = HttpHeaders.REFERER, required = false) final String referrer,
+                                 Model model) {
+
+        if (referrer != null) {
+            model.addAttribute("previousUrl", referrer);
+        }
+
         fillModelWithCategory(model, new Category());
         return "categories/insert";
     }
 
     @GetMapping("/categories/details/{id}")
-    public String detailsPage(Model model, @PathVariable("id") Long id) {
+    public String detailsPage(@RequestHeader(value = HttpHeaders.REFERER, required = false) final String referrer,
+                              Model model, @PathVariable("id") Long id) {
+
+        if (referrer != null) {
+            model.addAttribute("previousUrl", referrer);
+        }
+
         Category selectedCategory = categoryService.getCategoryById(id).get();
 
         model.addAttribute("selectedCategory", selectedCategory);
@@ -46,7 +59,13 @@ public class CategoryController {
     }
 
     @GetMapping("/categories/edit/{id}")
-    public String editPage(Model model, @PathVariable("id") Long id) {
+    public String editPage(@RequestHeader(value = HttpHeaders.REFERER, required = false) final String referrer,
+                           Model model, @PathVariable("id") Long id) {
+
+        if (referrer != null) {
+            model.addAttribute("previousUrl", referrer);
+        }
+
         Category selectedCategory = categoryService.getCategoryById(id).get();
 
         model.addAttribute("selectedCategory", selectedCategory);

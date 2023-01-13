@@ -3,16 +3,14 @@ package com.alexdebur.TurMurom.Controllers;
 import com.alexdebur.TurMurom.Models.*;
 import com.alexdebur.TurMurom.Services.MarkService;
 import com.alexdebur.TurMurom.Services.RouteService;
+import com.alexdebur.TurMurom.WorkClasses.InteractionPhoto;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -20,12 +18,12 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.alexdebur.TurMurom.Controllers.GuideController.uploadDirectory;
-
 @Controller
 public class RouteController {
     private RouteService routeService;
     private MarkService markService;
+
+    public static String UPLOAD_DIRECTORY = System.getProperty("user.dir") + "\\Photos\\Routes\\";
 
     @Autowired
     public void setRouteService(RouteService routeService, MarkService markService) {
@@ -52,36 +50,49 @@ public class RouteController {
     }
 
     @GetMapping("/routes/details/{id}")
-    public String detailsPage(Model model, @PathVariable("id") Long id) {
+    public String detailsPage(@RequestHeader(value = HttpHeaders.REFERER, required = false) final String referrer,
+                              Model model, @PathVariable("id") Long id) {
+
+        if (referrer != null) {
+            model.addAttribute("previousUrl", referrer);
+        }
+
         Route selectedRoute = routeService.getRouteById(id).get();
-        String photo = "/photos/routes/" + selectedRoute.getPathPhoto(); //+ ".jpg";
-        //String photo = "/uploads/photos/guides/" + selectedGuide.getPathPhoto(); //+ ".jpg";
-//        List<Excursion> excursions = selectedGuide.getExcursions();
+
+        String photo = UPLOAD_DIRECTORY + selectedRoute.getPathPhoto();
+        try {
+            photo = InteractionPhoto.getPhoto(photo);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
         model.addAttribute("photo", photo);
         model.addAttribute("selectedRoute", selectedRoute);
-
 
         model.addAttribute("marks", routeService.getRouteById(id).get().getMarks());
         return "routes/details";
     }
 
     @GetMapping("/routes/create")
-    public String createRoute(Model model) {
+    public String createRoute(@RequestHeader(value = HttpHeaders.REFERER, required = false) final String referrer,
+                              Model model) {
+
+        if (referrer != null) {
+            model.addAttribute("previousUrl", referrer);
+        }
+
         fillModelWithRoute(model, new Route());
         return "routes/insert";
     }
 
     @PostMapping("/routes/addingRoute")
     public String insertRoute(Route route, @RequestParam("image") MultipartFile file) throws IOException {
-        StringBuilder fileNames = new StringBuilder();
+
         String fileName = "route_" + route.getTitle() + "_" +
                 (routeService.getAllRoutes().size() + 1) +
                 file.getOriginalFilename().substring(file.getOriginalFilename().length() - 4);
 
-        String path = System.getProperty("user.dir") + "/Photos/Routes/";
-        Path fileNameAndPath = Paths.get(path, fileName);
-
-        fileNames.append(file.getOriginalFilename());
+        Path fileNameAndPath = Paths.get(UPLOAD_DIRECTORY, fileName);
         try {
             Files.write(fileNameAndPath, file.getBytes());
         } catch (IOException e) {
@@ -97,7 +108,13 @@ public class RouteController {
     }
 
     @GetMapping("/routes/edit/{id}")
-    public String editRoute(Model model, @PathVariable("id") Long id) {
+    public String editRoute(@RequestHeader(value = HttpHeaders.REFERER, required = false) final String referrer,
+                            Model model, @PathVariable("id") Long id) {
+
+        if (referrer != null) {
+            model.addAttribute("previousUrl", referrer);
+        }
+
         fillModelWithRouteAndMarks(model, routeService.getRouteById(id).get(), markService.getAllMarks(),
                 routeService.getRouteById(id).get().getMarks());
         return "routes/edit";
@@ -106,16 +123,12 @@ public class RouteController {
     @PostMapping("/routes/editRoute")
     public String editRoute(Route route, @RequestParam("image") MultipartFile file) throws IOException {
 
-
         if (file.getOriginalFilename() != "") {
-            StringBuilder fileNames = new StringBuilder();
             String fileName = "route_" + route.getTitle() + "_" +
                     route.getId() +
                     file.getOriginalFilename().substring(file.getOriginalFilename().length() - 4);
 
-            String path = System.getProperty("user.dir") + "/Photos/Routes";
-            Path fileNameAndPath = Paths.get(path, fileName);
-            fileNames.append(file.getOriginalFilename());
+            Path fileNameAndPath = Paths.get(UPLOAD_DIRECTORY, fileName);
             try {
                 Files.write(fileNameAndPath, file.getBytes());
             } catch (IOException e) {
@@ -151,17 +164,16 @@ public class RouteController {
         return "redirect:/routes/edit/" + routeId;
     }
 
-//    @GetMapping("/routes/edit/{id}")
-//    public String editRoute(Model model, @PathVariable("id") Long id) {
-//        //List<Schedule> schedules = scheduleService.getSchedulesByMark(markService.getMarkById(id).get());
-//
-//        fillModelWithRoute(model, routeService.getRouteById(id).get());
-//        return "routes/edit";
-//    }
-
     @GetMapping("/routes/delete/{id}")
-    public String deleteRouteById(@PathVariable("id") Long id) {
+    public String deleteRouteById(@RequestHeader(value = HttpHeaders.REFERER, required = false) final String referrer,
+                                  @PathVariable("id") Long id) {
+        Route route = routeService.getRouteById(id).get();
+
+        String path;
+        path = "Routes\\" + route.getPathPhoto();
+        InteractionPhoto.deletePhoto(path);
+
         routeService.deleteRouteById(id);
-        return "redirect:/routes";
+        return "redirect:" + referrer;
     }
 }

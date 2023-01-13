@@ -4,10 +4,12 @@ import com.alexdebur.TurMurom.Models.Category;
 import com.alexdebur.TurMurom.Models.RegisterEntity;
 import com.alexdebur.TurMurom.Services.AuthorizationService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestHeader;
 
 @Controller
 public class AuthorizationController {
@@ -23,7 +25,12 @@ public class AuthorizationController {
     }
 
     @GetMapping("/login")
-    public String logInPage(Model model) {
+    public String logInPage(@RequestHeader(value = HttpHeaders.REFERER, required = false) final String referrer,
+                            Model model) {
+
+        if (referrer != null) {
+            model.addAttribute("previousUrl", referrer);
+        }
 
         return "authorization/log_in";
     }

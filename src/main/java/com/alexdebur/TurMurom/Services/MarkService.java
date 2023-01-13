@@ -59,11 +59,6 @@ public class MarkService {
         }
     }
 
-
-
-
-
-
     // Pagination
     public Page<Mark> listAll(int pageNum, String sortField, String sortDir) {
 
