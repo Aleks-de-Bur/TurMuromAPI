@@ -36,6 +36,8 @@ public class MarkController {
     private static final int INITIAL_PAGE_SIZE = 3;
     private static final int[] PAGE_SIZES = { 3, 6, 9, 12 };
 
+    public static String UPLOAD_DIRECTORY = System.getProperty("user.dir") + "\\Photos\\Marks\\";
+
 
     private MarkService markService;
     private CategoryService categoryService;
@@ -79,8 +81,18 @@ public class MarkController {
         }
 
         Page<Mark> page = markService.listAll(pageNum, sortField, sortDir);
-
         List<Mark> allMarks = page.getContent();
+
+        for (var mark : allMarks){
+            for (var photo : mark.getMarkPhotos()){
+                try {
+                    photo.setPathPhoto(InteractionPhoto.getPhoto(UPLOAD_DIRECTORY + photo.getPathPhoto()));
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        }
+
         model.addAttribute("marks", allMarks);
         model.addAttribute("activePage", "places");
 
@@ -143,9 +155,19 @@ public class MarkController {
         }
 
         Mark selectedMark = markService.getMarkById(id).get();
-        List<File> photos = markService.getPhotos(selectedMark);
+        List<String> photos = new ArrayList<>();
+        for (var photo : selectedMark.getMarkPhotos()){
+            try {
+                photos.add(InteractionPhoto.getPhoto(UPLOAD_DIRECTORY + photo.getPathPhoto()));
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
+
+        //List<File> photos = markService.getPhotos(selectedMark);
         List<Schedule> schedules = selectedMark.getSchedules();
         model.addAttribute("selectedMark", selectedMark);
+        model.addAttribute("photos", photos);
         model.addAttribute("schedules", schedules);
         return "marks/mark_details";
     }

@@ -35,6 +35,7 @@ public class GuideController {
 
     private void fillModelWithGuide(Model model, Guide guide) {
         model.addAttribute("guide", guide);
+        model.addAttribute("selectedGuide", guide);
 
     }
 
@@ -92,8 +93,10 @@ public class GuideController {
             throw new RuntimeException(e);
         }
 
+        fillModelWithGuide(model, selectedGuide);
+
         List<Excursion> excursions = selectedGuide.getExcursions();
-        model.addAttribute("selectedGuide", selectedGuide);
+        //model.addAttribute("selectedGuide", selectedGuide);
         model.addAttribute("photo", photo);
         model.addAttribute("excursions", excursions);
         return "guides/edit";

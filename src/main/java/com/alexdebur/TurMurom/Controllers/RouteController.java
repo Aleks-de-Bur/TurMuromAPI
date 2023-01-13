@@ -115,6 +115,14 @@ public class RouteController {
             model.addAttribute("previousUrl", referrer);
         }
 
+        String photo = UPLOAD_DIRECTORY + routeService.getRouteById(id).get().getPathPhoto();
+        try {
+            photo = InteractionPhoto.getPhoto(photo);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        model.addAttribute("photo", photo);
+
         fillModelWithRouteAndMarks(model, routeService.getRouteById(id).get(), markService.getAllMarks(),
                 routeService.getRouteById(id).get().getMarks());
         return "routes/edit";

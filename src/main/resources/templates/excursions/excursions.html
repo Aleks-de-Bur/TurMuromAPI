@@ -11,14 +11,131 @@
 
 <body>
 <div th:replace="~{fragments/navigation :: navigation}"></div>
-<div class="container">
+<!--<div class="container">-->
+<!--    <div class="row justify-content-between">-->
+<!--        <h1 class="col-sm-4">Экскурсии</h1>-->
+<!--        <a href="/places/create" class="col-sm-3 btn-lg btn btn-outline-dark">Добавить</a>-->
+<!--    </div>-->
+<!--    <hr class="my-4">-->
+<!--    <span th:if="${excursions.size() == 0}">Список экскурсий пуст</span>-->
+<!--    <table th:if="${excursions.size() > 0}" class="table table-hover">-->
+<!--        <thead class="thead-dark">-->
+<!--        <tr>-->
+<!--            <td>ID</td>-->
+<!--            <td>Название</td>-->
+<!--            <td>Длительность</td>-->
+<!--            <td>Стоимость</td>-->
+<!--            <td></td>-->
+<!--        </tr>-->
+<!--        </thead>-->
+<!--        <tbody>-->
+<!--        <tr th:each="excursion : ${excursions}">-->
+<!--            <td th:text="${excursion.id}"/>-->
+<!--            <td th:text="${excursion.title}"/>-->
+<!--            <td th:text="${excursion.duration}"/>-->
+<!--            <td th:text="${excursion.price}"/>-->
+<!--            &lt;!&ndash;            <td><img src="/assets/static/photos/guides/${guide.pathPhoto}.jpg"></td>&ndash;&gt;-->
+<!--&lt;!&ndash;            <td><a type="button" class="btn btn-secondary"&ndash;&gt;-->
+<!--&lt;!&ndash;                   th:href="@{'/excursions/details/' + ${excursion.id}}">Подробнее</a>&ndash;&gt;-->
+<!--&lt;!&ndash;                <a type="button" class="btn btn-secondary"&ndash;&gt;-->
+<!--&lt;!&ndash;                   th:href="@{'/excursions/edit/' + ${excursion.id}}">Редактировать</a>&ndash;&gt;-->
+<!--&lt;!&ndash;                <a type="button" class="btn btn-danger"&ndash;&gt;-->
+<!--&lt;!&ndash;                   th:href="@{'/excursions/delete/' + ${excursion.id}}">Удалить</a></td>&ndash;&gt;-->
+<!--        </tr>-->
+<!--        </tbody>-->
+<!--    </table>-->
+<!--</div>-->
+
+
+
+
+
+<div class="container mt-4">
     <div class="row justify-content-between">
         <h1 class="col-sm-4">Экскурсии</h1>
-        <a href="/places/create" class="col-sm-3 btn-lg btn btn-outline-dark">Добавить</a>
+        <a href="/excursions/create" class="col-sm-3 btn-lg btn btn-outline-dark">Добавить</a>
     </div>
     <hr class="my-4">
+    <div class="row justify-content-between">
+        <div class="col-sm-4 col-md-3 col-lg-2">
+            <h5 style="white-space: nowrap;">Сортировать по:</h5>
+        </div>
+        <div class="col-sm-6 col-md-7 col-lg-9">
+            <div class="btn-group btn-group-sm" role="group" aria-label="Small button group">
+                <a th:href="@{'/excursions/' + ${currentPage} + '?sortField=id&sortDir=' + ${reverseSortDir} + '&scheme=' + ${scheme}}"
+                   class="btn btn-outline-dark">
+                    <span class="h6" th:if="${sortField} == 'id'"><em><strong>Id</strong></em></span>
+                    <span class="h6" th:unless="${sortField} == 'id'"><small>Id</small></span>
+                    <span th:if="${sortDir} == 'asc' and ${sortField} == 'id'">&#9650;</span>
+                    <span th:if="${sortDir} == 'desc' and ${sortField} == 'id'">&#9660;</span>
+                </a>
+                <a th:href="@{'/excursions/' + ${currentPage} + '?sortField=title&sortDir=' + ${reverseSortDir} + '&scheme=' + ${scheme}}"
+                   class="btn btn-outline-dark">
+                    <span class="h6" th:if="${sortField} == 'title'"><em><strong>Названию</strong></em></span>
+                    <span class="h6" th:unless="${sortField} == 'title'"><small>Названию</small></span>
+                    <span th:if="${sortDir} == 'asc' and ${sortField} == 'title'">&#9650;</span>
+                    <span th:if="${sortDir} == 'desc' and ${sortField} == 'title'">&#9660;</span>
+                </a>
+                <a th:href="@{'/excursions/' + ${currentPage} + '?sortField=category&sortDir=' + ${reverseSortDir} + '&scheme=' + ${scheme}}"
+                   class="btn btn-outline-dark">
+                    <span class="h6" th:if="${sortField} == 'duration'"><em><strong>Стоимости</strong></em></span>
+                    <span class="h6" th:unless="${sortField} == 'duration'"><small>Стоимости</small></span>
+                    <span th:if="${sortDir} == 'asc' and ${sortField} == 'duration'">&#9650;</span>
+                    <span th:if="${sortDir} == 'desc' and ${sortField} == 'duration'">&#9660;</span>
+                </a>
+            </div>
+        </div>
+
+        <!--        Смена режима отображения экскурсий-->
+        <div class="col-sm-2 col-md-2 col-lg-1">
+            <div class="btn-group" role="group" aria-label="Basic radio toggle button group">
+                <input type="radio" class="btn-check" name="btnradio" id="btnRadioTableOn" autocomplete="off"
+                       th:if="${scheme} == 'table'" checked>
+                <a th:href="@{'/excursions/' + ${currentPage} + '?sortField=id&sortDir=' + ${sortDir} + '&scheme=table'}"
+                   th:if="${scheme} == 'table'" class="btn btn-outline-dark" for="btnRadioTableOn">&#9638;</a>
+
+                <input type="radio" class="btn-check" name="btnradio" id="btnRadioTable" autocomplete="off"
+                       th:unless="${scheme} == 'table'">
+                <a th:href="@{'/excursions/' + ${currentPage} + '?sortField=id&sortDir=' + ${sortDir} + '&scheme=table'}"
+                   th:unless="${scheme} == 'table'" class="btn btn-outline-dark" for="btnRadioTable">&#9638;</a>
+
+                <input type="radio" class="btn-check" name="btnradio" id="btnRadioListOn" autocomplete="off"
+                       th:if="${scheme} == 'list'" checked>
+                <a th:href="@{'/excursions/' + ${currentPage} + '?sortField=id&sortDir=' + ${sortDir} + '&scheme=list'}"
+                   th:if="${scheme} == 'list'" class="btn btn-outline-dark" for="btnRadioListOn">&#9636;</a>
+
+                <input type="radio" class="btn-check" name="btnradio" id="btnRadioList" autocomplete="off"
+                       th:unless="${scheme} == 'list'">
+                <a th:href="@{'/excursions/' + ${currentPage} + '?sortField=id&sortDir=' + ${sortDir} + '&scheme=list'}"
+                   th:unless="${scheme} == 'list'" class="btn btn-outline-dark" for="btnRadioList">&#9636;</a>
+            </div>
+        </div>
+
+        <!--        <div class="col-sm-8">-->
+        <!--&lt;!&ndash;            <select class="form-select" aria-label="Sorted select">&ndash;&gt;-->
+        <!--&lt;!&ndash;                <option selected><a th:href="@{'/places/' + ${currentPage} + '?sortField=title&sortDir=' + ${reverseSortDir}}">По названию</a></option>&ndash;&gt;-->
+        <!--&lt;!&ndash;                <option th:href="@{'/places/' + ${currentPage} + '?sortField=id&sortDir=' + ${reverseSortDir}}">По Id</option>&ndash;&gt;-->
+        <!--&lt;!&ndash;                <option>Two</option>&ndash;&gt;-->
+        <!--&lt;!&ndash;                <option>Three</option>&ndash;&gt;-->
+        <!--&lt;!&ndash;            </select>&ndash;&gt;-->
+
+        <!--            <select th:onchange="window.location.href = '1?sortField=' + this.value + '&sortDir=asc'">-->
+        <!--                <option th:text="id" >Id</option>-->
+        <!--                <option th:text="title" >По названию</option>-->
+        <!--            </select>-->
+        <!--        </div>-->
+    </div>
+
+    <hr class="my-4">
+
     <span th:if="${excursions.size() == 0}">Список экскурсий пуст</span>
-    <table th:if="${excursions.size() > 0}" class="table table-hover">
+
+
+    <!------------------------------------------------------------------------------------>
+    <!--    Отображение экскурсий таблицей-->
+    <!------------------------------------------------------------------------------------>
+
+    <table th:if="${excursions.size() > 0} and ${scheme} == 'table'" class="table table-hover">
         <thead class="thead-dark">
         <tr>
             <td>ID</td>
@@ -34,16 +151,99 @@
             <td th:text="${excursion.title}"/>
             <td th:text="${excursion.duration}"/>
             <td th:text="${excursion.price}"/>
-            <!--            <td><img src="/assets/static/photos/guides/${guide.pathPhoto}.jpg"></td>-->
-<!--            <td><a type="button" class="btn btn-secondary"-->
-<!--                   th:href="@{'/excursions/details/' + ${excursion.id}}">Подробнее</a>-->
-<!--                <a type="button" class="btn btn-secondary"-->
-<!--                   th:href="@{'/excursions/edit/' + ${excursion.id}}">Редактировать</a>-->
-<!--                <a type="button" class="btn btn-danger"-->
-<!--                   th:href="@{'/excursions/delete/' + ${excursion.id}}">Удалить</a></td>-->
+            <td class="align-self-end"><a type="button" class="btn btn-secondary"
+                                          th:href="@{'/guides/edit/' + ${excursion.guide.id} + '/excursion/' + ${excursion.id} + '/details'}">Подробнее</a></td>
         </tr>
         </tbody>
     </table>
+
+    <!------------------------------------------------------------------------------------>
+    <!--    Отображение экскурсий списком-->
+    <!------------------------------------------------------------------------------------>
+
+    <div th:if="${excursions.size() > 0}  and ${scheme} == 'list'" th:each="excursion : ${excursions}">
+        <div class="row featurette">
+            <div class="col-md-8 order-md-2">
+                <span class="badge rounded-pill text-bg-success" style="margin-bottom: 1em;" th:text="${excursion.duration}"></span>
+
+                <div class="row">
+                    <h2 class="featurette-heading fw-normal lh-1 col-md-9 col-lg-10" th:text="${excursion.title}"></h2>
+                    <div class="col-md-3 col-lg-2">
+                        <input type="checkbox" class="btn-check" th:id="${excursion.id}" autocomplete="off">
+                        <label class="btn btn-outline-danger" th:for="${excursion.id}">Избранное</label><br>
+                    </div>
+                </div>
+
+                <p class="lead" th:text="${excursion.price}"></p>
+
+                <a type="button" class="btn btn-secondary"
+                   th:href="@{'/guides/edit/' + ${excursion.guide.id} + '/excursion/' + ${excursion.id} + '/details'}">Подробнее</a>
+
+            </div>
+
+            <div class="col-md-4 order-md-1">
+                <img class="bd-placeholder-img bd-placeholder-img-lg featurette-image img-fluid mx-auto" width="500"
+                     height="500" th:src="|data:image/jpeg;base64,${excursion.excursionPhotos[0].pathPhoto}|" role="img" aria-label="Placeholder: 500x500"
+                     preserveAspectRatio="xMidYMid slice" style="object-fit: cover;" focusable="false"><title>Placeholder</title>
+
+
+                </img>
+
+            </div>
+        </div>
+        <hr class="featurette-divider">
+    </div>
+
+
+    <!------------------------------------------------------------------------------------>
+
+
+    <div><i>Отсортировано по [[${sortField}]] в [[${sortDir}]] порядке</i></div>
+    <div>&nbsp;</div>
+
+    <nav aria-label="Page navigation example" th:if="${totalPages > 1}">
+        Total Items: [[${totalItems}]]
+        &nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;&nbsp;
+        <ul class="pagination justify-content-center">
+            <li class="page-item">
+                <!--                <a class="page-link">Previous</a>-->
+                <a th:if="${currentPage > 1}"
+                   th:href="@{'/excursions/1' + '?sortField=' + ${sortField} + '&sortDir=' + ${sortDir} + '&scheme=' + ${scheme}}" class="page-link">Первая</a>
+                <span th:unless="${currentPage > 1}" class="page-link disabled">Первая</span>
+            </li>
+            <li class="page-item">
+                <a th:if="${currentPage > 1}"
+                   th:href="@{'/excursions/' + ${currentPage - 1} + '?sortField=' + ${sortField} + '&sortDir=' + ${sortDir} + '&scheme=' + ${scheme}}"
+                   class="page-link">Предыдущая</a>
+                <span th:unless="${currentPage > 1}" class="page-link disabled">Предыдущая</span>
+            </li>
+
+            <ul class="pagination" th:each="i: ${#numbers.sequence(1, totalPages)}">
+                <li class="page-item">
+                    <a th:if="${currentPage != i}"
+                       th:href="@{'/excursions/' + ${i} + '?sortField=' + ${sortField} + '&sortDir=' + ${sortDir} + '&scheme=' + ${scheme}}"
+                       class="page-link">[[${i}]]</a>
+                    <span th:unless="${currentPage != i}" class="page-link disabled">[[${i}]]</span>
+                </li>
+
+            </ul>
+
+
+            <li class="page-item">
+                <a th:if="${currentPage < totalPages}"
+                   th:href="@{'/excursions/' + ${currentPage + 1} + '?sortField=' + ${sortField} + '&sortDir=' + ${sortDir} + '&scheme=' + ${scheme}}"
+                   class="page-link">Следующая</a>
+                <span th:unless="${currentPage < totalPages}" class="page-link disabled">Следующая</span>
+            </li>
+            <li class="page-item">
+                <a th:if="${currentPage < totalPages}"
+                   th:href="@{'/excursions/' + ${totalPages} + '?sortField=' + ${sortField} + '&sortDir=' + ${sortDir} + '&scheme=' + ${scheme}}"
+                   class="page-link">Последняя</a>
+                <span th:unless="${currentPage < totalPages}" class="page-link disabled">Последняя</span>
+            </li>
+        </ul>
+    </nav>
+
 </div>
 
 <div th:replace="~{fragments/footer :: footer}"></div>

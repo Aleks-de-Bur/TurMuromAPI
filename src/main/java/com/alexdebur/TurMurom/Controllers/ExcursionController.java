@@ -6,6 +6,8 @@ import com.alexdebur.TurMurom.Services.ExcursionService;
 import com.alexdebur.TurMurom.Services.GuideService;
 import com.alexdebur.TurMurom.WorkClasses.InteractionPhoto;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.repository.query.Param;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -16,6 +18,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -25,7 +28,7 @@ public class ExcursionController {
     private ExcursionPhotoService excursionPhotoService;
     private GuideService guideService;
 
-    public static String UPLOAD_DIRECTORY = System.getProperty("user.dir") + "\\Photos\\Guides\\";
+    public static String UPLOAD_DIRECTORY = System.getProperty("user.dir") + "\\Photos\\Excursions\\";
 
     @Autowired
     public void setExcursionService(ExcursionService excursionService, ExcursionPhotoService excursionPhotoService,
@@ -45,11 +48,43 @@ public class ExcursionController {
         model.addAttribute("guideId", guideId);
     }
 
-    @GetMapping("/excursions")
-    public String excursionsPage(Model model) {
-        List<Excursion> allExcursions = excursionService.getAllExcursions();
+    @GetMapping("/excursions/{pageNum}")
+    public String excursionsPage(@RequestHeader(value = HttpHeaders.REFERER, required = false) final String referrer,
+                                 Model model, @PathVariable(name = "pageNum") int pageNum,
+                                 @Param("sortField") String sortField,
+                                 @Param("sortDir") String sortDir,
+                                 @Param("scheme") String scheme) {
+
+        if (referrer != null) {
+            model.addAttribute("previousUrl", referrer);
+        }
+
+        //List<Excursion> allExcursions = excursionService.getAllExcursions();
+
+        Page<Excursion> page = excursionService.listAll(pageNum, sortField, sortDir);
+        List<Excursion> allExcursions = page.getContent();
+
+        for (var excursion : allExcursions){
+            for (var photo : excursion.getExcursionPhotos()){
+                try {
+                    photo.setPathPhoto(InteractionPhoto.getPhoto(UPLOAD_DIRECTORY + photo.getPathPhoto()));
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        }
+
         model.addAttribute("excursions", allExcursions);
         model.addAttribute("activePage", "excursions");
+
+        model.addAttribute("currentPage", pageNum);
+        model.addAttribute("totalPages", page.getTotalPages());
+        model.addAttribute("totalItems", page.getTotalElements());
+
+        model.addAttribute("sortField", sortField);
+        model.addAttribute("sortDir", sortDir);
+        model.addAttribute("scheme", scheme);
+        model.addAttribute("reverseSortDir", sortDir.equals("asc") ? "desc" : "asc");
         return "excursions/excursions";
     }
 
@@ -94,7 +129,17 @@ public class ExcursionController {
         }
 
         Excursion selectedExcursion = excursionService.getExcursionById(excursionId).get();
+        List<String> photos = new ArrayList<>();
+        for (var photo : selectedExcursion.getExcursionPhotos()){
+            try {
+                photos.add(InteractionPhoto.getPhoto(UPLOAD_DIRECTORY + photo.getPathPhoto()));
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
+
         model.addAttribute("selectedExcursion", selectedExcursion);
+        model.addAttribute("photos", photos);
         return "excursions/details";
     }
 

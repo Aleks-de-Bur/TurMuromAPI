@@ -11,7 +11,7 @@
 
 <body>
 <div th:replace="~{fragments/navigation :: navigation}"></div>
-<div class="container">
+<div class="container mt-4">
     <div class="row justify-content-between">
         <h1 class="col-sm-4">Достопримечательности</h1>
         <a href="/places/create" class="col-sm-3 btn-lg btn btn-outline-dark">Добавить</a>
@@ -213,8 +213,8 @@
 
             <div class="col-md-4 order-md-1">
                 <img class="bd-placeholder-img bd-placeholder-img-lg featurette-image img-fluid mx-auto" width="500"
-                     height="500" th:src="|data:image/jpeg;base64,${photo}|" role="img" aria-label="Placeholder: 500x500"
-                     preserveAspectRatio="xMidYMid slice" focusable="false"><title>Placeholder</title>
+                     height="500" th:src="|data:image/jpeg;base64,${mark.markPhotos[0].pathPhoto}|" role="img" aria-label="Placeholder: 500x500"
+                     preserveAspectRatio="xMidYMid slice" style="object-fit: cover;" focusable="false"><title>Placeholder</title>
 
 
                 </img>

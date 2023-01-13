@@ -12,60 +12,66 @@
 
 <div th:replace="~{fragments/navigation :: navigation}"></div>
 
+<div id="carouselExampleIndicators" class="carousel slide carousel-fade" data-bs-ride="carousel">
+    <div class="carousel-indicators">
+        <button type="button" th:each="photo : ${photos}" th:classappend="${photoStat.first} ? active : ''"
+                data-bs-target="#carouselExampleIndicators" th:data-bs-slide-to="${photoStat.index}" aria-label="Slide"></button>
+    </div>
+    <div class="carousel-inner">
+        <div class="carousel-item" th:each="photo : ${photos}" th:classappend="${photoStat.first} ? active : ''">
+            <img th:src="|data:image/jpeg;base64,${photo}|" class="d-block w-100" style="object-fit: cover;"
+                 height="600px" alt="Фотография достопримечательности">
+        </div>
+    </div>
+    <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators"
+            data-bs-slide="prev">
+        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Previous</span>
+    </button>
+    <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleIndicators"
+            data-bs-slide="next">
+        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Next</span>
+    </button>
+</div>
+
 <div class="container">
     <main>
-        <div class="py-5 text-center">
-            <img class="d-block mx-auto mb-4" src="/assets/brand/tur-murom-logo-dark.svg" alt="" width="72" height="57">
-            <h2>Достопримечательность</h2>
-            <p class="lead">При заполнении данных не забывайте сохранять пунктуацию и указывать только актуальные
-                данные.</p>
-        </div>
-
         <div class="row g-5">
             <div class="col-md-11 col-lg-12">
-                <form class="needs-validation" action="#" th:action="@{/places/addingMark}"
-                      th:object="${selectedMark}" enctype="multipart/form-data" method="post" novalidate>
+                <form class="needs-validation" action="#" th:object="${selectedMark}" novalidate>
+
+                    <div class="py-5 text-center">
+                        <img class="d-block mx-auto mb-4" src="/assets/brand/tur-murom-logo-dark.svg" alt="" width="72" height="57">
+                        <h2 th:text="*{title}"></h2>
+                        <p class="lead" th:text="*{address}"></p>
+                    </div>
+
+                    <p class="lead" th:text="*{description}"></p>
                     <div class="row g-3">
+<!--                        <div class="col-12">-->
+<!--                            <label for="title" class="form-label">Название</label>-->
+<!--                            <input type="text" class="form-control" id="title" th:field="*{title}"-->
+<!--                                   placeholder="Название" value="" disabled readonly>-->
+<!--                        </div>-->
 
-                        <div class="col-12">
-                            <label for="title" class="form-label">Название</label>
-                            <input type="text" class="form-control" id="title" th:field="*{title}"
-                                   placeholder="Название" value="" disabled readonly>
-                            <div class="invalid-feedback">
-                                Требуется заполнить название.
-                            </div>
-                        </div>
+<!--                        <div class="col-12">-->
+<!--                            <label for="description" class="form-label">Описание</label>-->
+<!--                            <textarea class="form-control" id="description" th:field="*{description}"-->
+<!--                                      rows="3" placeholder="Описание" disabled readonly></textarea>-->
+<!--                        </div>-->
 
-                        <div class="col-12">
-                            <label for="description" class="form-label">Описание</label>
-                            <textarea class="form-control" id="description" th:field="*{description}"
-                                      rows="3" placeholder="Описание" disabled readonly></textarea>
-                            <div class="invalid-feedback">
-                                Требуется заполнить описание.
-                            </div>
-                        </div>
+<!--                        <div class="col-12">-->
+<!--                            <label for="category" class="form-label">Категория</label>-->
+<!--                            <input type="text" class="form-control" id="category" th:field="*{category.title}"-->
+<!--                                   placeholder="Категория" value="" disabled readonly>-->
+<!--                        </div>-->
 
-                        <div class="col-12">
-                            <label for="category" class="form-label">Категория</label>
-                            <input type="text" class="form-control" id="category" th:field="*{category.title}"
-                                   placeholder="Категория" value="" disabled readonly>
-                            <!--                            <select class="form-select" id="category" required th:field="*{category}">-->
-                            <!--                                <option th:each="category : ${categories}" th:value="${category.title}"-->
-                            <!--                                        th:text="${category.title}"></option>-->
-                            <!--                            </select>-->
-                            <div class="invalid-feedback">
-                                Выберите категорию.
-                            </div>
-                        </div>
-
-                        <div class="col-12">
-                            <label for="address" class="form-label">Адрес</label>
-                            <input type="text" class="form-control" id="address" th:field="*{address}"
-                                   placeholder="Муром, улица Орловская,23" value="" disabled readonly>
-                            <div class="invalid-feedback">
-                                Требуется указать адрес.
-                            </div>
-                        </div>
+<!--                        <div class="col-12">-->
+<!--                            <label for="address" class="form-label">Адрес</label>-->
+<!--                            <input type="text" class="form-control" id="address" th:field="*{address}"-->
+<!--                                   placeholder="Муром, улица Орловская,23" value="" disabled readonly>-->
+<!--                        </div>-->
 
                         <hr class="my-4">
 

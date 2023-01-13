@@ -27,11 +27,12 @@
                       th:object="${selectedGuide}" enctype="multipart/form-data" method="post" novalidate>
                     <div class="row g-3">
 
+                        <input id="id" type="hidden" th:field="*{id}" />
+
                         <div class="col-sm-4">
                             <label for="lastName" class="form-label">Фамилия</label>
-                            <input type="text" class="form-control" id="lastName" th:field="*{lastName}" placeholder=""
-                                   required>
-                            <!--th:value="${selectedGuide.lastName}" -->
+                            <input type="text" class="form-control" id="lastName" th:field="*{lastName}"
+                                   placeholder="Фамилия" value="" required>
                             <div class="invalid-feedback">
                                 Заполните фамилию.
                             </div>
@@ -40,8 +41,7 @@
                         <div class="col-sm-4">
                             <label for="firstName" class="form-label">Имя</label>
                             <input type="text" class="form-control" id="firstName" th:field="*{firstName}"
-                                   placeholder=""
-                                   th:value="${selectedGuide.firstName}" required>
+                                   placeholder="Имя" value="" required>
                             <div class="invalid-feedback">
                                 Заполните имя.
                             </div>
@@ -50,8 +50,7 @@
                         <div class="col-sm-4">
                             <label for="patronymic" class="form-label">Отчество</label>
                             <input type="text" class="form-control" id="patronymic" th:field="*{patronymic}"
-                                   placeholder=""
-                                   th:value="${selectedGuide.patronymic}" required>
+                                   placeholder="Отчество" value="" required>
                             <div class="invalid-feedback">
                                 Заполните отчество.
                             </div>
@@ -60,8 +59,7 @@
                         <div class="col-12">
                             <label for="email" class="form-label">Email</label>
                             <input type="email" class="form-control" id="email" th:field="*{email}"
-                                   placeholder="you@example.com"
-                                   th:value="${selectedGuide.email}" required>
+                                   placeholder="you@example.com" value="" required>
                             <div class="invalid-feedback">
                                 Заполните EMail.
                             </div>
@@ -70,8 +68,7 @@
                         <div class="col-12">
                             <label for="telNumber" class="form-label">Номер телефона</label>
                             <input type="tel" class="form-control" id="telNumber" th:field="*{telNumber}"
-                                   placeholder="89209437812"
-                                   th:value="${selectedGuide.telNumber}" required>
+                                   placeholder="89209437812" value="" required>
                             <div class="invalid-feedback">
                                 Заполните номер телефона.
                             </div>
