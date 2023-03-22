@@ -8,6 +8,8 @@ import com.alexdebur.TurMurom.Services.ExcursionService;
 import com.alexdebur.TurMurom.Services.GuideService;
 import com.alexdebur.TurMurom.WorkClasses.InteractionPhoto;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.repository.query.Param;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -39,11 +41,35 @@ public class GuideController {
 
     }
 
-    @GetMapping("/guides")
-    public String placesPage(Model model) {
-        List<Guide> allGuides = guideService.getAllGuides();
+    @GetMapping("/guides/{pageNum}")
+    public String placesPage(@RequestHeader(value = HttpHeaders.REFERER, required = false) final String referrer,
+                             Model model, @PathVariable(name = "pageNum") int pageNum,
+                             @Param("sortField") String sortField,
+                             @Param("sortDir") String sortDir,
+                             @Param("scheme") String scheme) {
+
+        Page<Guide> page = guideService.listAll(pageNum, sortField, sortDir);
+        List<Guide> allGuides = page.getContent();
+
+        for (var guide : allGuides){
+                try {
+                    guide.setPathPhoto(InteractionPhoto.getPhoto(UPLOAD_DIRECTORY + guide.getPathPhoto()));
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+        }
+
         model.addAttribute("guides", allGuides);
         model.addAttribute("activePage", "guides");
+
+        model.addAttribute("currentPage", pageNum);
+        model.addAttribute("totalPages", page.getTotalPages());
+        model.addAttribute("totalItems", page.getTotalElements());
+
+        model.addAttribute("sortField", sortField);
+        model.addAttribute("sortDir", sortDir);
+        model.addAttribute("scheme", scheme);
+        model.addAttribute("reverseSortDir", sortDir.equals("asc") ? "desc" : "asc");
         return "guides/guides";
     }
 

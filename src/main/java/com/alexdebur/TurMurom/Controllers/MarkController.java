@@ -180,23 +180,14 @@ public class MarkController {
         mark.setElected(false);
         markService.insertMark(mark);
 
-        String path = System.getProperty("user.dir")+"/Photos/Marks";
-
         Integer i = 1;
-        StringBuilder fileNames = new StringBuilder();
         for (var item: upload){
-//            Path fileNameAndPath = Paths.get(path, item.getOriginalFilename());
-//            Files.write(fileNameAndPath, item.getBytes());
-
             MarkPhoto photo = new MarkPhoto();
             photo.setMark(mark);
             String fileName = "mark_" + mark.getTitle() + "_" +
                     (markService.getAllMarks().size() + 1) + "_" + i +
                     item.getOriginalFilename().substring(item.getOriginalFilename().length()-4);
-            String markPath = System.getProperty("user.dir")+"/Photos/Guides";
-            Path fileNameAndPath = Paths.get(path, fileName);
-            fileNames.append(item.getOriginalFilename());
-
+            Path fileNameAndPath = Paths.get(UPLOAD_DIRECTORY, fileName);
             try {
                 Files.write(fileNameAndPath, item.getBytes());
             } catch (IOException e) {
@@ -279,10 +270,10 @@ public class MarkController {
         mark.setElected(false);
         markService.insertMark(mark);
 
-        String path = System.getProperty("user.dir")+"/MarkPhotos/";
+        //String path = System.getProperty("user.dir")+"/MarkPhotos/";
 
         for (var item: upload){
-            Path fileNameAndPath = Paths.get(path, item.getOriginalFilename());
+            Path fileNameAndPath = Paths.get(UPLOAD_DIRECTORY, item.getOriginalFilename());
             Files.write(fileNameAndPath, item.getBytes());
 
             MarkPhoto photo = new MarkPhoto();
@@ -329,7 +320,7 @@ public class MarkController {
         schedules.get(6).setDay(7);
         schedules.get(6).setMark(mrk);
         scheduleService.insertSchedule(schedules.get(6));
-        return "redirect:/places";
+        return "redirect:/places/1?sortField=title&sortDir=asc&scheme=list";
     }
 
 //    @DeleteMapping("/places/delete/{id}")

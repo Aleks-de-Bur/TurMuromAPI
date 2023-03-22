@@ -17,8 +17,70 @@
         <a href="/guides/create" class="col-sm-3 btn-lg btn btn-outline-dark">Добавить</a>
     </div>
     <hr class="my-4">
+    <div class="row justify-content-between">
+        <div class="col-sm-4 col-md-3 col-lg-2">
+            <h5 style="white-space: nowrap;">Сортировать по:</h5>
+        </div>
+        <div class="col-sm-6 col-md-7 col-lg-9">
+            <div class="btn-group btn-group-sm" role="group" aria-label="Small button group">
+                <a th:href="@{'/guides/' + ${currentPage} + '?sortField=id&sortDir=' + ${reverseSortDir} + '&scheme=' + ${scheme}}"
+                   class="btn btn-outline-dark">
+                    <span class="h6" th:if="${sortField} == 'id'"><em><strong>Id</strong></em></span>
+                    <span class="h6" th:unless="${sortField} == 'id'"><small>Id</small></span>
+                    <span th:if="${sortDir} == 'asc' and ${sortField} == 'id'">&#9650;</span>
+                    <span th:if="${sortDir} == 'desc' and ${sortField} == 'id'">&#9660;</span>
+                </a>
+                <a th:href="@{'/guides/' + ${currentPage} + '?sortField=lastName&sortDir=' + ${reverseSortDir} + '&scheme=' + ${scheme}}"
+                   class="btn btn-outline-dark">
+                    <span class="h6" th:if="${sortField} == 'lastName'"><em><strong>Фамилии</strong></em></span>
+                    <span class="h6" th:unless="${sortField} == 'lastName'"><small>Фамилии</small></span>
+                    <span th:if="${sortDir} == 'asc' and ${sortField} == 'lastName'">&#9650;</span>
+                    <span th:if="${sortDir} == 'desc' and ${sortField} == 'lastName'">&#9660;</span>
+                </a>
+                <a th:href="@{'/guides/' + ${currentPage} + '?sortField=firstName&sortDir=' + ${reverseSortDir} + '&scheme=' + ${scheme}}"
+                   class="btn btn-outline-dark">
+                    <span class="h6" th:if="${sortField} == 'firstName'"><em><strong>Имени</strong></em></span>
+                    <span class="h6" th:unless="${sortField} == 'firstName'"><small>Имени</small></span>
+                    <span th:if="${sortDir} == 'asc' and ${sortField} == 'firstName'">&#9650;</span>
+                    <span th:if="${sortDir} == 'desc' and ${sortField} == 'firstName'">&#9660;</span>
+                </a>
+            </div>
+        </div>
+
+        <!--        Смена режима отображения каталога гидов-->
+        <div class="col-sm-2 col-md-2 col-lg-1">
+            <div class="btn-group" role="group" aria-label="Basic radio toggle button group">
+                <input type="radio" class="btn-check" name="btnradio" id="btnRadioTableOn" autocomplete="off"
+                       th:if="${scheme} == 'table'" checked>
+                <a th:href="@{'/guides/' + ${currentPage} + '?sortField=id&sortDir=' + ${sortDir} + '&scheme=table'}"
+                   th:if="${scheme} == 'table'" class="btn btn-outline-dark" for="btnRadioTableOn">&#9638;</a>
+
+                <input type="radio" class="btn-check" name="btnradio" id="btnRadioTable" autocomplete="off"
+                       th:unless="${scheme} == 'table'">
+                <a th:href="@{'/guides/' + ${currentPage} + '?sortField=id&sortDir=' + ${sortDir} + '&scheme=table'}"
+                   th:unless="${scheme} == 'table'" class="btn btn-outline-dark" for="btnRadioTable">&#9638;</a>
+
+                <input type="radio" class="btn-check" name="btnradio" id="btnRadioListOn" autocomplete="off"
+                       th:if="${scheme} == 'list'" checked>
+                <a th:href="@{'/guides/' + ${currentPage} + '?sortField=id&sortDir=' + ${sortDir} + '&scheme=list'}"
+                   th:if="${scheme} == 'list'" class="btn btn-outline-dark" for="btnRadioListOn">&#9636;</a>
+
+                <input type="radio" class="btn-check" name="btnradio" id="btnRadioList" autocomplete="off"
+                       th:unless="${scheme} == 'list'">
+                <a th:href="@{'/guides/' + ${currentPage} + '?sortField=id&sortDir=' + ${sortDir} + '&scheme=list'}"
+                   th:unless="${scheme} == 'list'" class="btn btn-outline-dark" for="btnRadioList">&#9636;</a>
+            </div>
+        </div>
+    </div>
+
+    <hr class="my-4">
     <span th:if="${guides.size() == 0}">Список гидов пуст</span>
-    <table th:if="${guides.size() > 0}" class="table table-hover">
+
+    <!------------------------------------------------------------------------------------>
+    <!--    Отображение гидов таблицей-->
+    <!------------------------------------------------------------------------------------>
+
+    <table th:if="${guides.size() > 0} and ${scheme} == 'table'" class="table table-hover">
         <thead class="thead-dark">
         <tr>
             <td>ID</td>
@@ -48,6 +110,93 @@
         </tr>
         </tbody>
     </table>
+
+    <!------------------------------------------------------------------------------------>
+    <!--    Отображение гидов списком-->
+    <!------------------------------------------------------------------------------------>
+
+    <div th:if="${guides.size() > 0} and ${scheme} == 'list'" th:each="guide : ${guides}">
+        <div class="row featurette">
+            <div class="col-md-8 order-md-2">
+                <div class="row">
+                    <h2 class="featurette-heading fw-normal lh-1 col-md-9 col-lg-10" th:text="${guide.lastName} + ' ' +  ${guide.firstName} + ' ' + ${guide.patronymic}"></h2>
+                </div>
+
+                <p class="lead" th:text="${guide.email}"></p>
+
+
+                <!----------    Действия для админа    ----------------------------------------------->
+
+                <div class="btn-group" role="group" aria-label="Buttons for Admin">
+                    <a type="button" class="btn btn-secondary"
+                       th:href="@{'/guides/details/' + ${guide.id}}">Подробнее</a>
+                    <a type="button" class="btn btn-secondary"
+                       th:href="@{'/guides/edit/' + ${guide.id}}">Редактировать</a>
+                    <a type="button" class="btn btn-danger"
+                       th:href="@{'/guides/delete/' + ${guide.id}}">Удалить</a></div>
+            </div>
+
+            <div class="col-md-4 order-md-1">
+                <img class="d-block w-100 rounded-circle"
+                     th:src="|data:image/jpeg;base64,${guide.pathPhoto}|" role="img"
+                     preserveAspectRatio="xMidYMid slice" style="object-fit: cover; max-height: 300px;" focusable="false">
+
+
+                </img>
+
+            </div>
+        </div>
+        <hr class="featurette-divider">
+    </div>
+
+
+    <!------------------------------------------------------------------------------------>
+
+
+    <div><i>Отсортировано по [[${sortField}]] в [[${sortDir}]] порядке</i></div>
+    <div>&nbsp;</div>
+
+    <nav aria-label="Page navigation example" th:if="${totalPages > 1}">
+        Total Items: [[${totalItems}]]
+        &nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;&nbsp;
+        <ul class="pagination justify-content-center">
+            <li class="page-item">
+                <a th:if="${currentPage > 1}"
+                   th:href="@{'/guides/1' + '?sortField=' + ${sortField} + '&sortDir=' + ${sortDir} + '&scheme=' + ${scheme}}" class="page-link">Первая</a>
+                <span th:unless="${currentPage > 1}" class="page-link disabled">Первая</span>
+            </li>
+            <li class="page-item">
+                <a th:if="${currentPage > 1}"
+                   th:href="@{'/guides/' + ${currentPage - 1} + '?sortField=' + ${sortField} + '&sortDir=' + ${sortDir} + '&scheme=' + ${scheme}}"
+                   class="page-link">Предыдущая</a>
+                <span th:unless="${currentPage > 1}" class="page-link disabled">Предыдущая</span>
+            </li>
+
+            <ul class="pagination" th:each="i: ${#numbers.sequence(1, totalPages)}">
+                <li class="page-item">
+                    <a th:if="${currentPage != i}"
+                       th:href="@{'/guides/' + ${i} + '?sortField=' + ${sortField} + '&sortDir=' + ${sortDir} + '&scheme=' + ${scheme}}"
+                       class="page-link">[[${i}]]</a>
+                    <span th:unless="${currentPage != i}" class="page-link disabled">[[${i}]]</span>
+                </li>
+
+            </ul>
+
+            <li class="page-item">
+                <a th:if="${currentPage < totalPages}"
+                   th:href="@{'/guides/' + ${currentPage + 1} + '?sortField=' + ${sortField} + '&sortDir=' + ${sortDir} + '&scheme=' + ${scheme}}"
+                   class="page-link">Следующая</a>
+                <span th:unless="${currentPage < totalPages}" class="page-link disabled">Следующая</span>
+            </li>
+            <li class="page-item">
+                <a th:if="${currentPage < totalPages}"
+                   th:href="@{'/guides/' + ${totalPages} + '?sortField=' + ${sortField} + '&sortDir=' + ${sortDir} + '&scheme=' + ${scheme}}"
+                   class="page-link">Последняя</a>
+                <span th:unless="${currentPage < totalPages}" class="page-link disabled">Последняя</span>
+            </li>
+        </ul>
+    </nav>
+
 </div>
 
 <div th:replace="~{fragments/footer :: footer}"></div>

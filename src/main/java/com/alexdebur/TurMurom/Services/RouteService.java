@@ -7,6 +7,10 @@ import com.alexdebur.TurMurom.Repositories.GuideRepository;
 import com.alexdebur.TurMurom.Repositories.MarkRepository;
 import com.alexdebur.TurMurom.Repositories.RouteRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -38,5 +42,14 @@ public class RouteService {
 
     public void deleteRouteById(Long id) {
         routeRepository.deleteById(id);
+    }
+
+    public Page<Route> listAll(int pageNum, String sortField, String sortDir) {
+
+        Pageable pageable = PageRequest.of(pageNum - 1, 7,
+                sortDir.equals("asc") ? Sort.by(sortField).ascending()
+                        : Sort.by(sortField).descending()
+        );
+        return routeRepository.findAll(pageable);
     }
 }

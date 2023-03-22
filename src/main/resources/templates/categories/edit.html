@@ -27,6 +27,8 @@
                       th:object="${selectedCategory}" method="post" novalidate>
                     <div class="row g-3">
 
+                        <input id="id" type="hidden" th:field="*{id}"/>
+
                         <div class="col-12">
                             <label for="title" class="form-label">Наименование категории</label>
                             <input type="text" class="form-control" id="title" th:field="*{title}"

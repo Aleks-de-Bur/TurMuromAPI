@@ -12,6 +12,7 @@ import org.hibernate.annotations.OnDeleteAction;
 
 import javax.persistence.*;
 import java.io.IOException;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -31,6 +32,8 @@ public class Mark {
     private Category category;
 
     private String address;
+    private Double axisX;
+    private Double axisY;
     private Boolean elected;
 
     //    @OnDelete(action = OnDeleteAction.CASCADE)

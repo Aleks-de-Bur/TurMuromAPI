@@ -11,6 +11,8 @@ public class NavigationController {
         model.addAttribute("activePage", "home");
         return "index";
     }
+
+
 //
 //    @GetMapping("/routes")
 //    public String getRoutes(Model model){

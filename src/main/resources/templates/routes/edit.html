@@ -25,6 +25,8 @@
                       th:object="${route}" enctype="multipart/form-data" method="post" id="form1" novalidate>
                     <div class="row g-3">
 
+                        <input id="id" type="hidden" th:field="*{id}"/>
+
                         <div class="col-sm-6">
                             <label for="title" class="form-label">Название</label>
                             <input type="text" class="form-control" id="title" placeholder=""

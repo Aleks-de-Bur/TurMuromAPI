@@ -41,16 +41,19 @@
                     <li class="nav-item"><a th:href="@{/}" aria-current="page"
                                             th:class="${activePage == 'home'} ? 'nav-link active' : 'nav-link'">Главная</a>
                     </li>
+                    <li class="nav-item"><a th:href="@{/map}"
+                                            th:class="${activePage == 'map'} ? 'nav-link active' : 'nav-link'">Карта</a>
+                    </li>
                     <li class="nav-item"><a th:href="@{/categories}"
                                             th:class="${activePage == 'categories'} ? 'nav-link active' : 'nav-link'">Категории</a>
                     </li>
                     <li class="nav-item"><a th:href="@{/places/1?sortField=title&sortDir=asc&scheme=list}"
                                             th:class="${activePage == 'places'} ? 'nav-link active' : 'nav-link'">Достопримечательности</a>
                     </li>
-                    <li class="nav-item"><a th:href="@{/routes}"
+                    <li class="nav-item"><a th:href="@{/routes/1?sortField=title&sortDir=asc&scheme=list}"
                                             th:class="${activePage == 'routes'} ? 'nav-link active' : 'nav-link'">Маршруты</a>
                     </li>
-                    <li class="nav-item"><a th:href="@{/guides}"
+                    <li class="nav-item"><a th:href="@{/guides/1?sortField=lastName&sortDir=asc&scheme=list}"
                                             th:class="${activePage == 'guides'} ? 'nav-link active' : 'nav-link'">Гиды</a>
                     </li>
                     <li class="nav-item"><a th:href="@{/excursions/1?sortField=title&sortDir=asc&scheme=list}"

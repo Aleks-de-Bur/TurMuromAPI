@@ -5,6 +5,8 @@ import com.alexdebur.TurMurom.Services.MarkService;
 import com.alexdebur.TurMurom.Services.RouteService;
 import com.alexdebur.TurMurom.WorkClasses.InteractionPhoto;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.repository.query.Param;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -41,11 +43,27 @@ public class RouteController {
         model.addAttribute("route", route);
     }
 
-    @GetMapping("/routes")
-    public String routesPage(Model model) {
-        List<Route> allRoutes = routeService.getAllRoutes();
+    @GetMapping("/routes/{pageNum}")
+    public String routesPage(@RequestHeader(value = HttpHeaders.REFERER, required = false) final String referrer,
+                             Model model, @PathVariable(name = "pageNum") int pageNum,
+                             @Param("sortField") String sortField,
+                             @Param("sortDir") String sortDir,
+                             @Param("scheme") String scheme) {
+
+        Page<Route> page = routeService.listAll(pageNum, sortField, sortDir);
+        List<Route> allRoutes = page.getContent();
+
         model.addAttribute("routes", allRoutes);
         model.addAttribute("activePage", "routes");
+
+        model.addAttribute("currentPage", pageNum);
+        model.addAttribute("totalPages", page.getTotalPages());
+        model.addAttribute("totalItems", page.getTotalElements());
+
+        model.addAttribute("sortField", sortField);
+        model.addAttribute("sortDir", sortDir);
+        model.addAttribute("scheme", scheme);
+        model.addAttribute("reverseSortDir", sortDir.equals("asc") ? "desc" : "asc");
         return "routes/routes";
     }
 
