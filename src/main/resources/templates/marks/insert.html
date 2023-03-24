@@ -56,31 +56,74 @@
                             </div>
                         </div>
 
-                        <div class="col-12">
-                            <label for="address" class="form-label">Адрес</label>
-                            <input type="text" class="form-control" id="address" th:field="*{address}"
-                                   placeholder="Муром, улица Орловская,23" value="" required>
-                            <div class="invalid-feedback">
-                                Требуется указать адрес.
+                        <div class="col-sm-4">
+                            <div class="row g-3">
+                            <div class="col-12">
+                                <label for="address" class="form-label">Адрес</label>
+                                <input type="text" class="form-control" id="address" th:field="*{address}"
+                                       placeholder="Муром, улица Орловская,23" value="" required>
+                                <div class="invalid-feedback">
+                                    Требуется указать адрес.
+                                </div>
+                            </div>
+
+                            <div class="col-12">
+                                <label for="axisX" class="form-label">Координата X</label>
+                                <input type="text" class="form-control" id="axisX" th:field="*{axisX}"
+                                       placeholder="Координата X" value="" required>
+                                <div class="invalid-feedback">
+                                    Заполните координаты.
+                                </div>
+                            </div>
+
+                            <div class="col-12">
+                                <label for="axisY" class="form-label">Координата Y</label>
+                                <input type="text" class="form-control" id="axisY" th:field="*{axisY}"
+                                       placeholder="Координата Y" value="" required>
+                                <div class="invalid-feedback">
+                                    Заполните координаты.
+                                </div>
+                            </div>
                             </div>
                         </div>
 
-                        <div class="col-sm-4">
-                            <label for="axisX" class="form-label">Координата X</label>
-                            <input type="text" class="form-control" id="axisX" th:field="*{axisX}"
-                                   placeholder="Координата X" value="" required>
-                            <div class="invalid-feedback">
-                                Заполните координаты.
-                            </div>
-                        </div>
+                        <div class="col-sm-8" id="container">
+                            <script src="https://mapgl.2gis.com/api/js/v1"></script>
+                            <script th:inline="javascript">
+                                const map = new mapgl.Map('container', {
+                                    center: [42.04917148334485, 55.577488371440474],
+                                    zoom: 17,
+                                    key: 'bfd8bbca-8abf-11ea-b033-5fa57aae2de7',
+                                });
 
-                        <div class="col-sm-4">
-                            <label for="axisY" class="form-label">Координата Y</label>
-                            <input type="text" class="form-control" id="axisY" th:field="*{axisY}"
-                                   placeholder="Координата Y" value="" required>
-                            <div class="invalid-feedback">
-                                Заполните координаты.
-                            </div>
+                                map.on('click', (e) => {
+                                    if (!e.target) {
+                                        return;
+                                    }
+                                    const {
+                                        id
+                                    } = e.target;
+
+                                    fetch("https://catalog.api.2gis.com/3.0/items/byid?id=" + id + "&fields=items.point&key=ruqmdv8432", {
+                                                method: "GET",
+                                            }
+                                        )
+                                        .then((res) => res.json())
+                                        .then((parsed) => {
+                                            console.log(parsed);
+                                            let coordinates = parsed["result"]["items"][0]["point"];
+
+                                            const marker = new mapgl.Marker(map, {
+                                                coordinates: [coordinates["lon"], coordinates["lat"]],
+                                            });
+
+                                            document.getElementById("axisX").value = coordinates["lat"];
+                                            document.getElementById("axisY").value = coordinates["lon"];
+                                            document.getElementById("address").value = parsed["result"]["items"][0]["full_name"];
+                                        })
+                                        .catch((err) => alert('Ошибка'));
+                                });
+                            </script>
                         </div>
 
                         <hr class="my-4">
@@ -94,7 +137,6 @@
                         </div>
 
                         <hr class="my-4">
-
 
                         <h4>Расписание</h4>
                         <p class="lead">При отсутствии графика работы оставьте значения полей по умолчанию.</p>

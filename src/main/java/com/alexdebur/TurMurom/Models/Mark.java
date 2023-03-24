@@ -32,8 +32,8 @@ public class Mark {
     private Category category;
 
     private String address;
-    private Double axisX;
-    private Double axisY;
+    private String axisX;
+    private String axisY;
     private Boolean elected;
 
     //    @OnDelete(action = OnDeleteAction.CASCADE)
