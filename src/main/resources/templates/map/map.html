@@ -87,32 +87,46 @@
 <!--    <nav class="navbar bg-light fixed-top">-->
         <div class="container-fluid">
 
-            <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasRight" aria-labelledby="offcanvasNavbarLabel">
+            <div id="dl"></div>
+
+            <div class="offcanvas offcanvas-end" tabindex="-2" id="offcanvasRight" aria-labelledby="offcanvasNavbarLabel">
                 <div class="offcanvas-header">
-                    <h5 class="offcanvas-title" id="Title">ghjfk</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Закрыть"></button>
+
                 </div>
                 <div class="offcanvas-body" id="text">
+                    <div id="carouselControls" class="carousel slide" data-bs-ride="carousel">
+                        <div class="carousel-inner" id="carouselInner">
+
+                        </div>
+                        <button class="carousel-control-prev" type="button" data-bs-target="#carouselControls" data-bs-slide="prev">
+                            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                            <span class="visually-hidden">Previous</span>
+                        </button>
+                        <button class="carousel-control-next" type="button" data-bs-target="#carouselControls" data-bs-slide="next">
+                            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                            <span class="visually-hidden">Next</span>
+                        </button>
+                    </div>
+
+
                     <ul class="navbar-nav justify-content-end flex-grow-1 pe-3">
                         <li class="nav-item">
+                            <h5 class="offcanvas-title" id="Title">Название</h5>
+<!--                            <span class="badge rounded-pill text-bg-success" style="margin-bottom: 1em;" id="Category">Категория</span>-->
+                        </li>
+                        <hr class="my-4">
+                        <li class="nav-item" id="Details">
                             <a class="nav-link active" aria-current="page" href="#">Главная</a>
                         </li>
-                        <li class="nav-item">
+                        <li class="nav-item" id="Schedule">
                             <a class="nav-link" href="#">Ссылка</a>
+
+
+
+
                         </li>
-                        <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                Выпадающий список
-                            </a>
-                            <ul class="dropdown-menu">
-                                <li><a class="dropdown-item" href="#">Действие</a></li>
-                                <li><a class="dropdown-item" href="#">Другое действие</a></li>
-                                <li>
-                                    <hr class="dropdown-divider">
-                                </li>
-                                <li><a class="dropdown-item" href="#">Что-то еще здесь</a></li>
-                            </ul>
-                        </li>
+
                     </ul>
 
                 </div>
@@ -140,7 +154,8 @@
                     //size: [50, 60],
                     label: {
                         text: mark.axisX + ", " + mark.axisY,
-                    }
+                    },
+                    userData: { marker: mark }
                 });
             });
 
@@ -155,18 +170,113 @@
             clusterer.load(markers);
 
 
-
-
-
-
             clusterer.on('click', (event) => {
                 if(event.target.type == "marker"){
                     var offcanvasElement = document.getElementById("offcanvasRight");
                     var offcanvas = new bootstrap.Offcanvas(offcanvasElement);
 
-                    let mark = [[${marks}]].find(item => item.title == "Музей Зворыкина");
+<!--                Название    -->
+                    document.getElementById("Title").innerHTML = event.target.data.userData.marker.title;
 
-                    document.getElementById("Title").innerHTML = mark.title;
+<!--                Фотографии  -->
+                    let flag = 1;
+                    let inner = ``;
+
+                    event.target.data.userData.marker.markPhotos.forEach((photo) => {
+                        let ph = photo.pathPhoto;
+                        if(flag){
+                            inner = `<div class=\"carousel-item active\">
+                                <img src=\"data:image/jpeg;base64,${ph}\" class=\"d-block w-100\" style=\"object-fit: cover;\" height=\"200px\" alt=\"Фотография\">
+                            </div>`;
+                            flag = !flag;
+                        } else {
+                            inner += `\n<div class=\"carousel-item\">
+                                <img src=\"data:image/jpeg;base64,${ph}\" class=\"d-block w-100\" style=\"object-fit: cover;\" height=\"200px\" alt=\"Фотография\">
+                            </div>`;
+                        }
+                    })
+
+                    document.getElementById("carouselInner").innerHTML = inner;
+
+<!--                Категория   -->
+<!--                    document.getElementById("Category").innerHTML = event.target.data.userData.marker.category.title;-->
+
+<!--                Подробнее    -->
+                    document.getElementById("Details").innerHTML = `<a type=\"button\" class=\"btn btn-secondary\"
+                                              href=\"/places/details/${event.target.data.userData.marker.id}">Подробнее</a>`;
+
+
+<!--                Расписание    -->
+
+                    let sched = ``;
+                    event.target.data.userData.marker.schedules.forEach((elem) => {
+                        sched += `<div>
+                                    <div class=\"row justify-content-end\">
+                                        <div class=\"col-6\"\n>`;
+                        switch (elem.day) {
+                            case 1:
+                                sched += `<h6 class=\"text-end\"> Понедельник</h6>`;
+                                break;
+                            case 2:
+                                sched += `<h6 class=\"text-end\"> Вторник</h6>`;
+                                break;
+                            case 3:
+                                sched += `<h6 class=\"text-end\"> Среда</h6>`;
+                                break;
+                            case 4:
+                                sched += `<h6 class=\"text-end\"> Четверг</h6>`;
+                                break;
+                            case 5:
+                                sched += `<h6 class=\"text-end\"> Пятница</h6>`;
+                                break;
+                            case 6:
+                                sched += `<h6 class=\"text-end\"> Суббота</h6>`;
+                                break;
+                            case 7:
+                                sched += `<h6 class=\"text-end\"> Воскресенье</h6>`;
+                                break;
+                        }
+                        sched += `</div>
+                                      </div>
+                                      <div class=\"row g-3\">
+                                          <div class=\"col-6\">
+                                              <div class=\"cs-form\">
+                                                  <input type=\"time\" class=\"form-control\"
+                                                         value=\"${elem.start}\" disabled readonly/>
+                                              </div>
+                                          </div>
+                                          <div class=\"col-6\">
+                                              <div class=\"cs-form\">
+                                                  <input type=\"time\" class=\"form-control\"
+                                                        value=\"${elem.end}\" disabled readonly/>
+                                              </div>
+                                          </div>
+                                      </div>
+                                      <hr class=\"featurette-divider\">`;
+                        sched += `</div>`;
+                    })
+
+
+                    document.getElementById("dl").innerHTML =`<div class=\"modal\" id=\"scheduleModal${event.target.data.userData.marker.id}\" tabindex=\"-1\" aria-labelledby=\"scheduleModalLabel\" aria-hidden=\"true\">
+                                <div class=\"modal-dialog\">
+                                    <div class=\"modal-content\">
+                                        <div class=\"modal-header\">
+                                            <h1 class=\"modal-title fs-5\">Расписание</h1>
+                                            <button type=\"button\" class=\"btn-close\" data-bs-dismiss=\"modal\" aria-label=\"Close\"></button>
+                                        </div>
+                                        <div class=\"modal-body\">
+
+                                        ${sched}
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>`;
+                    document.getElementById("Schedule").innerHTML = `<button type=\"button\" class=\"btn btn-secondary\" data-bs-toggle=\"modal\" data-bs-target=\"#scheduleModal${event.target.data.userData.marker.id}\">
+                                Расписание
+                            </button>`;
+
+
                     return offcanvas.toggle();
                 }
             });
