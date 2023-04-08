@@ -8,13 +8,44 @@
           rel="stylesheet" integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65"
           crossorigin="anonymous">
 </head>
-<body>
+<body class="text-bg-dark">
 <div th:replace="~{fragments/navigation :: navigation}"></div>
 
-<main>
-<h1>fsdbdsf</h1>
 
-</main>
+
+<div class="card bg-dark text-white">
+    <img src="/assets/main_page/main_murom.jpg" class="card-img"
+         style="object-fit: cover;" height="800px" alt="Изображение главной страницы">
+    <div class="card-img-overlay bg-opacity-25 bg-dark d-flex">
+    <div class="text-center align-self-center w-100">
+        <h5 class="card-title">Название карточки</h5>
+        <p class="card-text">This is a wider card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
+        <p class="card-text">Last updated 3 mins ago</p>
+    </div>
+    </div>
+</div>
+
+
+
+
+<div class="d-flex text-center text-bg-dark">
+    <main>
+
+        <div class="cover-container d-flex w-100 h-100 p-3 mx-auto flex-column">
+
+            <main class="px-3">
+
+                <h1>Cover your page.</h1>
+                <p class="lead">Cover is a one-page template for building simple and beautiful home pages. Download,
+                    edit the text, and add your own fullscreen background photo to make it your own.</p>
+                <p class="lead">
+                    <a href="#" class="btn btn-lg btn-secondary fw-bold border-white bg-white">Learn more</a>
+                </p>
+            </main>
+        </div>
+    </main>
+</div>
+
 
 <div th:replace="~{fragments/footer :: footer}"></div>
 

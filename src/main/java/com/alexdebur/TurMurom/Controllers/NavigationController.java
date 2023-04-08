@@ -6,6 +6,10 @@ import org.springframework.web.bind.annotation.GetMapping;
 
 @Controller
 public class NavigationController {
+
+    public static String UPLOAD_DIRECTORY = System.getProperty("user.dir") + "\\Photos\\Marks\\";
+
+
     @GetMapping("/")
     public String getHome(Model model){
         model.addAttribute("activePage", "home");
