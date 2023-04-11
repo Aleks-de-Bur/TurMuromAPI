@@ -5,6 +5,7 @@ import com.alexdebur.TurMurom.Services.ExcursionPhotoService;
 import com.alexdebur.TurMurom.Services.ExcursionService;
 import com.alexdebur.TurMurom.Services.GuideService;
 import com.alexdebur.TurMurom.WorkClasses.InteractionPhoto;
+import org.apache.juli.logging.Log;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.repository.query.Param;
@@ -21,6 +22,7 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.logging.Logger;
 
 @Controller
 public class ExcursionController {
@@ -29,6 +31,7 @@ public class ExcursionController {
     private GuideService guideService;
 
     public static String UPLOAD_DIRECTORY = System.getProperty("user.dir") + "\\Photos\\Excursions\\";
+    public String GUIDE_UPLOAD_DIRECTORY = System.getProperty("user.dir") + "\\Photos\\Guides\\";
 
     @Autowired
     public void setExcursionService(ExcursionService excursionService, ExcursionPhotoService excursionPhotoService,
@@ -64,10 +67,21 @@ public class ExcursionController {
         Page<Excursion> page = excursionService.listAll(pageNum, sortField, sortDir);
         List<Excursion> allExcursions = page.getContent();
 
+        ArrayList<Long> list = new ArrayList<>();
+
         for (var excursion : allExcursions){
             for (var photo : excursion.getExcursionPhotos()){
                 try {
                     photo.setPathPhoto(InteractionPhoto.getPhoto(UPLOAD_DIRECTORY + photo.getPathPhoto()));
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+            if (!list.contains(excursion.getGuide().getId())) {
+                try {
+                    excursion.getGuide().setPathPhoto(InteractionPhoto
+                            .getPhoto(GUIDE_UPLOAD_DIRECTORY + excursion.getGuide().getPathPhoto()));
+                    list.add(excursion.getGuide().getId());
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }

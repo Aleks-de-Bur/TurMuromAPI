@@ -53,6 +53,14 @@ public class RouteController {
         Page<Route> page = routeService.listAll(pageNum, sortField, sortDir);
         List<Route> allRoutes = page.getContent();
 
+        for (var route : allRoutes){
+                try {
+                    route.setPathPhoto(InteractionPhoto.getPhoto(UPLOAD_DIRECTORY + route.getPathPhoto()));
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+        }
+
         model.addAttribute("routes", allRoutes);
         model.addAttribute("activePage", "routes");
 
@@ -149,7 +157,7 @@ public class RouteController {
     @PostMapping("/routes/editRoute")
     public String editRoute(Route route, @RequestParam("image") MultipartFile file) throws IOException {
 
-        if (file.getOriginalFilename() != "") {
+        if (!file.isEmpty()) {
             String fileName = "route_" + route.getTitle() + "_" +
                     route.getId() +
                     file.getOriginalFilename().substring(file.getOriginalFilename().length() - 4);
@@ -164,7 +172,7 @@ public class RouteController {
             route.setPathPhoto(fileName);
         }
         routeService.insertRoute(route);
-        return "redirect:/routes";
+        return "redirect:/routes/1?sortField=title&sortDir=asc&scheme=list";
     }
 
     @PostMapping("/routes/edit/{routeId}/addMarkToRoute/{markId}")

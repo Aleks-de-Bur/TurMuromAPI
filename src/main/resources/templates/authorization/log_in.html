@@ -25,7 +25,7 @@
                             <div class="col-md-6 col-lg-7 d-flex align-items-center">
                                 <div class="card-body p-4 p-lg-5 text-black">
 
-                                    <form>
+                                    <form method="post" th:action="@{/log_in}">
 
                                         <div class="d-flex align-items-center mb-3 pb-1">
 <!--                                            <i class="fas fa-cubes fa-2x me-3" style="color: #ff6219;"></i>-->
@@ -37,13 +37,13 @@
                                             аккаунт</h5>
 
                                         <div class="form-floating mb-4">
-                                            <input type="email" class="form-control" id="floatingInput"
-                                                   placeholder="Email">
+                                            <input name="username" type="email" class="form-control" id="floatingInput"
+                                                   placeholder="Username" autofocus="true">
                                             <label for="floatingInput">Email</label>
                                         </div>
 
                                         <div class="form-floating mb-4">
-                                            <input type="password" class="form-control" id="floatingPassword"
+                                            <input name="password" type="password" class="form-control" id="floatingPassword"
                                                    placeholder="Пароль">
                                             <label for="floatingPassword">Пароль</label>
                                         </div>

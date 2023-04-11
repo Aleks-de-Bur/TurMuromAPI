@@ -162,7 +162,7 @@ public class GuideController {
     @PostMapping("/guides/editGuide")
     public String editGuide(Guide guide, @RequestParam("image") MultipartFile file) throws IOException {
 
-        if (file.getOriginalFilename() != "") {
+        if (!file.isEmpty()) {
 
             String fileName = guide.getLastName() + "_" + guide.getTelNumber() +
                     file.getOriginalFilename().substring(file.getOriginalFilename().length() - 4);
@@ -177,7 +177,7 @@ public class GuideController {
             guide.setPathPhoto(fileName);
         }
         guideService.insertGuide(guide);
-        return "redirect:/guides";
+        return "redirect:/guides/1?sortField=lastName&sortDir=asc&scheme=list";
     }
 
     @GetMapping("/guides/delete/{id}")
