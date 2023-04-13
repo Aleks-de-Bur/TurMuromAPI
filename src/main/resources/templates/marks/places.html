@@ -1,7 +1,7 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
 <head>
-    <meta charset="UTF-8"/>
+    <meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Достопримечательности</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css"
@@ -19,7 +19,7 @@
     <link href="../assets/dist/css/styles.css" rel="stylesheet"/>
 </head>
 
-<body id="page-top">
+<body>
 <div th:replace="~{fragments/navigation :: navigation}"></div>
 <div class="container mt-4">
     <div class="row justify-content-between">
@@ -61,14 +61,14 @@
         <div class="col-sm-2 col-md-2 col-lg-1">
             <div class="btn-group" role="group" aria-label="Basic radio toggle button group">
                 <input type="radio" class="btn-check" name="btnradio" id="btnRadioTableOn" autocomplete="off"
-                       th:if="${scheme} == 'table'" checked>
-                <a th:href="@{'/places/' + ${currentPage} + '?sortField=id&sortDir=' + ${sortDir} + '&scheme=table'}"
-                   th:if="${scheme} == 'table'" class="btn btn-outline-dark" for="btnRadioTableOn">&#9638;</a>
+                       th:if="${scheme} == 'card'" checked>
+                <a th:href="@{'/places/' + ${currentPage} + '?sortField=id&sortDir=' + ${sortDir} + '&scheme=card'}"
+                   th:if="${scheme} == 'card'" class="btn btn-outline-dark" for="btnRadioTableOn">&#9638;</a>
 
                 <input type="radio" class="btn-check" name="btnradio" id="btnRadioTable" autocomplete="off"
-                       th:unless="${scheme} == 'table'">
-                <a th:href="@{'/places/' + ${currentPage} + '?sortField=id&sortDir=' + ${sortDir} + '&scheme=table'}"
-                   th:unless="${scheme} == 'table'" class="btn btn-outline-dark" for="btnRadioTable">&#9638;</a>
+                       th:unless="${scheme} == 'card'">
+                <a th:href="@{'/places/' + ${currentPage} + '?sortField=id&sortDir=' + ${sortDir} + '&scheme=card'}"
+                   th:unless="${scheme} == 'card'" class="btn btn-outline-dark" for="btnRadioTable">&#9638;</a>
 
                 <input type="radio" class="btn-check" name="btnradio" id="btnRadioListOn" autocomplete="off"
                        th:if="${scheme} == 'list'" checked>
@@ -124,7 +124,7 @@
             <td th:text="${mark.address}"/>
             <!--            <td><img src="/assets/static/photos/guides/${guide.pathPhoto}.jpg"></td>-->
             <td class="align-self-end"><a type="button" class="btn btn-secondary"
-                   th:href="@{'/places/details/' + ${mark.id}}">Подробнее</a>
+                                          th:href="@{'/places/details/' + ${mark.id}}">Подробнее</a>
                 <a type="button" class="btn btn-secondary"
                    th:href="@{'/places/edit/' + ${mark.id}}">Редактировать</a>
                 <a type="button" class="btn btn-danger"
@@ -134,13 +134,203 @@
     </table>
 
     <!------------------------------------------------------------------------------------>
+    <!--    Отображение достопримечательностей карточками-->
+    <!------------------------------------------------------------------------------------>
+
+    <div class="row row-cols-1 row-cols-md-3 g-4" th:if="${marks.size() > 0}  and ${scheme} == 'card'">
+        <div class="col" th:each="mark : ${marks}">
+            <div class="card h-100 rounded-4">
+                <img th:src="|data:image/jpeg;base64,${mark.markPhotos[0].pathPhoto}|" class="card-img-top rounded-4"
+                     style="object-fit: cover; height: 280px; margin-bottom: -12px;" alt="...">
+
+                <!--                <h5 class="card-header pb-3" style="padding-top: 28px;" th:text="${excursion.title}"></h5>-->
+
+                <div class="card-body">
+                    <h5 class="title pb-1 pt-3" th:text="${mark.title}"></h5>
+                    <h6><span class="badge bg-warning" th:text="${mark.category.title}"></span></h6>
+                </div>
+                <div class="card-body">
+                    <p class="text-truncate" style="-webkit-line-clamp: 3; display: -webkit-box;
+                        -webkit-box-orient: vertical; overflow: hidden; white-space: inherit;"
+                       th:text="${mark.description}"></p>
+                </div>
+
+                <!----------    Действия для админа    ----------------------------------------------->
+                <div class="card-footer p-0" sec:authorize="hasRole('ROLE_MODERATOR')">
+                    <div class="btn-group w-100" role="group" aria-label="Buttons for Admin">
+                        <a type="button" class="btn btn-primary" th:href="@{'/places/edit/' + ${mark.id}}"
+                           style="border-top-left-radius: 16px; border-bottom-left-radius: 0px;">Редактировать</a>
+                        <a type="button" class="btn btn-danger" th:href="@{'/places/delete/' + ${mark.id}}"
+                           style="border-top-right-radius: 16px; border-bottom-right-radius: 0px;">Удалить</a>
+                    </div>
+                </div>
+                <!----------    Действия для зарег пользователя    ----------------------------------->
+                <div class="card-footer p-0" sec:authorize="hasRole('ROLE_USER')"
+                     style="border-bottom-left-radius: 16px; border-bottom-right-radius: 16px;">
+                    <div class="btn-group w-100" role="group" aria-label="Базовая группа переключателей флажков">
+                        <!--                        <a class="btn btn-primary" type="button" th:href="@{'/places/details/' + ${mark.id}}"-->
+                        <!--                           style="border-bottom-left-radius: 16px; border-top-left-radius: 0px;">Подробнее-->
+                        <!--                        </a>-->
+                        <button class="btn btn-primary" type="button" data-bs-toggle="offcanvas"
+                                th:data-bs-target="'#offcanvasPlace' + ${mark.id}"
+                                aria-controls="offcanvasResponsive"
+                                style="border-bottom-left-radius: 16px; border-top-left-radius: 0px;">Подробнее
+                        </button>
+
+                        <input type="checkbox" class="btn-check" th:id="${mark.id}" autocomplete="off">
+                        <label class="btn btn-outline-danger"
+                               style="border-bottom-right-radius: 16px; border-top-right-radius: 0px;"
+                               th:for="${mark.id}">Избранное</label><br>
+                    </div>
+                </div>
+                <!----------    Действия для нерег пользователя    ----------------------------------->
+                <div class="card-footer p-0" sec:authorize="!isAuthenticated() || hasRole('ROLE_ADMIN')"
+                     style="border-bottom-left-radius: 16px; border-bottom-right-radius: 16px;">
+                    <!--                    <a class="btn btn-primary w-100" type="button" th:href="@{'/routes/details/' + ${route.id}}"-->
+                    <!--                       style="border-bottom-left-radius: 16px; border-top-left-radius: 0px;-->
+                    <!--                                border-bottom-right-radius: 16px; border-top-right-radius: 0px;">Подробнее-->
+                    <!--                    </a>-->
+                    <button class="btn btn-primary w-100" type="button" data-bs-toggle="offcanvas"
+                            th:data-bs-target="'#offcanvasPlace' + ${mark.id}"
+                            aria-controls="offcanvasResponsive"
+                            style="border-bottom-left-radius: 16px; border-top-left-radius: 0px;">Подробнее
+                    </button>
+                </div>
+            </div>
+
+            <!-----------Канвас---------->
+            <div class="container-fluid">
+                <div class="offcanvas offcanvas-size-xl offcanvas-end" tabindex="-1"
+                     th:id="'offcanvasPlace' + ${mark.id}" aria-labelledby="offcanvasResponsiveLabel">
+                    <div class="offcanvas-body" th:id="places-offcanvas">
+
+                        <button type="button" class="btn-close btn-close-white m-5 p-2"
+                                style="position: absolute; z-index: 2;" data-bs-dismiss="offcanvas"
+                                aria-label="Закрыть"></button>
+
+                        <!-----------Карусель---------->
+                        <div th:id="'carouselPlaceIndicators' + ${mark.id}"
+                             class="carousel slide carousel-fade" data-bs-ride="carousel">
+                            <div class="carousel-indicators" style="padding-bottom: 48px;">
+                                <button type="button" th:each="photo : ${mark.markPhotos}"
+                                        th:classappend="${photoStat.first} ? active : ''"
+                                        th:data-bs-target="'#carouselPlaceIndicators' + ${mark.id}"
+                                        th:data-bs-slide-to="${photoStat.index}" aria-label="Slide"></button>
+                            </div>
+                            <div class="carousel-inner">
+                                <div class="carousel-item" th:each="photo : ${mark.markPhotos}"
+                                     th:classappend="${photoStat.first} ? active : ''">
+                                    <img th:src="|data:image/jpeg;base64,${photo.pathPhoto}|" class="d-block w-100"
+                                         style="object-fit: cover;"
+                                         height="600px" alt="Фотография достопримечательности">
+                                </div>
+                            </div>
+                            <button class="carousel-control-prev" type="button"
+                                    th:data-bs-target="'#carouselPlaceIndicators' + ${mark.id}"
+                                    data-bs-slide="prev">
+                                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                <span class="visually-hidden">Previous</span>
+                            </button>
+                            <button class="carousel-control-next" type="button"
+                                    th:data-bs-target="'#carouselPlaceIndicators' + ${mark.id}"
+                                    data-bs-slide="next">
+                                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                <span class="visually-hidden">Next</span>
+                            </button>
+                        </div>
+
+                        <div th:id="placeOffcanvasContainer" class="bg-light text-center pb-4">
+                            <!-------------------------Категория------------------------->
+                            <h3 style="margin-top: -20px;position: absolute;left: 0;right: 0;text-align: center;">
+                                <span class="badge bg-warning rounded-5" th:text="${mark.category.title}"></span></h3>
+
+                            <ul class="navbar-nav justify-content-end flex-grow-1 pe-5 ps-5">
+                                <!-------------------------Название-------------------------->
+                                <li class="nav-item">
+                                    <h2 class="pt-4 pb-4" style="margin-bottom: 0px;" th:text="${mark.title}"></h2>
+                                </li>
+                                <!-------------------------Описание-------------------------->
+                                <li class="nav-item">
+                                    <div class="card text-bg-light w-100 mb-3 rounded-4">
+                                        <div class="card-body">
+                                            <p class="card-text text-truncate" style="-webkit-line-clamp: 3; display: -webkit-box;
+                        -webkit-box-orient: vertical; overflow: hidden; white-space: inherit;"
+                                               th:text="${mark.description}"></p>
+                                        </div>
+                                    </div>
+                                </li>
+                                <!-------------------------Расписание------------------------>
+                                <li class="nav-item">
+                                    <div class="accordion accordion-flush" id="accordionFlushSchedule">
+                                        <div class="accordion-item">
+                                            <h2 class="accordion-header" id="flush-headingOne">
+                                                <button class="accordion-button collapsed" type="button"
+                                                        data-bs-toggle="collapse" data-bs-target="#flush-collapseOne"
+                                                        aria-expanded="false" aria-controls="flush-collapseOne">
+                                                    Расписание
+                                                </button>
+                                            </h2>
+                                            <div id="flush-collapseOne" class="accordion-collapse collapse"
+                                                 aria-labelledby="flush-headingOne"
+                                                 data-bs-parent="#accordionFlushSchedule">
+                                                <div class="accordion-body">
+                                                    <div th:each="schedule : ${mark.schedules}">
+                                                        <div class="row d-flex align-items-end">
+                                                            <div class="col-6" th:switch="${schedule.day}">
+                                                                <h6 class="text-start mt-1 mb-1" th:case="1"> Понедельник</h6>
+                                                                <h6 class="text-start mt-1 mb-1" th:case="2"> Вторник</h6>
+                                                                <h6 class="text-start mt-1 mb-1" th:case="3"> Среда</h6>
+                                                                <h6 class="text-start mt-1 mb-1" th:case="4"> Четверг</h6>
+                                                                <h6 class="text-start mt-1 mb-1" th:case="5"> Пятница</h6>
+                                                                <h6 class="text-start mt-1 mb-1" th:case="6"> Суббота</h6>
+                                                                <h6 class="text-start mt-1 mb-1" th:case="7"> Воскресенье</h6>
+                                                            </div>
+
+                                                            <div class="col-6">
+                                                                <p class="text-end mt-1 mb-1" th:if="${schedule.start == schedule.end}"
+                                                                   th:text="Выходной"></p>
+                                                                <p class="text-end mt-1 mb-1" th:if="${schedule.start == '00:00' && schedule.end == '23:59'}"
+                                                                   th:text="Круглосуточно"></p>
+                                                                <p class="text-end mt-1 mb-1" th:if="${schedule.start != schedule.end && schedule.end != '23:59'}"
+                                                                   th:text="${schedule.start} + '-' + ${schedule.end}"></p>
+                                                            </div>
+
+                                                        </div>
+                                                        <hr class="featurette-divider">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </li>
+                                <!-------------------------Избранное------------------------>
+                                <li class="nav-item">
+                                    <input type="checkbox" class="btn-check mt-2" th:id="${'btn' + mark.id}" autocomplete="off">
+                                    <label class="btn btn-outline-danger w-100 rounded-4"
+                                           th:for="${'btn' + mark.id}">Избранное</label><br>
+                                </li>
+                            </ul>
+                        </div>
+
+
+                    </div>
+                </div>
+            </div>
+            <!-------------------Конец канваса------------------>
+
+        </div>
+    </div>
+
+    <!------------------------------------------------------------------------------------>
     <!--    Отображение достопримечательностей списком-->
     <!------------------------------------------------------------------------------------>
 
     <div th:if="${marks.size() > 0}  and ${scheme} == 'list'" th:each="mark : ${marks}">
         <div class="row featurette">
             <div class="col-md-8 order-md-2">
-                <span class="badge rounded-pill text-bg-success" style="margin-bottom: 1em;" th:text="${mark.category.title}"></span>
+                <span class="badge rounded-pill text-bg-success" style="margin-bottom: 1em;"
+                      th:text="${mark.category.title}"></span>
 
                 <div class="row">
                     <h2 class="featurette-heading fw-normal lh-1 col-md-9 col-lg-10" th:text="${mark.title}"></h2>
@@ -153,29 +343,32 @@
                 <p class="lead" th:text="${mark.address}"></p>
 
 
-    <!----------    Действия для админа    ----------------------------------------------->
+                <!----------    Действия для админа    ----------------------------------------------->
 
                 <div class="btn-group" role="group" aria-label="Buttons for Admin">
                     <a type="button" class="btn btn-secondary"
-                                              th:href="@{'/places/details/' + ${mark.id}}">Подробнее</a>
+                       th:href="@{'/places/details/' + ${mark.id}}">Подробнее</a>
                     <a type="button" class="btn btn-secondary"
                        th:href="@{'/places/edit/' + ${mark.id}}">Редактировать</a>
                     <a type="button" class="btn btn-danger"
                        th:href="@{'/places/delete/' + ${mark.id}}">Удалить</a></div>
 
-    <!----------    Кнопка вызова расписания    ------------------------------------------>
+                <!----------    Кнопка вызова расписания    ------------------------------------------>
 
-                <button type="button" class="btn btn-primary" data-bs-toggle="modal" th:data-bs-target="'#exampleModal' + ${mark.id}">
+                <button type="button" class="btn btn-primary" data-bs-toggle="modal"
+                        th:data-bs-target="'#exampleModal' + ${mark.id}">
                     Расписание
                 </button>
 
-    <!----------    Модальное окно расписания    ----------------------------------------->
-                <div class="modal fade" th:id="'exampleModal' + ${mark.id}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <!----------    Модальное окно расписания    ----------------------------------------->
+                <div class="modal fade" th:id="'exampleModal' + ${mark.id}" tabindex="-1"
+                     aria-labelledby="exampleModalLabel" aria-hidden="true">
                     <div class="modal-dialog">
                         <div class="modal-content">
                             <div class="modal-header">
                                 <h1 class="modal-title fs-5">Расписание</h1>
-                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                        aria-label="Close"></button>
                             </div>
                             <div class="modal-body">
 
@@ -183,49 +376,51 @@
 
                                 <div th:each="schedule : ${mark.schedules}">
                                     <div class="row justify-content-end">
-                                    <div class="col-6" th:switch="${schedule.day}">
-                                        <h6 class="text-end" th:case="1"> Понедельник</h6>
-                                        <h6 class="text-end" th:case="2"> Вторник</h6>
-                                        <h6 class="text-end" th:case="3"> Среда</h6>
-                                        <h6 class="text-end" th:case="4"> Четверг</h6>
-                                        <h6 class="text-end" th:case="5"> Пятница</h6>
-                                        <h6 class="text-end" th:case="6"> Суббота</h6>
-                                        <h6 class="text-end" th:case="7"> Воскресенье</h6>
-                                    </div>
+                                        <div class="col-6" th:switch="${schedule.day}">
+                                            <h6 class="text-end" th:case="1"> Понедельник</h6>
+                                            <h6 class="text-end" th:case="2"> Вторник</h6>
+                                            <h6 class="text-end" th:case="3"> Среда</h6>
+                                            <h6 class="text-end" th:case="4"> Четверг</h6>
+                                            <h6 class="text-end" th:case="5"> Пятница</h6>
+                                            <h6 class="text-end" th:case="6"> Суббота</h6>
+                                            <h6 class="text-end" th:case="7"> Воскресенье</h6>
+                                        </div>
                                     </div>
                                     <div class="row g-3">
-                                    <div class="col-6">
-                                        <div class="cs-form">
-                                            <input type="time" class="form-control"
-                                                   th:value="${schedule.start}" disabled readonly/>
+                                        <div class="col-6">
+                                            <div class="cs-form">
+                                                <input type="time" class="form-control"
+                                                       th:value="${schedule.start}" disabled readonly/>
+                                            </div>
                                         </div>
-                                    </div>
 
-                                    <div class="col-6">
-                                        <div class="cs-form">
-                                            <input type="time" class="form-control"
-                                                   th:value="${schedule.end}" disabled readonly/>
+                                        <div class="col-6">
+                                            <div class="cs-form">
+                                                <input type="time" class="form-control"
+                                                       th:value="${schedule.end}" disabled readonly/>
+                                            </div>
                                         </div>
-                                    </div>
                                     </div>
                                     <hr class="featurette-divider">
                                 </div>
                                 <!--------------------------------------------------->
                             </div>
-<!--                            <div class="modal-footer">-->
-<!--                                <button type="button" class="btn btn-secondary " data-bs-dismiss="modal">Закрыть</button>-->
-<!--                            </div>-->
+                            <!--                            <div class="modal-footer">-->
+                            <!--                                <button type="button" class="btn btn-secondary " data-bs-dismiss="modal">Закрыть</button>-->
+                            <!--                            </div>-->
                         </div>
                     </div>
                 </div>
-    <!----------    Конец блока: Модальное окно расписания    ----------------------------------------->
+                <!----------    Конец блока: Модальное окно расписания    ----------------------------------------->
 
             </div>
 
             <div class="col-md-4 order-md-1">
                 <img class="bd-placeholder-img bd-placeholder-img-lg featurette-image img-fluid mx-auto" width="500"
-                     height="500" th:src="|data:image/jpeg;base64,${mark.markPhotos[0].pathPhoto}|" role="img" aria-label="Placeholder: 500x500"
-                     preserveAspectRatio="xMidYMid slice" style="object-fit: cover;" focusable="false"><title>Placeholder</title>
+                     height="500" th:src="|data:image/jpeg;base64,${mark.markPhotos[0].pathPhoto}|" role="img"
+                     aria-label="Placeholder: 500x500"
+                     preserveAspectRatio="xMidYMid slice" style="object-fit: cover;" focusable="false"><title>
+                Placeholder</title>
 
 
                 </img>
@@ -249,7 +444,8 @@
             <li class="page-item">
                 <!--                <a class="page-link">Previous</a>-->
                 <a th:if="${currentPage > 1}"
-                   th:href="@{'/places/1' + '?sortField=' + ${sortField} + '&sortDir=' + ${sortDir} + '&scheme=' + ${scheme}}" class="page-link">Первая</a>
+                   th:href="@{'/places/1' + '?sortField=' + ${sortField} + '&sortDir=' + ${sortDir} + '&scheme=' + ${scheme}}"
+                   class="page-link">Первая</a>
                 <span th:unless="${currentPage > 1}" class="page-link disabled">Первая</span>
             </li>
             <li class="page-item">

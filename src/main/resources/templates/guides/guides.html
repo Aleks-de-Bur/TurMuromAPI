@@ -100,12 +100,12 @@
             <td th:text="${guide.patronymic}"/>
             <td th:text="${guide.email}"/>
             <td th:text="${guide.telNumber}"/>
-<!--            <td><img src="/assets/static/photos/guides/${guide.pathPhoto}.jpg"></td>-->
+            <!--            <td><img src="/assets/static/photos/guides/${guide.pathPhoto}.jpg"></td>-->
             <td><a class="btn btn-secondary"
                    th:href="@{'/guides/details/' + ${guide.id}}">Подробнее</a>
-            <a class="btn btn-secondary"
+                <a class="btn btn-secondary"
                    th:href="@{'/guides/edit/' + ${guide.id}}">Редактировать</a>
-            <a type="button" class="btn btn-danger"
+                <a type="button" class="btn btn-danger"
                    th:href="@{'/guides/delete/' + ${guide.id}}">Удалить</a></td>
         </tr>
         </tbody>
@@ -119,7 +119,8 @@
         <div class="row featurette">
             <div class="col-md-8 order-md-2">
                 <div class="row">
-                    <h2 class="featurette-heading fw-normal lh-1 col-md-9 col-lg-10" th:text="${guide.lastName} + ' ' +  ${guide.firstName} + ' ' + ${guide.patronymic}"></h2>
+                    <h2 class="featurette-heading fw-normal lh-1 col-md-9 col-lg-10"
+                        th:text="${guide.lastName} + ' ' +  ${guide.firstName} + ' ' + ${guide.patronymic}"></h2>
                 </div>
 
                 <p class="lead" th:text="${guide.email}"></p>
@@ -137,13 +138,19 @@
             </div>
 
             <div class="col-md-4 order-md-1">
-                <img class="d-block w-100 rounded-circle"
-                     th:src="|data:image/jpeg;base64,${guide.pathPhoto}|" role="img"
-                     preserveAspectRatio="xMidYMid slice" style="object-fit: cover; max-height: 300px;" focusable="false">
-
-
-                </img>
-
+                <div style="
+    width: 100%;
+    height: 0;
+    padding-top: 100%;
+    position: relative;
+    overflow: hidden;
+    border-radius: 50%;
+">
+                    <img class="d-block w-100"
+                         th:src="|data:image/jpeg;base64,${guide.pathPhoto}|" role="img"
+                         preserveAspectRatio="xMidYMid slice" style="object-fit: cover;/* max-height: 300px; */top: 0;position: absolute;/* max-width: 100%; */object-fit: cover;width: 100%;height: 100%;"
+                         focusable="false"/>
+                </div>
             </div>
         </div>
         <hr class="featurette-divider">
@@ -162,7 +169,8 @@
         <ul class="pagination justify-content-center">
             <li class="page-item">
                 <a th:if="${currentPage > 1}"
-                   th:href="@{'/guides/1' + '?sortField=' + ${sortField} + '&sortDir=' + ${sortDir} + '&scheme=' + ${scheme}}" class="page-link">Первая</a>
+                   th:href="@{'/guides/1' + '?sortField=' + ${sortField} + '&sortDir=' + ${sortDir} + '&scheme=' + ${scheme}}"
+                   class="page-link">Первая</a>
                 <span th:unless="${currentPage > 1}" class="page-link disabled">Первая</span>
             </li>
             <li class="page-item">

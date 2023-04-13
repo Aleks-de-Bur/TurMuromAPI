@@ -138,6 +138,21 @@
 
                         <hr class="my-4">
 
+                        <script>
+                        function schedule(id){
+                            var chbox;
+                            chbox=document.getElementById(id);
+
+                            if (chbox.checked) {
+                        		alert('Выбран');
+                        	}
+                        	else {
+                        		alert ('Не выбран');
+                        	}
+                        }
+
+                        </script>
+
                         <h4>Расписание</h4>
                         <p class="lead">При отсутствии графика работы оставьте значения полей по умолчанию.</p>
                         <div class="accordion" id="accordionExample">
@@ -155,16 +170,24 @@
                                         <!--                                        <h4>Расписание</h4>-->
                                         <div class="row g-3">
 
-
                                             <h6>Понедельник</h6>
-                                            <div class="col-sm-6">
+                                            <div class="col-sm-4">
                                                 <div class="cs-form">
                                                     <input type="time" name="s1_start" class="form-control" value="00:00"/>
                                                 </div>
                                             </div>
-                                            <div class="col-sm-6">
+                                            <div class="col-sm-4">
                                                 <div class="cs-form">
                                                     <input type="time" name="s1_end" class="form-control" value="23:59"/>
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-4">
+                                                <div class="btn-group text-end" role="group" aria-label="Basic outlined">
+                                                    <input type="checkbox" class="btn-check" id="1" name="mon" value="every" autocomplete="off">
+                                                    <label class="btn btn-outline-primary" for="1">Флажок 1</label>
+
+                                                    <input type="checkbox" class="btn-check" id="2" name="mon" value="never" autocomplete="off">
+                                                    <label class="btn btn-outline-primary" for="2">Флажок 2</label>
                                                 </div>
                                             </div>
                                         </div>

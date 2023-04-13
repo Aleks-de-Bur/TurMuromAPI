@@ -143,7 +143,7 @@ public class GuideController {
 
         guide.setPathPhoto(fileName);
         guideService.insertGuide(guide);
-        return "redirect:/guides";
+        return "redirect:/guides/1?sortField=lastName&sortDir=asc&scheme=list";
     }
 
 //    @PostMapping("/uploadImage")
