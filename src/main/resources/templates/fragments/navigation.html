@@ -83,11 +83,11 @@
                 <div class="dropdown text-end" sec:authorize="isAuthenticated()">
                     <a href="#" class="d-block text-decoration-none dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
                         <img src="https://github.com/mdo.png" alt="mdo" width="32" height="32" class="rounded-circle">
-                        <span sec:authentication="name"></span>
+                        <span sec:authentication="principal.firstName"></span>
                     </a>
                     <ul class="dropdown-menu dropdown-menu-dark text-small">
-                        <li><a class="dropdown-item" th:href="@{/personal_cabinet}">Личный кабинет</a></li>
-                        <li><a class="dropdown-item" href="#">Settings</a></li>
+                        <li><a class="dropdown-item" th:href="@{/profile}">Профиль</a></li>
+                        <li><a class="dropdown-item" href="/admin_cabinet/1?sortField=lastName&sortDir=asc">Администрирование</a></li>
                         <li><a class="dropdown-item" href="#">Profile</a></li>
                         <li><hr class="dropdown-divider"></li>
                         <li><a class="dropdown-item" th:href="@{/logout}">Выйти</a></li>

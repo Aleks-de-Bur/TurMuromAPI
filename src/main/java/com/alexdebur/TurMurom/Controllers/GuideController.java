@@ -163,7 +163,6 @@ public class GuideController {
     public String editGuide(Guide guide, @RequestParam("image") MultipartFile file) throws IOException {
 
         if (!file.isEmpty()) {
-
             String fileName = guide.getLastName() + "_" + guide.getTelNumber() +
                     file.getOriginalFilename().substring(file.getOriginalFilename().length() - 4);
 

@@ -3,25 +3,15 @@ package com.alexdebur.TurMurom.Models;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.security.core.GrantedAuthority;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 
-@Entity
-@Getter
-@Setter
-@NoArgsConstructor
-public class Role {
+public enum Role implements GrantedAuthority {
+    ROLE_USER, ROLE_ADMIN, ROLE_MODERATOR, ROLE_GUIDE;
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-    private String name;
-
-    public Role(String name) {
-        super();
-        this.name = name;
+    @Override
+    public String getAuthority() {
+        return name();
     }
 }

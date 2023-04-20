@@ -11,27 +11,27 @@ import org.springframework.web.bind.annotation.PostMapping;
 
 @Controller
 public class LoginController {
-    @Autowired
-    private UserService service;
-
-    @GetMapping("/log_in")
-    public String iniciarSesion() {
-        return "authorization/log_in";
-    }
-
-    @GetMapping("/personal_cabinet")
-    public String personalCabinet() {
-        return "authorization/personal_cabinet";
-    }
-
-    @GetMapping("/admin")
-    public String verPaginaDeInicio(Model modelo) {
-        modelo.addAttribute("users", service.getAll());
-        return "authorization/example";
-    }
-
-    @PostMapping("/log_in")
-    public String redirectUserAccount() {
-        return "redirect:/";
-    }
+//    @Autowired
+//    private UserService service;
+//
+//    @GetMapping("/log_in")
+//    public String iniciarSesion() {
+//        return "authorization/log_in";
+//    }
+//
+//    @GetMapping("/personal_cabinet")
+//    public String personalCabinet() {
+//        return "authorization/personal_cabinet";
+//    }
+//
+//    @GetMapping("/admin")
+//    public String verPaginaDeInicio(Model modelo) {
+//        modelo.addAttribute("users", service.getAll());
+//        return "authorization/example";
+//    }
+//
+//    @PostMapping("/log_in")
+//    public String redirectUserAccount() {
+//        return "redirect:/";
+//    }
 }

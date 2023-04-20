@@ -1,6 +1,8 @@
 package com.alexdebur.TurMurom.Config;
 
+import com.alexdebur.TurMurom.Services.CustomUserDetailsService;
 import com.alexdebur.TurMurom.Services.UserService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -9,6 +11,7 @@ import org.springframework.security
 import org.springframework.security
         .config.annotation.authentication
         .builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security
         .config.annotation.web.builders.HttpSecurity;
 import org.springframework.security
@@ -18,46 +21,55 @@ import org.springframework.security
         .WebSecurityConfigurerAdapter;
 import org.springframework.security
         .crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security
         .web.util.matcher.AntPathRequestMatcher;
 
-@Configuration
 @EnableWebSecurity
+@RequiredArgsConstructor
+@EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
+    private final CustomUserDetailsService userDetailsService;
+
     @Autowired
     private UserService userService;
 
     @Bean
-    public BCryptPasswordEncoder passwordEncoder() {
-
-        return new BCryptPasswordEncoder();
-    }
-
-    @Bean
-    public DaoAuthenticationProvider authenticationProvider() {
-
-        DaoAuthenticationProvider auth = new DaoAuthenticationProvider();
-        auth.setUserDetailsService(userService);
-        auth.setPasswordEncoder(passwordEncoder());
-        return auth;
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder(8);
     }
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.authenticationProvider(authenticationProvider());
+        auth.userDetailsService(userDetailsService)
+                .passwordEncoder(passwordEncoder());
     }
+
+//    @Override
+//    protected void configure(HttpSecurity http) throws Exception {
+//        http
+//                .authorizeRequests()
+//                .antMatchers("/", "/product/**", "/images/**", "/registration", "/user/**", "/static/**")
+//                .permitAll()
+//                .anyRequest().authenticated()
+//                .and()
+//                .formLogin()
+//                .loginPage("/log_in")
+//                .permitAll()
+//                .and()
+//                .logout()
+//                .permitAll();
+//    }
 
     @Override
     protected void configure(HttpSecurity httpSecurity) throws Exception {
         httpSecurity
-                .csrf()
-                .disable()
                 .authorizeRequests()
                 //Доступ только для не зарегистрированных пользователей
                 .antMatchers("/sign_up", "/log_in").not().fullyAuthenticated()
                 //Доступ только для пользователей с ролью Администратор
-                .antMatchers("/authorization/example").hasRole("ADMIN")
-                .antMatchers("/map").hasRole("USER")
+                .antMatchers("/authorization/example", "/personal_cabinet/admin", "/authorization/admin").hasRole("ADMIN")
+                .antMatchers("/map", "/personal_cabinet").hasRole("USER")
                 //Доступ разрешен всем пользователей
                 .antMatchers("/places/**", "/","/guides/**",
                         "/assets/**", "/photos/**", "routes/**").permitAll()

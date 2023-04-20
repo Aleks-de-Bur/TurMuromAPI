@@ -107,32 +107,6 @@ public class MarkController {
         return "marks/places";
     }
 
-
-
-//    @RequestMapping("/page/{pageNum}")
-//    public String viewPage(Model model,
-//                           @PathVariable(name = "pageNum") int pageNum,
-//                           @Param("sortField") String sortField,
-//                           @Param("sortDir") String sortDir) {
-//
-//        Page<Product> page = service.listAll(pageNum, sortField, sortDir);
-//
-//        List<Product> listProducts = page.getContent();
-//
-//        model.addAttribute("currentPage", pageNum);
-//        model.addAttribute("totalPages", page.getTotalPages());
-//        model.addAttribute("totalItems", page.getTotalElements());
-//
-//        model.addAttribute("sortField", sortField);
-//        model.addAttribute("sortDir", sortDir);
-//        model.addAttribute("reverseSortDir", sortDir.equals("asc") ? "desc" : "asc");
-//
-//        model.addAttribute("listProducts", listProducts);
-//
-//        return "index";
-//    }
-
-
     @GetMapping("/places/create")
     public String createMark(@RequestHeader(value = HttpHeaders.REFERER, required = false) final String referrer, Model model) {
         if (referrer != null) {
