@@ -19,9 +19,7 @@
     <link href="assets/dist/css/styles.css" rel="stylesheet"/>
     <!-- FancyBox Для изображений-->
     <link rel="stylesheet"
-          href="https://cdn.jsdelivr.net/gh/fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css"
-    />
-
+          href="https://cdn.jsdelivr.net/gh/fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css"/>
 
     <style>
     .card {
@@ -79,9 +77,6 @@
     .date {
         background-color: #ccc
     }
-
-
-
     </style>
 </head>
 <body class="bg-dark">
@@ -181,8 +176,14 @@
 <!--                                        </div>-->
 <!--                                    </div>-->
 
-                                    <label for="photo">Фото</label>
-                                    <input id="photo" class="form-control mb-3" type="file" name="image">
+<!--                                    <label for="photo">Фото</label>-->
+<!--                                    <input id="photo" class="form-control mb-3" type="file" name="image">-->
+
+                                    <div class="input-group">
+
+                                        <input type="file" class="form-control" name="image" id="photo">
+                                        <label class="input-group-text" for="photo">Фото</label>
+                                    </div>
 
 <!--                                    <div class="form-floating mb-3">-->
 <!--                                        <input id="photo" class="form-control form-control-sm" type="file" name="image">-->
@@ -211,9 +212,7 @@
                                         </button>
 
                                         <button type="submit" class="btn btn-outline-success"
-                                                style="border-bottom-right-radius: 12px; border-top-right-radius: 0px;">
-                                            Сохранить
-                                        </button>
+                                                style="border-bottom-right-radius: 12px; border-top-right-radius: 0px;">Сохранить</button>
                                     </div>
                                 </div>
                             </form>

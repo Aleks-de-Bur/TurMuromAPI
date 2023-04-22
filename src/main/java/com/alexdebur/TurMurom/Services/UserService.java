@@ -4,6 +4,7 @@ import com.alexdebur.TurMurom.Models.Mark;
 import com.alexdebur.TurMurom.Models.User;
 import com.alexdebur.TurMurom.Models.Role;
 import com.alexdebur.TurMurom.Repositories.UserRepository;
+import com.alexdebur.TurMurom.WorkClasses.InteractionPhoto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -13,6 +14,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.security.Principal;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -21,6 +23,7 @@ import java.util.stream.Collectors;
 @Slf4j
 @RequiredArgsConstructor
 public class UserService {
+    public static String UPLOAD_DIRECTORY = System.getProperty("user.dir") + "\\Photos\\Users\\";
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
 
@@ -74,6 +77,14 @@ public class UserService {
     public User getUserByPrincipal(Principal principal) {
         if (principal == null) return new User();
         return userRepository.findByEmail(principal.getName());
+    }
+
+    public User getUserById(Long id) {
+        return userRepository.findById(id).get();
+    }
+
+    public void deleteUserById(Long id) {
+        userRepository.deleteById(id);
     }
 
     // Pagination

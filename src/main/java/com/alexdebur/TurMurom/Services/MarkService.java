@@ -59,14 +59,23 @@ public class MarkService {
         }
     }
 
-    // Pagination
-    public Page<Mark> listAll(int pageNum, String sortField, String sortDir) {
+    /*
+     * TODO: Get Mark By keyword and Pagination
+     */
+    public Page<Mark> listAll(int pageNum, int size, String keyword, String sortField, String sortDir) {
 
-        Pageable pageable = PageRequest.of(pageNum - 1, 5,
+        Pageable pageable = PageRequest.of(pageNum - 1, size,
                 sortDir.equals("asc") ? Sort.by(sortField).ascending()
                         : Sort.by(sortField).descending()
         );
 
-        return markRepository.findAll(pageable);
+        Page<Mark> pageMarks;
+        if (keyword == null) {
+            pageMarks = markRepository.findAll(pageable);
+        } else {
+            pageMarks = markRepository.findByTitleContainingIgnoreCase(keyword, pageable);
+        }
+
+        return pageMarks;
     }
 }

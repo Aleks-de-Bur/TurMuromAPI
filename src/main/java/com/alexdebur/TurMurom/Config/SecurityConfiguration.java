@@ -80,7 +80,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .formLogin()
                 .loginPage("/log_in")
                 //Перенаправление на главную страницу после успешного входа
-                .defaultSuccessUrl("/places/1?sortField=title&sortDir=asc&scheme=list")
+                .defaultSuccessUrl("/places")
                 .permitAll()
                 .and()
                 .logout()

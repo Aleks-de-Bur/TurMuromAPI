@@ -97,11 +97,41 @@
             <!--            <td><img src="/assets/static/photos/guides/${guide.pathPhoto}.jpg"></td>-->
             <td class="align-self-end">
                 <a type="button" class="btn btn-secondary btn-sm"
-                   th:href="@{'/user/' + ${user.id}}">Подробнее</a>
+                   th:href="@{'/admin_cabinet/user/' + ${user.id}}">Подробнее</a>
                 <a type="button" class="btn btn-secondary btn-sm"
                    th:href="@{'/admin_cabinet/user/edit/' + ${user.id}}">Редактировать</a>
-                <a type="button" class="btn btn-danger btn-sm"
-                   th:href="@{'/admin_cabinet/user/delete/' + ${user.id}}">Удалить</a></td>
+<!--                <a type="button" class="btn btn-danger btn-sm"-->
+<!--                   th:href="@{'/admin_cabinet/user/delete/' + ${user.id}}">Удалить</a>-->
+
+                <!-- Кнопка-триггер модального окна -->
+                <button type="button" class="btn btn-danger btn-sm" data-bs-toggle="modal"
+                        th:data-bs-target="'#deleteModal' + ${user.id}">Удалить
+                </button>
+
+                <!-- Модальное окно -->
+                <div class="modal fade" th:id="'deleteModal' + ${user.id}" tabindex="-1" aria-labelledby="deleteModalLabel"
+                     aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered">
+                        <div class="modal-content rounded-4">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="deleteModalLabel">Удаление профиля</h5>
+                                    <!--                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>-->
+                                </div>
+                                <div class="modal-body">
+                                    <p>Вы уверены, что хотите удалить данный аккаунт?</p>
+                                </div>
+                                <div class="modal-footer p-0" style="border-bottom-left-radius: 16px; border-bottom-right-radius: 16px;">
+                                    <div class="btn-group w-100 m-0" role="group">
+                                        <button type="button" class="btn btn-outline-dark" data-bs-dismiss="modal"
+                                                style="border-bottom-left-radius: 12px; border-top-left-radius: 0px;">Закрыть</button>
+
+                                        <button th:href="@{'/admin_cabinet/user/delete/' + ${user.id}}" type="button" class="btn btn-outline-danger"
+                                                style="border-bottom-right-radius: 12px; border-top-right-radius: 0px;">Удалить</button>
+                                    </div>
+                                </div>
+                        </div>
+                    </div>
+                </div></td>
         </tr>
         </tbody>
     </table>

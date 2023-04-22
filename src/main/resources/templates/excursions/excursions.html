@@ -17,6 +17,9 @@
           rel="stylesheet"/>
     <!-- Core theme CSS (includes Bootstrap)-->
     <link href="../assets/dist/css/styles.css" rel="stylesheet"/>
+    <!-- FancyBox Для изображений-->
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/gh/fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css"/>
 </head>
 
 <!--<body class="bg-image">-->
@@ -61,35 +64,38 @@
 <div class="container mt-4">
     <div class="row justify-content-between">
         <h1 class="col-sm-4">Экскурсии</h1>
-<!--        <a href="/excursions/create" class="col-sm-3 btn-lg btn btn-outline-dark">Добавить</a>-->
+        <!--        <a href="/excursions/create" class="col-sm-3 btn-lg btn btn-outline-dark">Добавить</a>-->
     </div>
+
     <hr class="my-4">
+
     <div class="row justify-content-between">
-        <div class="col-sm-4 col-md-3 col-lg-2">
-            <h5 style="white-space: nowrap;">Сортировать по:</h5>
-        </div>
         <div class="col-sm-6 col-md-7 col-lg-9">
-            <div class="btn-group btn-group-sm" role="group" aria-label="Small button group">
-                <a th:href="@{'/excursions/' + ${currentPage} + '?sortField=id&sortDir=' + ${reverseSortDir} + '&scheme=' + ${scheme}}"
+            <div class="input-group input-group-sm" role="group" aria-label="Small button group">
+                <label class="input-group-text">Сортировать по:</label>
+                <a th:href="@{'/excursions?' + ${keyword!=null && keyword!=''? 'keyword=' + keyword + '&' : ''} +
+                'page=' + ${currentPage} + '&size=' + ${pageSize} + '&sortField=id&sortDir=' + ${reverseSortDir} + '&scheme=' + ${scheme}}"
                    class="btn btn-outline-dark">
-                    <span class="h6" th:if="${sortField} == 'id'"><em><strong>Id</strong></em></span>
-                    <span class="h6" th:unless="${sortField} == 'id'"><small>Id</small></span>
+                    <span class="h6" th:if="${sortField} == 'id'">Id</span>
+                    <span class="h6" th:unless="${sortField} == 'id'">Id</span>
                     <span th:if="${sortDir} == 'asc' and ${sortField} == 'id'">&#9650;</span>
                     <span th:if="${sortDir} == 'desc' and ${sortField} == 'id'">&#9660;</span>
                 </a>
-                <a th:href="@{'/excursions/' + ${currentPage} + '?sortField=title&sortDir=' + ${reverseSortDir} + '&scheme=' + ${scheme}}"
+                <a th:href="@{'/excursions?' + ${keyword!=null && keyword!=''? 'keyword=' + keyword + '&' : ''} +
+                'page=' + ${currentPage} + '&size=' + ${pageSize} + '&sortField=title&sortDir=' + ${reverseSortDir} + '&scheme=' + ${scheme}}"
                    class="btn btn-outline-dark">
-                    <span class="h6" th:if="${sortField} == 'title'"><em><strong>Названию</strong></em></span>
-                    <span class="h6" th:unless="${sortField} == 'title'"><small>Названию</small></span>
+                    <span class="h6" th:if="${sortField} == 'title'">Названию</span>
+                    <span class="h6" th:unless="${sortField} == 'title'">Названию</span>
                     <span th:if="${sortDir} == 'asc' and ${sortField} == 'title'">&#9650;</span>
                     <span th:if="${sortDir} == 'desc' and ${sortField} == 'title'">&#9660;</span>
                 </a>
-                <a th:href="@{'/excursions/' + ${currentPage} + '?sortField=category&sortDir=' + ${reverseSortDir} + '&scheme=' + ${scheme}}"
+                <a th:href="@{'/excursions?' + ${keyword!=null && keyword!=''? 'keyword=' + keyword + '&' : ''} +
+                'page=' + ${currentPage} + '&size=' + ${pageSize} + '&sortField=price&sortDir=' + ${reverseSortDir} + '&scheme=' + ${scheme}}"
                    class="btn btn-outline-dark">
-                    <span class="h6" th:if="${sortField} == 'duration'"><em><strong>Стоимости</strong></em></span>
-                    <span class="h6" th:unless="${sortField} == 'duration'"><small>Стоимости</small></span>
-                    <span th:if="${sortDir} == 'asc' and ${sortField} == 'duration'">&#9650;</span>
-                    <span th:if="${sortDir} == 'desc' and ${sortField} == 'duration'">&#9660;</span>
+                    <span class="h6" th:if="${sortField} == 'price'">Стоимости</span>
+                    <span class="h6" th:unless="${sortField} == 'price'">Стоимости</span>
+                    <span th:if="${sortDir} == 'asc' and ${sortField} == 'price'">&#9650;</span>
+                    <span th:if="${sortDir} == 'desc' and ${sortField} == 'price'">&#9660;</span>
                 </a>
             </div>
         </div>
@@ -99,45 +105,67 @@
             <div class="btn-group" role="group" aria-label="Basic radio toggle button group">
                 <input type="radio" class="btn-check" name="btnradio" id="btnRadioTableOn" autocomplete="off"
                        th:if="${scheme} == 'card'" checked>
-                <a th:href="@{'/excursions/' + ${currentPage} + '?sortField=id&sortDir=' + ${sortDir} + '&scheme=card'}"
+                <a th:href="@{'/excursions?' + ${keyword!=null && keyword!=''? 'keyword=' + keyword + '&' : ''} +
+                'page=' + ${currentPage} + '&size=' + ${pageSize} + '&sortField=' + ${sortField} + '&sortDir=' + ${sortDir} + '&scheme=card'}"
                    th:if="${scheme} == 'card'" class="btn btn-outline-dark" for="btnRadioTableOn">&#9638;</a>
 
                 <input type="radio" class="btn-check" name="btnradio" id="btnRadioTable" autocomplete="off"
                        th:unless="${scheme} == 'card'">
-                <a th:href="@{'/excursions/' + ${currentPage} + '?sortField=id&sortDir=' + ${sortDir} + '&scheme=card'}"
+                <a th:href="@{'/excursions?' + ${keyword!=null && keyword!=''? 'keyword=' + keyword + '&' : ''} +
+                'page=' + ${currentPage} + '&size=' + ${pageSize} + '&sortField=' + ${sortField} + '&sortDir=' + ${sortDir} + '&scheme=card'}"
                    th:unless="${scheme} == 'card'" class="btn btn-outline-dark" for="btnRadioTable">&#9638;</a>
 
                 <input type="radio" class="btn-check" name="btnradio" id="btnRadioListOn" autocomplete="off"
                        th:if="${scheme} == 'list'" checked>
-                <a th:href="@{'/excursions/' + ${currentPage} + '?sortField=id&sortDir=' + ${sortDir} + '&scheme=list'}"
+                <a th:href="@{'/excursions?' + ${keyword!=null && keyword!=''? 'keyword=' + keyword + '&' : ''} +
+                'page=' + ${currentPage} + '&size=' + ${pageSize} + '&sortField=' + ${sortField} + '&sortDir=' + ${sortDir} + '&scheme=list'}"
                    th:if="${scheme} == 'list'" class="btn btn-outline-dark" for="btnRadioListOn">&#9636;</a>
 
                 <input type="radio" class="btn-check" name="btnradio" id="btnRadioList" autocomplete="off"
                        th:unless="${scheme} == 'list'">
-                <a th:href="@{'/excursions/' + ${currentPage} + '?sortField=id&sortDir=' + ${sortDir} + '&scheme=list'}"
+                <a th:href="@{'/excursions?' + ${keyword!=null && keyword!=''? 'keyword=' + keyword + '&' : ''} +
+                'page=' + ${currentPage} + '&size=' + ${pageSize} + '&sortField=' + ${sortField} + '&sortDir=' + ${sortDir} + '&scheme=list'}"
                    th:unless="${scheme} == 'list'" class="btn btn-outline-dark" for="btnRadioList">&#9636;</a>
             </div>
         </div>
+    </div>
 
-        <!--        <div class="col-sm-8">-->
-        <!--&lt;!&ndash;            <select class="form-select" aria-label="Sorted select">&ndash;&gt;-->
-        <!--&lt;!&ndash;                <option selected><a th:href="@{'/places/' + ${currentPage} + '?sortField=title&sortDir=' + ${reverseSortDir}}">По названию</a></option>&ndash;&gt;-->
-        <!--&lt;!&ndash;                <option th:href="@{'/places/' + ${currentPage} + '?sortField=id&sortDir=' + ${reverseSortDir}}">По Id</option>&ndash;&gt;-->
-        <!--&lt;!&ndash;                <option>Two</option>&ndash;&gt;-->
-        <!--&lt;!&ndash;                <option>Three</option>&ndash;&gt;-->
-        <!--&lt;!&ndash;            </select>&ndash;&gt;-->
+    <!------------------------------------------------------------------------------------>
+    <!--    Панель поиска и количества отображения элементов-->
+    <!------------------------------------------------------------------------------------>
 
-        <!--            <select th:onchange="window.location.href = '1?sortField=' + this.value + '&sortDir=asc'">-->
-        <!--                <option th:text="id" >Id</option>-->
-        <!--                <option th:text="title" >По названию</option>-->
-        <!--            </select>-->
-        <!--        </div>-->
+    <div class="my-3">
+        <form th:action="@{/excursions}" th:id="searchForm">
+            <div class="row row-cols-1 row-cols-md-3 g-4">
+                <div class="col-6">
+                    <div class="input-group">
+                        <span class="input-group-text" id="basic-addon1"><i class="fa fa-search"></i></span>
+                        <input id="keyword" type="search" name="keyword" th:value="${keyword}" class="form-control"
+                               placeholder="Поиск..." aria-label="Поиск" aria-describedby="basic-addon1">
+                        <button class="btn btn-info btn-sm" type="submit" id="button-addon1">Найти</button>
+                    </div>
+                </div>
+                <div class="col-3">
+                    <div class="input-group">
+                        <label class="input-group-text" for="pageSize">Кол-во элементов:</label>
+
+                        <select th:form="searchForm" name="size" th:value="${pageSize}" onchange="changePageSize()"
+                                class="form-select" id="pageSize">
+                            <option th:each="s : ${ {3, 6, 9} }" th:value="${s}" th:text="${s}"
+                                    th:selected="${s == pageSize}"></option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-1">
+                    <a id="btnClear" th:href="@{/excursions}" class="btn btn-info btn-sm">Очистить</a>
+                </div>
+            </div>
+        </form>
     </div>
 
     <hr class="my-4">
 
     <span th:if="${excursions.size() == 0}">Список экскурсий пуст</span>
-
 
     <!------------------------------------------------------------------------------------>
     <!--    Отображение экскурсий таблицей-->
@@ -170,14 +198,14 @@
     <!--    Отображение экскурсий карточками-->
     <!------------------------------------------------------------------------------------>
 
-
     <div class="row row-cols-1 row-cols-md-3 g-4" th:if="${excursions.size() > 0}  and ${scheme} == 'card'">
         <div class="col" th:each="excursion : ${excursions}">
             <div class="card h-100 rounded-4">
-                <img th:src="|data:image/jpeg;base64,${excursion.excursionPhotos[0].pathPhoto}|" class="card-img-top rounded-4"
+                <img th:src="|data:image/jpeg;base64,${excursion.excursionPhotos[0].pathPhoto}|"
+                     class="card-img-top rounded-4"
                      style="object-fit: cover; height: 280px; margin-bottom: -12px;" alt="...">
 
-<!--                <h5 class="card-header pb-3" style="padding-top: 28px;" th:text="${excursion.title}"></h5>-->
+                <!--                <h5 class="card-header pb-3" style="padding-top: 28px;" th:text="${excursion.title}"></h5>-->
 
                 <div class="card-body">
                     <h5 class="title pb-1 pt-3" th:text="${excursion.title}"></h5>
@@ -188,29 +216,32 @@
                 <div class="card-body">
                     <p class="text-truncate" style="-webkit-line-clamp: 3; display: -webkit-box;
                         -webkit-box-orient: vertical; overflow: hidden; white-space: inherit;"
-                        th:text="${excursion.description}"></p>
+                       th:text="${excursion.description}"></p>
                 </div>
 
                 <!----------    Действия для админа    ----------------------------------------------->
-<!--                <div class="card-footer p-0">-->
-<!--                    <div class="btn-group w-100" role="group" aria-label="Buttons for Admin">-->
-<!--                        <a type="button" class="btn btn-primary" th:href="@{'/routes/edit/' + ${route.id}}"-->
-<!--                           style="border-top-left-radius: 16px; border-bottom-left-radius: 0px;">Редактировать</a>-->
-<!--                        <a type="button" class="btn btn-danger" th:href="@{'/routes/delete/' + ${route.id}}"-->
-<!--                           style="border-top-right-radius: 16px; border-bottom-right-radius: 0px;">Удалить</a>-->
-<!--                    </div>-->
-<!--                </div>-->
+                <!--                <div class="card-footer p-0">-->
+                <!--                    <div class="btn-group w-100" role="group" aria-label="Buttons for Admin">-->
+                <!--                        <a type="button" class="btn btn-primary" th:href="@{'/routes/edit/' + ${route.id}}"-->
+                <!--                           style="border-top-left-radius: 16px; border-bottom-left-radius: 0px;">Редактировать</a>-->
+                <!--                        <a type="button" class="btn btn-danger" th:href="@{'/routes/delete/' + ${route.id}}"-->
+                <!--                           style="border-top-right-radius: 16px; border-bottom-right-radius: 0px;">Удалить</a>-->
+                <!--                    </div>-->
+                <!--                </div>-->
                 <!------------------------------------------------------------------------------------>
 
                 <div class="card-footer p-0" style="border-bottom-left-radius: 16px; border-bottom-right-radius: 16px;">
                     <div class="btn-group w-100" role="group" aria-label="Базовая группа переключателей флажков">
                         <button class="btn btn-primary" type="button" data-bs-toggle="offcanvas"
                                 th:data-bs-target="'#offcanvasExcursion' + ${excursion.id}"
-                                aria-controls="offcanvasResponsive" style="border-bottom-left-radius: 16px; border-top-left-radius: 0px;">Подробнее
+                                aria-controls="offcanvasResponsive"
+                                style="border-bottom-left-radius: 16px; border-top-left-radius: 0px;">Подробнее
                         </button>
 
                         <input type="checkbox" class="btn-check" th:id="${excursion.id}" autocomplete="off">
-                        <label class="btn btn-outline-danger" style="border-bottom-right-radius: 16px; border-top-right-radius: 0px;" th:for="${excursion.id}">Избранное</label><br>
+                        <label class="btn btn-outline-danger"
+                               style="border-bottom-right-radius: 16px; border-top-right-radius: 0px;"
+                               th:for="${excursion.id}">Избранное</label><br>
                     </div>
                 </div>
             </div>
@@ -226,7 +257,6 @@
                                 style="position: absolute; z-index: 2;" data-bs-dismiss="offcanvas"
                                 aria-label="Закрыть"></button>
 
-
                         <!-----------Карусель---------->
                         <div th:id="'carouselExcursionIndicators' + ${excursion.id}"
                              class="carousel slide carousel-fade" data-bs-ride="carousel">
@@ -239,9 +269,11 @@
                             <div class="carousel-inner">
                                 <div class="carousel-item" th:each="photo : ${excursion.excursionPhotos}"
                                      th:classappend="${photoStat.first} ? active : ''">
-                                    <img th:src="|data:image/jpeg;base64,${photo.pathPhoto}|" class="d-block w-100"
-                                         style="object-fit: cover;"
-                                         height="600px" alt="Фотография достопримечательности">
+                                    <a th:href="|data:image/jpeg;base64,${photo.pathPhoto}|" data-fancybox="gallery">
+                                        <img th:src="|data:image/jpeg;base64,${photo.pathPhoto}|" class="d-block w-100"
+                                             style="object-fit: cover;"
+                                             height="600px" alt="Фотография достопримечательности">
+                                    </a>
                                 </div>
                             </div>
                             <button class="carousel-control-prev" type="button"
@@ -284,9 +316,13 @@
     overflow: hidden;
     border-radius: 50%;
 ">
-                                            <img th:src="|data:image/jpeg;base64,${excursion.guide.pathPhoto}|"
-                                                 class="w-100 d-block" style="object-fit: cover;/* max-height: 300px; */top: 0;position: absolute;/* max-width: 100%; */object-fit: cover;width: 100%;height: 100%;"
-                                                 alt="Фотография гида">
+                                                <a th:href="|data:image/jpeg;base64,${excursion.guide.pathPhoto}|"
+                                                   data-fancybox="guide">
+                                                    <img th:src="|data:image/jpeg;base64,${excursion.guide.pathPhoto}|"
+                                                         class="w-100 d-block"
+                                                         style="object-fit: cover;/* max-height: 300px; */top: 0;position: absolute;/* max-width: 100%; */object-fit: cover;width: 100%;height: 100%;"
+                                                         alt="Фотография гида">
+                                                </a>
                                             </div>
                                         </div>
                                         <div class="col-8">
@@ -438,49 +474,32 @@
     <!------------------------------------------------------------------------------------>
 
 
-<!--    <div><i>Отсортировано по [[${sortField}]] в [[${sortDir}]] порядке</i></div>-->
+    <!--    <div><i>Отсортировано по [[${sortField}]] в [[${sortDir}]] порядке</i></div>-->
     <div>&nbsp;</div>
 
-    <nav aria-label="Page navigation example" th:if="${totalPages > 1}">
-        Total Items: [[${totalItems}]]
-        &nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;&nbsp;
+    <nav aria-label="Pagination" th:if="${totalPages > 0}">
         <ul class="pagination justify-content-center">
-            <li class="page-item">
-                <!--                <a class="page-link">Previous</a>-->
-                <a th:if="${currentPage > 1}"
-                   th:href="@{'/excursions/1' + '?sortField=' + ${sortField} + '&sortDir=' + ${sortDir} + '&scheme=' + ${scheme}}"
-                   class="page-link">Первая</a>
-                <span th:unless="${currentPage > 1}" class="page-link disabled">Первая</span>
+            <li class="page-item" th:classappend="${currentPage == 1} ? 'disabled'">
+                <a th:replace="fragments/paging :: pagingExcursions(1, '<<', 'Первая страница')"></a>
             </li>
-            <li class="page-item">
-                <a th:if="${currentPage > 1}"
-                   th:href="@{'/excursions/' + ${currentPage - 1} + '?sortField=' + ${sortField} + '&sortDir=' + ${sortDir} + '&scheme=' + ${scheme}}"
-                   class="page-link">Предыдущая</a>
-                <span th:unless="${currentPage > 1}" class="page-link disabled">Предыдущая</span>
+            <li class="page-item font-weight-bold" th:classappend="${currentPage == 1} ? 'disabled'">
+                <a th:replace="fragments/paging :: pagingExcursions(${currentPage - 1}, 'Пред.', 'Предыдущая страница')"></a>
             </li>
-
-            <ul class="pagination" th:each="i: ${#numbers.sequence(1, totalPages)}">
-                <li class="page-item">
-                    <a th:if="${currentPage != i}"
-                       th:href="@{'/excursions/' + ${i} + '?sortField=' + ${sortField} + '&sortDir=' + ${sortDir} + '&scheme=' + ${scheme}}"
-                       class="page-link">[[${i}]]</a>
-                    <span th:unless="${currentPage != i}" class="page-link disabled">[[${i}]]</span>
-                </li>
-
-            </ul>
-
-
-            <li class="page-item">
-                <a th:if="${currentPage < totalPages}"
-                   th:href="@{'/excursions/' + ${currentPage + 1} + '?sortField=' + ${sortField} + '&sortDir=' + ${sortDir} + '&scheme=' + ${scheme}}"
-                   class="page-link">Следующая</a>
-                <span th:unless="${currentPage < totalPages}" class="page-link disabled">Следующая</span>
+            <li class="page-item disabled" th:if="${currentPage - 2 > 1}">
+                <a class="page-link" href="#">...</a>
             </li>
-            <li class="page-item">
-                <a th:if="${currentPage < totalPages}"
-                   th:href="@{'/excursions/' + ${totalPages} + '?sortField=' + ${sortField} + '&sortDir=' + ${sortDir} + '&scheme=' + ${scheme}}"
-                   class="page-link">Последняя</a>
-                <span th:unless="${currentPage < totalPages}" class="page-link disabled">Последняя</span>
+            <li class="page-item" th:classappend="${page == currentPage} ? 'active'"
+                th:each="page : ${#numbers.sequence(currentPage > 2 ? currentPage - 2 : 1, currentPage + 2 < totalPages ? currentPage + 2 : totalPages)}">
+                <a th:replace="fragments/paging :: pagingExcursions(${page}, ${page}, 'Page ' + ${page})"></a>
+            </li>
+            <li class="page-item disabled" th:if="${currentPage + 2 < totalPages}">
+                <a class="page-link" href="#">...</a>
+            </li>
+            <li class="page-item font-weight-bold" th:classappend="${currentPage == totalPages} ? 'disabled'">
+                <a th:replace="fragments/paging :: pagingExcursions(${currentPage + 1},'След.', 'Следующая страница')"></a>
+            </li>
+            <li class="page-item" th:classappend="${currentPage == totalPages} ? 'disabled'">
+                <a th:replace="fragments/paging :: pagingExcursions(${totalPages}, '>>', 'Последняя страница')"></a>
             </li>
         </ul>
     </nav>
@@ -489,6 +508,10 @@
 
 
 <div th:replace="~{fragments/footer :: footer}"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.4.1/dist/jquery.min.js"></script>
+
+<script src="https://cdn.jsdelivr.net/gh/fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js"></script>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4"

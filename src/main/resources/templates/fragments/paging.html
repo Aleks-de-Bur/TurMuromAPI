@@ -1,0 +1,13 @@
+<a th:fragment="pagingMarks(pageNum, label, tooltip)" class="page-link"
+   th:href="@{'/places?' + ${keyword!=null && keyword!=''? 'keyword=' + keyword + '&' : ''} +
+                'page=' + ${pageNum} + '&size=' + ${pageSize} + '&sortField=' + ${sortField} + '&sortDir=' + ${sortDir} + '&scheme=' + ${scheme}}"
+   th:title="${tooltip}" rel="tooltip">
+  [[${label}]]
+</a>
+
+<a th:fragment="pagingExcursions(pageNum, label, tooltip)" class="page-link"
+   th:href="@{'/excursions?' + ${keyword!=null && keyword!=''? 'keyword=' + keyword + '&' : ''} +
+                'page=' + ${pageNum} + '&size=' + ${pageSize} + '&sortField=' + ${sortField} + '&sortDir=' + ${sortDir} + '&scheme=' + ${scheme}}"
+   th:title="${tooltip}" rel="tooltip">
+  [[${label}]]
+</a>

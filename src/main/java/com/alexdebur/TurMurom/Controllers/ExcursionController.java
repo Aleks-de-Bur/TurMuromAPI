@@ -51,54 +51,101 @@ public class ExcursionController {
         model.addAttribute("guideId", guideId);
     }
 
-    @GetMapping("/excursions/{pageNum}")
+    @GetMapping("/excursions")
     public String excursionsPage(@RequestHeader(value = HttpHeaders.REFERER, required = false) final String referrer,
-                                 Model model, @PathVariable(name = "pageNum") int pageNum,
-                                 @Param("sortField") String sortField,
-                                 @Param("sortDir") String sortDir,
-                                 @Param("scheme") String scheme) {
-
+                                 Model model, @RequestParam(required = false) String keyword,
+                                 @RequestParam(defaultValue = "1") int page, @RequestParam(defaultValue = "9") int size,
+                                 @RequestParam(defaultValue = "title") String sortField,
+                                 @RequestParam(defaultValue = "asc") String sortDir,
+                                 @RequestParam(defaultValue = "card") String scheme) {
         if (referrer != null) {
             model.addAttribute("previousUrl", referrer);
         }
 
-        //List<Excursion> allExcursions = excursionService.getAllExcursions();
+        try {
+            if (keyword != null) {
+                model.addAttribute("keyword", keyword);
+            }
 
-        Page<Excursion> page = excursionService.listAll(pageNum, sortField, sortDir);
-        List<Excursion> allExcursions = page.getContent();
+            Page<Excursion> pageExcursions = excursionService.listAll(page, size, keyword,sortField, sortDir);
+            List<Excursion> excursions = pageExcursions.getContent();
 
-        ArrayList<Long> list = new ArrayList<>();
+            ArrayList<Long> list = new ArrayList<>();
 
-        for (var excursion : allExcursions){
-            for (var photo : excursion.getExcursionPhotos()){
-                try {
-                    photo.setPathPhoto(InteractionPhoto.getPhoto(UPLOAD_DIRECTORY + photo.getPathPhoto()));
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
+            for (var excursion : excursions){
+                for (var photo : excursion.getExcursionPhotos()){
+                    try {
+                        photo.setPathPhoto(InteractionPhoto.getPhoto(UPLOAD_DIRECTORY + photo.getPathPhoto()));
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+                if (!list.contains(excursion.getGuide().getId())) {
+                    try {
+                        excursion.getGuide().setPathPhoto(InteractionPhoto
+                                .getPhoto(GUIDE_UPLOAD_DIRECTORY + excursion.getGuide().getPathPhoto()));
+                        list.add(excursion.getGuide().getId());
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
                 }
             }
-            if (!list.contains(excursion.getGuide().getId())) {
-                try {
-                    excursion.getGuide().setPathPhoto(InteractionPhoto
-                            .getPhoto(GUIDE_UPLOAD_DIRECTORY + excursion.getGuide().getPathPhoto()));
-                    list.add(excursion.getGuide().getId());
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
-            }
+
+            model.addAttribute("excursions", excursions);
+            model.addAttribute("activePage", "excursions");
+
+            model.addAttribute("currentPage", page);
+            model.addAttribute("totalItems", pageExcursions.getTotalElements());
+            model.addAttribute("totalPages", pageExcursions.getTotalPages());
+            model.addAttribute("pageSize", size);
+
+            model.addAttribute("sortField", sortField);
+            model.addAttribute("sortDir", sortDir);
+            model.addAttribute("scheme", scheme);
+            model.addAttribute("reverseSortDir", sortDir.equals("asc") ? "desc" : "asc");
+        } catch (Exception e) {
+            model.addAttribute("message", e.getMessage());
         }
 
-        model.addAttribute("excursions", allExcursions);
-        model.addAttribute("activePage", "excursions");
 
-        model.addAttribute("currentPage", pageNum);
-        model.addAttribute("totalPages", page.getTotalPages());
-        model.addAttribute("totalItems", page.getTotalElements());
 
-        model.addAttribute("sortField", sortField);
-        model.addAttribute("sortDir", sortDir);
-        model.addAttribute("scheme", scheme);
-        model.addAttribute("reverseSortDir", sortDir.equals("asc") ? "desc" : "asc");
+        //List<Excursion> allExcursions = excursionService.getAllExcursions();
+
+//        Page<Excursion> page = excursionService.listAll(pageNum, sortField, sortDir);
+//        List<Excursion> allExcursions = page.getContent();
+//
+//        ArrayList<Long> list = new ArrayList<>();
+//
+//        for (var excursion : allExcursions){
+//            for (var photo : excursion.getExcursionPhotos()){
+//                try {
+//                    photo.setPathPhoto(InteractionPhoto.getPhoto(UPLOAD_DIRECTORY + photo.getPathPhoto()));
+//                } catch (IOException e) {
+//                    throw new RuntimeException(e);
+//                }
+//            }
+//            if (!list.contains(excursion.getGuide().getId())) {
+//                try {
+//                    excursion.getGuide().setPathPhoto(InteractionPhoto
+//                            .getPhoto(GUIDE_UPLOAD_DIRECTORY + excursion.getGuide().getPathPhoto()));
+//                    list.add(excursion.getGuide().getId());
+//                } catch (IOException e) {
+//                    throw new RuntimeException(e);
+//                }
+//            }
+//        }
+//
+//        model.addAttribute("excursions", allExcursions);
+//        model.addAttribute("activePage", "excursions");
+//
+//        model.addAttribute("currentPage", pageNum);
+//        model.addAttribute("totalPages", page.getTotalPages());
+//        model.addAttribute("totalItems", page.getTotalElements());
+//
+//        model.addAttribute("sortField", sortField);
+//        model.addAttribute("sortDir", sortDir);
+//        model.addAttribute("scheme", scheme);
+//        model.addAttribute("reverseSortDir", sortDir.equals("asc") ? "desc" : "asc");
         return "excursions/excursions";
     }
 

@@ -47,7 +47,7 @@
                 <li class="nav-item"><a th:href="@{/categories}"
                                         th:class="${activePage == 'categories'} ? 'nav-link active' : 'nav-link'">Категории</a>
                 </li>
-                <li class="nav-item"><a th:href="@{/places/1?sortField=title&sortDir=asc&scheme=card}"
+                <li class="nav-item"><a th:href="@{/places}"
                                         th:class="${activePage == 'places'} ? 'nav-link active' : 'nav-link'">Достопримечательности</a>
                 </li>
                 <li class="nav-item"><a th:href="@{/routes/1?sortField=title&sortDir=asc&scheme=card}"
@@ -56,7 +56,7 @@
                 <li class="nav-item"><a th:href="@{/guides/1?sortField=lastName&sortDir=asc&scheme=list}"
                                         th:class="${activePage == 'guides'} ? 'nav-link active' : 'nav-link'">Гиды</a>
                 </li>
-                <li class="nav-item"><a th:href="@{/excursions/1?sortField=title&sortDir=asc&scheme=card}"
+                <li class="nav-item"><a th:href="@{/excursions}"
                                         th:class="${activePage == 'excursions'} ? 'nav-link active' : 'nav-link'">Экскурсии</a>
                 </li>
 
@@ -82,13 +82,12 @@
             </div>
                 <div class="dropdown text-end" sec:authorize="isAuthenticated()">
                     <a href="#" class="d-block text-decoration-none dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
-                        <img src="https://github.com/mdo.png" alt="mdo" width="32" height="32" class="rounded-circle">
+                        <img src="/assets/brand/profile_icon.png" alt="mdo" width="32" height="32" class="rounded-circle">
                         <span sec:authentication="principal.firstName"></span>
                     </a>
                     <ul class="dropdown-menu dropdown-menu-dark text-small">
                         <li><a class="dropdown-item" th:href="@{/profile}">Профиль</a></li>
-                        <li><a class="dropdown-item" href="/admin_cabinet/1?sortField=lastName&sortDir=asc">Администрирование</a></li>
-                        <li><a class="dropdown-item" href="#">Profile</a></li>
+                        <li sec:authorize="hasRole('ROLE_ADMIN')"><a class="dropdown-item" href="/admin_cabinet/1?sortField=lastName&sortDir=asc">Администрирование</a></li>
                         <li><hr class="dropdown-divider"></li>
                         <li><a class="dropdown-item" th:href="@{/logout}">Выйти</a></li>
                     </ul>

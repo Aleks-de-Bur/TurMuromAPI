@@ -42,14 +42,23 @@ public class ExcursionService {
         excursionRepository.deleteById(id);
     }
 
+    /*
+     * TODO: Get Excursion By keyword and Pagination
+     */
+    public Page<Excursion> listAll(int pageNum, int size, String keyword, String sortField, String sortDir) {
 
-    // Pagination
-    public Page<Excursion> listAll(int pageNum, String sortField, String sortDir) {
-
-        Pageable pageable = PageRequest.of(pageNum - 1, 7,
+        Pageable pageable = PageRequest.of(pageNum - 1, size,
                 sortDir.equals("asc") ? Sort.by(sortField).ascending()
                         : Sort.by(sortField).descending()
         );
-        return excursionRepository.findAll(pageable);
+
+        Page<Excursion> pageExcursions;
+        if (keyword == null) {
+            pageExcursions = excursionRepository.findAll(pageable);
+        } else {
+            pageExcursions = excursionRepository.findByTitleContainingIgnoreCase(keyword, pageable);
+        }
+
+        return pageExcursions;
     }
 }

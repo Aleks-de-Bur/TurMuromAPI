@@ -4,6 +4,7 @@ import com.alexdebur.TurMurom.Models.Mark;
 import com.alexdebur.TurMurom.Models.Role;
 import com.alexdebur.TurMurom.Models.User;
 import com.alexdebur.TurMurom.Services.UserService;
+import com.alexdebur.TurMurom.WorkClasses.InteractionPhoto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -14,9 +15,12 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
 import java.security.Principal;
 import java.util.List;
 import java.util.Map;
+
+import static com.alexdebur.TurMurom.Services.UserService.UPLOAD_DIRECTORY;
 
 @Controller
 @RequiredArgsConstructor
@@ -77,6 +81,11 @@ public class AdminController {
         userService.changeUserRoles(user, form);
         return "redirect:/personal_cabinet/admin";
     }
+    @PostMapping("/admin_cabinet/user/delete/{id}")
+    public String userDelete(@RequestParam("Id") Long id, @RequestParam Map<String, String> form) {
+        userService.deleteUserById(id);
+        return "redirect:/personal_cabinet/admin";
+    }
 
 //    @GetMapping("/personal_cabinet")
 //    public String userList(Model model) {
@@ -94,10 +103,18 @@ public class AdminController {
 //        return "redirect:/authorization/personal_cabinet";
 //    }
 
-    @GetMapping("/admin/get/{userId}")
-    public String getUser(@PathVariable("user") User user, Model model, Principal principal) {
+    @GetMapping("/admin_cabinet/user/{userId}")
+    public String getUser(Model model, @PathVariable("userId") Long id) {
+        User user = userService.getUserById(id);
+        String photo = UPLOAD_DIRECTORY + user.getPathPhoto();
+        try {
+            photo = InteractionPhoto.getPhoto(photo);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
         model.addAttribute("user", user);
-        model.addAttribute("user", userService.getUserByPrincipal(principal));
+        model.addAttribute("photo", photo);
         return "authorization/personal_cabinet";
     }
 }

@@ -4,6 +4,7 @@ import com.alexdebur.TurMurom.Models.Category;
 import com.alexdebur.TurMurom.Models.Mark;
 import com.alexdebur.TurMurom.Models.MarkPhoto;
 import com.alexdebur.TurMurom.Models.Schedule;
+import com.alexdebur.TurMurom.Repositories.MarkRepository;
 import com.alexdebur.TurMurom.Services.CategoryService;
 import com.alexdebur.TurMurom.Services.MarkPhotoService;
 import com.alexdebur.TurMurom.Services.MarkService;
@@ -11,6 +12,8 @@ import com.alexdebur.TurMurom.Services.ScheduleService;
 import com.alexdebur.TurMurom.WorkClasses.InteractionPhoto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.repository.query.Param;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Controller;
@@ -43,6 +46,11 @@ public class MarkController {
     private CategoryService categoryService;
     private ScheduleService scheduleService;
     private MarkPhotoService markPhotoService;
+    private final MarkRepository markRepository;
+
+    public MarkController(MarkRepository markRepository) {
+        this.markRepository = markRepository;
+    }
 
     @Autowired
     public void setServices(MarkService markService, CategoryService categoryService,
@@ -69,43 +77,88 @@ public class MarkController {
         model.addAttribute("schedule7", schedule7);
     }
 
-    @RequestMapping("/places/{pageNum}")
-    public String placesPage(@RequestHeader(value = HttpHeaders.REFERER, required = false) final String referrer,
-                             Model model, @PathVariable(name = "pageNum") int pageNum,
-                             @Param("sortField") String sortField,
-                             @Param("sortDir") String sortDir,
-                             @Param("scheme") String scheme) {
+    @GetMapping("/places")
+    public String getAll(Model model, @RequestParam(required = false) String keyword,
+                         @RequestParam(defaultValue = "1") int page, @RequestParam(defaultValue = "9") int size,
+                         @RequestParam(defaultValue = "title") String sortField,
+                         @RequestParam(defaultValue = "asc") String sortDir,
+                         @RequestParam(defaultValue = "card") String scheme) {
+        try {
+            if (keyword != null) {
+                model.addAttribute("keyword", keyword);
+            }
 
-        if (referrer != null) {
-            model.addAttribute("previousUrl", referrer);
-        }
+            Page<Mark> pageMarks = markService.listAll(page, size, keyword,sortField, sortDir);
+            List<Mark> marks = pageMarks.getContent();
 
-        Page<Mark> page = markService.listAll(pageNum, sortField, sortDir);
-        List<Mark> allMarks = page.getContent();
-
-        for (var mark : allMarks){
-            for (var photo : mark.getMarkPhotos()){
-                try {
-                    photo.setPathPhoto(InteractionPhoto.getPhoto(UPLOAD_DIRECTORY + photo.getPathPhoto()));
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
+            for (var mark : marks){
+                for (var photo : mark.getMarkPhotos()){
+                    try {
+                        photo.setPathPhoto(InteractionPhoto.getPhoto(UPLOAD_DIRECTORY + photo.getPathPhoto()));
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
                 }
             }
+
+            model.addAttribute("marks", marks);
+            model.addAttribute("activePage", "places");
+
+            model.addAttribute("currentPage", page);
+            model.addAttribute("totalItems", pageMarks.getTotalElements());
+            model.addAttribute("totalPages", pageMarks.getTotalPages());
+            model.addAttribute("pageSize", size);
+
+            model.addAttribute("sortField", sortField);
+            model.addAttribute("sortDir", sortDir);
+            model.addAttribute("scheme", scheme);
+            model.addAttribute("reverseSortDir", sortDir.equals("asc") ? "desc" : "asc");
+        } catch (Exception e) {
+            model.addAttribute("message", e.getMessage());
         }
 
-        model.addAttribute("marks", allMarks);
-        model.addAttribute("activePage", "places");
-
-        model.addAttribute("currentPage", pageNum);
-        model.addAttribute("totalPages", page.getTotalPages());
-        model.addAttribute("totalItems", page.getTotalElements());
-
-        model.addAttribute("sortField", sortField);
-        model.addAttribute("sortDir", sortDir);
-        model.addAttribute("scheme", scheme);
-        model.addAttribute("reverseSortDir", sortDir.equals("asc") ? "desc" : "asc");
         return "marks/places";
     }
+
+//    @RequestMapping("/places/{pageNum}")
+//    public String placesPage(@RequestHeader(value = HttpHeaders.REFERER, required = false) final String referrer,
+//                             Model model, @PathVariable(name = "pageNum") int pageNum,
+//                             @Param("sortField") String sortField,
+//                             @RequestParam(required = false) String keyword,
+//                             @RequestParam(defaultValue = "9") int size,
+//                             @Param("sortDir") String sortDir,
+//                             @Param("scheme") String scheme) {
+//
+//        if (referrer != null) {
+//            model.addAttribute("previousUrl", referrer);
+//        }
+//
+//        Page<Mark> page = markService.listAll(pageNum, size, keyword, sortField, sortDir);
+//        List<Mark> allMarks = page.getContent();
+//
+//        for (var mark : allMarks){
+//            for (var photo : mark.getMarkPhotos()){
+//                try {
+//                    photo.setPathPhoto(InteractionPhoto.getPhoto(UPLOAD_DIRECTORY + photo.getPathPhoto()));
+//                } catch (IOException e) {
+//                    throw new RuntimeException(e);
+//                }
+//            }
+//        }
+//
+//        model.addAttribute("marks", allMarks);
+//        model.addAttribute("activePage", "places");
+//
+//        model.addAttribute("currentPage", pageNum);
+//        model.addAttribute("totalPages", page.getTotalPages());
+//        model.addAttribute("totalItems", page.getTotalElements());
+//
+//        model.addAttribute("sortField", sortField);
+//        model.addAttribute("sortDir", sortDir);
+//        model.addAttribute("scheme", scheme);
+//        model.addAttribute("reverseSortDir", sortDir.equals("asc") ? "desc" : "asc");
+//        return "marks/places";
+//    }
 
     @GetMapping("/places/create")
     public String createMark(@RequestHeader(value = HttpHeaders.REFERER, required = false) final String referrer, Model model) {

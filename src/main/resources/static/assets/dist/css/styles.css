@@ -3217,10 +3217,9 @@ textarea.form-control-lg {
 }
 
 .btn-sm, .btn-group-sm > .btn {
-  --bs-btn-padding-y: 0.25rem;
-  --bs-btn-padding-x: 0.5rem;
-  --bs-btn-font-size: 0.875rem;
-  --bs-btn-border-radius: 0.25rem;
+  padding: 0.5rem 1rem !important;
+  --bs-btn-font-size: 0.875rem !important;
+  --bs-btn-border-radius: 0.25rem !important;
 }
 
 .fade {

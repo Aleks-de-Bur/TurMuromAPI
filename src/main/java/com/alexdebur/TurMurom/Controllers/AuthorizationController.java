@@ -1,12 +1,9 @@
 package com.alexdebur.TurMurom.Controllers;
 
-import com.alexdebur.TurMurom.Models.Guide;
 import com.alexdebur.TurMurom.Models.User;
-import com.alexdebur.TurMurom.Models.UserRegistrationDto;
 import com.alexdebur.TurMurom.Services.UserService;
 import com.alexdebur.TurMurom.WorkClasses.InteractionPhoto;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -29,8 +26,7 @@ public class AuthorizationController {
     @GetMapping("/log_in")
     public String login(Principal principal, Model model) {
         model.addAttribute("user", userService.getUserByPrincipal(principal));
-        return "authorization/login";
-//        return "authorization/log_in";
+        return "authorization/log_in";
     }
 
     @GetMapping("/profile")
@@ -93,55 +89,4 @@ public class AuthorizationController {
         model.addAttribute("userByPrincipal", userService.getUserByPrincipal(principal));
         return "authorization/user_info";
     }
-
-
-
-
-
-
-
-
-
-
-
-//    @ModelAttribute("user")
-//    public UserRegistrationDto userRegistrationDto() {
-//        return new UserRegistrationDto();
-//    }
-//
-//    @GetMapping
-//    public String showRegistrationForm() {
-//        return "authorization/sign_up";
-//    }
-//
-//    @PostMapping
-//    public String registerUserAccount(@ModelAttribute("user") UserRegistrationDto registrationDto) {
-//        userService.save(registrationDto);
-//        return "redirect:/log_in";
-//    }
 }
-
-
-//    private AuthorizationService authorizationService;
-//
-//    @Autowired
-//    public void setServices(AuthorizationService authorizationService){
-//        this.authorizationService = authorizationService;
-//    }
-//
-//    private void fillModelWithUser(Model model, RegisterEntity user){
-//        model.addAttribute("user", user);
-//    }
-//
-//    @GetMapping("/login")
-//    public String logInPage(Model model) {
-//        public String logInPage(@RequestHeader(value = HttpHeaders.REFERER, required = false) final String referrer,
-//        Model model) {
-//
-//            if (referrer != null) {
-//                model.addAttribute("previousUrl", referrer);
-//            }
-//
-//            return "authorization/log_in";
-//        }
-//}
