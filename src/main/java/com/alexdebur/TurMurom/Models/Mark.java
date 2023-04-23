@@ -14,7 +14,9 @@ import javax.persistence.*;
 import java.io.IOException;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Getter
@@ -44,9 +46,16 @@ public class Mark {
     @OneToMany(mappedBy = "mark", cascade = CascadeType.ALL)
     private List<Schedule> schedules;
 
-    @ManyToMany
-    @JsonManagedReference
-    private List<Route> routes;
+//    @ManyToMany
+//    @JsonManagedReference
+//    private List<Route> routes;
+
+    @OneToMany(mappedBy = "mark", cascade = CascadeType.ALL)
+    private Set<RouteMark> routeMarks = new HashSet<>();
+
+    public Mark(String title) {
+        this.title = title;
+    }
 
     public void setMarkPhotos(List<MarkPhoto> markPhotos) {
 

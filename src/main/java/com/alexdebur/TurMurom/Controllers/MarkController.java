@@ -26,10 +26,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.Base64;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 @Controller
 public class MarkController {
@@ -40,6 +37,7 @@ public class MarkController {
     private static final int[] PAGE_SIZES = { 3, 6, 9, 12 };
 
     public static String UPLOAD_DIRECTORY = System.getProperty("user.dir") + "\\Photos\\Marks\\";
+    public static String ROUTE_UPLOAD_DIRECTORY = System.getProperty("user.dir") + "\\Photos\\Routes\\";
 
 
     private MarkService markService;
@@ -91,6 +89,9 @@ public class MarkController {
             Page<Mark> pageMarks = markService.listAll(page, size, keyword,sortField, sortDir);
             List<Mark> marks = pageMarks.getContent();
 
+            ArrayList<Long> list = new ArrayList<>();
+            ArrayList<Integer> arr = new ArrayList<>(Arrays.asList(0, 1, 2));
+
             for (var mark : marks){
                 for (var photo : mark.getMarkPhotos()){
                     try {
@@ -99,10 +100,22 @@ public class MarkController {
                         throw new RuntimeException(e);
                     }
                 }
+                for (var routeMarks : mark.getRouteMarks()) {
+                    if (!list.contains(routeMarks.getRoute().getId())) {
+                        try {
+                            routeMarks.getRoute().setPathPhoto(InteractionPhoto.getPhoto(ROUTE_UPLOAD_DIRECTORY + routeMarks.getRoute().getPathPhoto()));
+                            list.add(routeMarks.getRoute().getId());
+                        } catch (IOException e) {
+                            throw new RuntimeException(e);
+                        }
+                    }
+                }
             }
 
             model.addAttribute("marks", marks);
             model.addAttribute("activePage", "places");
+
+            model.addAttribute("arr", arr);
 
             model.addAttribute("currentPage", page);
             model.addAttribute("totalItems", pageMarks.getTotalElements());

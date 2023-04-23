@@ -6,7 +6,11 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Entity
 @Getter
@@ -21,9 +25,19 @@ public class Route {
     private String duration;
     private String pathPhoto;
 
-    @ManyToMany
-    @JsonManagedReference
-    private List<Mark> marks;
+//    @ManyToMany
+//    @JsonManagedReference
+//    private List<Mark> marks;
 
+    @OneToMany(mappedBy = "route", cascade = CascadeType.ALL)
+    private Set<RouteMark> routeMarks;
 
+    public Route(String title, String description, String duration, String pathPhoto, RouteMark... routeMarks) {
+        this.title = title;
+        this.description = description;
+        this.duration = duration;
+        this.pathPhoto = pathPhoto;
+        for(RouteMark routeMark : routeMarks) routeMark.setRoute(this);
+        this.routeMarks = Stream.of(routeMarks).collect(Collectors.toSet());
+    }
 }

@@ -18,7 +18,9 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Controller
 public class RouteController {
@@ -53,12 +55,12 @@ public class RouteController {
         Page<Route> page = routeService.listAll(pageNum, sortField, sortDir);
         List<Route> allRoutes = page.getContent();
 
-        for (var route : allRoutes){
-                try {
-                    route.setPathPhoto(InteractionPhoto.getPhoto(UPLOAD_DIRECTORY + route.getPathPhoto()));
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
+        for (var route : allRoutes) {
+            try {
+                route.setPathPhoto(InteractionPhoto.getPhoto(UPLOAD_DIRECTORY + route.getPathPhoto()));
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
         }
 
         model.addAttribute("routes", allRoutes);
@@ -83,7 +85,7 @@ public class RouteController {
             model.addAttribute("previousUrl", referrer);
         }
 
-        Route selectedRoute = routeService.getRouteById(id).get();
+        Route selectedRoute = routeService.getRouteById(id);
 
         String photo = UPLOAD_DIRECTORY + selectedRoute.getPathPhoto();
         try {
@@ -92,10 +94,20 @@ public class RouteController {
             throw new RuntimeException(e);
         }
 
+        try {
+            List<Mark> marks = new ArrayList<>();
+            for (var mark : routeService.getRouteMarks(id)) {
+                marks.add(mark.getMark());
+            }
+            model.addAttribute("marks", marks);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+
         model.addAttribute("photo", photo);
         model.addAttribute("selectedRoute", selectedRoute);
 
-        model.addAttribute("marks", routeService.getRouteById(id).get().getMarks());
+
         return "routes/details";
     }
 
@@ -141,7 +153,7 @@ public class RouteController {
             model.addAttribute("previousUrl", referrer);
         }
 
-        String photo = UPLOAD_DIRECTORY + routeService.getRouteById(id).get().getPathPhoto();
+        String photo = UPLOAD_DIRECTORY + routeService.getRouteById(id).getPathPhoto();
         try {
             photo = InteractionPhoto.getPhoto(photo);
         } catch (IOException e) {
@@ -149,8 +161,17 @@ public class RouteController {
         }
         model.addAttribute("photo", photo);
 
-        fillModelWithRouteAndMarks(model, routeService.getRouteById(id).get(), markService.getAllMarks(),
-                routeService.getRouteById(id).get().getMarks());
+        List<Mark> marks = new ArrayList<>();
+        try {
+            for (var mark : routeService.getRouteMarks(id)) {
+                marks.add(mark.getMark());
+            }
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+
+        fillModelWithRouteAndMarks(model, routeService.getRouteById(id), markService.getAllMarks(),
+                marks);
         return "routes/edit";
     }
 
@@ -180,18 +201,20 @@ public class RouteController {
             @PathVariable("markId") Long markId,
             @PathVariable("routeId") Long routeId) throws IOException {
 
-        Route route = routeService.getRouteById(routeId).get();
-        List<Mark> marks = new ArrayList<>();
-        try {
-            marks = route.getMarks();
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-        }
+        Route route = routeService.getRouteById(routeId);
+        Set<RouteMark> marks = route.getRouteMarks();
 
         //routeService.getRouteById(routeId).get().setMarks(); markService.getMarkById(markId).get()
 
-        marks.add(markService.getMarkById(markId).get());
-        route.setMarks(marks);
+        int i = 0;
+        for (var item : route.getRouteMarks()) {
+            if (i < item.getOrdinal())
+                i = item.getOrdinal();
+        }
+
+        marks.add(new RouteMark(markService.getMarkById(markId).get(), route, i + 1));
+        route.setRouteMarks(marks);
+//        route.setMarks(marks);
 
         routeService.insertRoute(route);
 
@@ -201,7 +224,7 @@ public class RouteController {
     @GetMapping("/routes/delete/{id}")
     public String deleteRouteById(@RequestHeader(value = HttpHeaders.REFERER, required = false) final String referrer,
                                   @PathVariable("id") Long id) {
-        Route route = routeService.getRouteById(id).get();
+        Route route = routeService.getRouteById(id);
 
         String path;
         path = "Routes\\" + route.getPathPhoto();

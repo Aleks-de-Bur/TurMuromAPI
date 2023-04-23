@@ -9,7 +9,7 @@
           crossorigin="anonymous">
 </head>
 
-<body style="background-color: #3e4145">
+<body class="bg-dark" style="background-color: #3e4145">
 <div class="container">
     <section class="vh-100">
         <div class="container py-5 h-100">
@@ -47,6 +47,8 @@
                                                    placeholder="Пароль">
                                             <label for="floatingPassword">Пароль</label>
                                         </div>
+
+                                        <input type="hidden" name="_csrf" value="${_csrf.token}">
 
                                         <div class="row g-3">
 <!--                                            <button class="btn col-sm-6 btn-dark btn-lg btn-block" type="submit">Назад</button>-->

@@ -2,10 +2,8 @@ package com.alexdebur.TurMurom.Services;
 
 import com.alexdebur.TurMurom.Models.Excursion;
 import com.alexdebur.TurMurom.Models.Route;
-import com.alexdebur.TurMurom.Repositories.ExcursionRepository;
-import com.alexdebur.TurMurom.Repositories.GuideRepository;
-import com.alexdebur.TurMurom.Repositories.MarkRepository;
-import com.alexdebur.TurMurom.Repositories.RouteRepository;
+import com.alexdebur.TurMurom.Models.RouteMark;
+import com.alexdebur.TurMurom.Repositories.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -20,20 +18,26 @@ import java.util.Optional;
 public class RouteService {
     private RouteRepository routeRepository;
     private MarkRepository markRepository;
+    private RouteMarkRepository routeMarkRepository;
 
     @Autowired
     public void setRepositories(RouteRepository routeRepository,
-                                MarkRepository markRepository) {
+                                MarkRepository markRepository, RouteMarkRepository routeMarkRepository) {
         this.routeRepository = routeRepository;
         this.markRepository = markRepository;
+        this.routeMarkRepository = routeMarkRepository;
     }
 
     public List<Route> getAllRoutes() {
         return routeRepository.findAll();
     }
 
-    public Optional<Route> getRouteById(Long id) {
-        return routeRepository.findById(id);
+    public Route getRouteById(Long id) {
+        return routeRepository.findById(id).get();
+    }
+
+    public List<RouteMark> getRouteMarks(Long id) {
+        return routeMarkRepository.findByRouteId(id);
     }
 
     public void insertRoute(Route route) {
