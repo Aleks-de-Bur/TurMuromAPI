@@ -90,7 +90,7 @@ public class MarkController {
             List<Mark> marks = pageMarks.getContent();
 
             ArrayList<Long> list = new ArrayList<>();
-            ArrayList<Integer> arr = new ArrayList<>(Arrays.asList(0, 1, 2));
+            ArrayList<Integer> arr = new ArrayList<>(Arrays.asList(0, 2, 4));
 
             for (var mark : marks){
                 for (var photo : mark.getMarkPhotos()){
