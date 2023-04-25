@@ -87,6 +87,7 @@
                     </a>
                     <ul class="dropdown-menu dropdown-menu-dark text-small">
                         <li><a class="dropdown-item" th:href="@{/profile}">Профиль</a></li>
+                        <li><a class="dropdown-item" th:href="@{/profile/elected}">Избранное</a></li>
                         <li sec:authorize="hasRole('ROLE_ADMIN')"><a class="dropdown-item" href="/admin_cabinet/1?sortField=lastName&sortDir=asc">Администрирование</a></li>
                         <li><hr class="dropdown-divider"></li>
                         <li><form th:action="@{/logout}" method="post">

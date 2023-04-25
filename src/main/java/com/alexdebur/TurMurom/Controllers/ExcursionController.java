@@ -30,8 +30,8 @@ public class ExcursionController {
     private ExcursionPhotoService excursionPhotoService;
     private GuideService guideService;
 
-    public static String UPLOAD_DIRECTORY = System.getProperty("user.dir") + "\\Photos\\Excursions\\";
-    public String GUIDE_UPLOAD_DIRECTORY = System.getProperty("user.dir") + "\\Photos\\Guides\\";
+    public static String EXCURSION_UPLOAD_DIRECTORY = System.getProperty("user.dir") + "\\Photos\\Excursions\\";
+    public static String GUIDE_UPLOAD_DIRECTORY = System.getProperty("user.dir") + "\\Photos\\Guides\\";
 
     @Autowired
     public void setExcursionService(ExcursionService excursionService, ExcursionPhotoService excursionPhotoService,
@@ -75,7 +75,7 @@ public class ExcursionController {
             for (var excursion : excursions){
                 for (var photo : excursion.getExcursionPhotos()){
                     try {
-                        photo.setPathPhoto(InteractionPhoto.getPhoto(UPLOAD_DIRECTORY + photo.getPathPhoto()));
+                        photo.setPathPhoto(InteractionPhoto.getPhoto(EXCURSION_UPLOAD_DIRECTORY + photo.getPathPhoto()));
                     } catch (IOException e) {
                         throw new RuntimeException(e);
                     }
@@ -193,7 +193,7 @@ public class ExcursionController {
         List<String> photos = new ArrayList<>();
         for (var photo : selectedExcursion.getExcursionPhotos()){
             try {
-                photos.add(InteractionPhoto.getPhoto(UPLOAD_DIRECTORY + photo.getPathPhoto()));
+                photos.add(InteractionPhoto.getPhoto(EXCURSION_UPLOAD_DIRECTORY + photo.getPathPhoto()));
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }

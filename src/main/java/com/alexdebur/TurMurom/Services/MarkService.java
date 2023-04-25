@@ -3,6 +3,8 @@ package com.alexdebur.TurMurom.Services;
 import com.alexdebur.TurMurom.Models.Mark;
 import com.alexdebur.TurMurom.Models.MarkPhoto;
 import com.alexdebur.TurMurom.Repositories.MarkRepository;
+import com.alexdebur.TurMurom.Repositories.UserElectedMarkRepository;
+import com.alexdebur.TurMurom.WorkClasses.InteractionPhoto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -12,6 +14,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -19,14 +22,30 @@ import java.util.Optional;
 @Service
 public class MarkService {
     private MarkRepository markRepository;
+    private UserElectedMarkRepository userElectedMarkRepository;
 
     @Autowired
-    public void setMarkRepository(MarkRepository markRepository) {
+    public void setMarkRepository(MarkRepository markRepository, UserElectedMarkRepository userElectedMarkRepository) {
         this.markRepository = markRepository;
+        this.userElectedMarkRepository = userElectedMarkRepository;
     }
 
     public List<Mark> getAllMarks() {
         return markRepository.findAll();
+    }
+
+    public List<Mark> getElectedMarks(Long id) {
+        List<Mark> marks = new ArrayList<>();
+
+        for (var userMark : userElectedMarkRepository.findByUserId(id)){
+            try {
+                marks.add(userMark.getMark());
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        }
+
+        return marks;
     }
 
     public Optional<Mark> getMarkById(Long id) {

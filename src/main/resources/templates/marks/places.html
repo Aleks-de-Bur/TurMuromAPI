@@ -246,7 +246,7 @@
                             <div class="carousel-inner">
                                 <div class="carousel-item" th:each="photo : ${mark.markPhotos}"
                                      th:classappend="${photoStat.first} ? active : ''">
-                                    <a th:href="|data:image/jpeg;base64,${photo.pathPhoto}|" data-fancybox="gallery">
+                                    <a th:href="|data:image/jpeg;base64,${photo.pathPhoto}|" th:data-fancybox="'gallery' + ${mark.id}">
                                         <img th:src="|data:image/jpeg;base64,${photo.pathPhoto}|" class="d-block w-100"
                                              style="object-fit: cover;"
                                              height="600px" alt="Фотография достопримечательности">

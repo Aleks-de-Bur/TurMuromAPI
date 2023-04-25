@@ -9,6 +9,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import javax.persistence.*;
 import javax.validation.constraints.Email;
@@ -47,6 +49,13 @@ public class User implements UserDetails{
     private boolean active;
     //private String activationCode;
     private String pathPhoto;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private Set<UserElectedMark> userElectedMarks;
+
+    @OneToMany(mappedBy = "excursion", cascade = CascadeType.ALL)
+    private Set<UserElectedExcursion> userElectedExcursions = new HashSet<>();
+
     @ElementCollection(targetClass = Role.class, fetch = FetchType.EAGER)
     @CollectionTable(name = "user_role",
             joinColumns = @JoinColumn(name = "user_id"))
@@ -57,13 +66,29 @@ public class User implements UserDetails{
         return roles.contains(Role.ROLE_ADMIN);
     }
 
-//    public User(String username, String lastName, String firstName, String email, String password) {
-//        this.username = username;
-//        this.lastName = lastName;
-//        this.firstName = firstName;
-//        this.email = email;
-//        this.password = password;
-//    }
+    public User(String lastName, String firstName, String email, String password, boolean active, String pathPhoto, Set<Role> roles, UserElectedMark... userElectedMarks) {
+        this.lastName = lastName;
+        this.firstName = firstName;
+        this.email = email;
+        this.password = password;
+        this.active = active;
+        this.pathPhoto = pathPhoto;
+        for(UserElectedMark userElectedMark : userElectedMarks) userElectedMark.setUser(this);
+        this.userElectedMarks = Stream.of(userElectedMarks).collect(Collectors.toSet());
+        this.roles = roles;
+    }
+
+    public User(String lastName, String firstName, String email, String password, boolean active, String pathPhoto, Set<Role> roles, UserElectedExcursion... userElectedExcursions) {
+        this.lastName = lastName;
+        this.firstName = firstName;
+        this.email = email;
+        this.password = password;
+        this.active = active;
+        this.pathPhoto = pathPhoto;
+        for(UserElectedExcursion userElectedExcursion : userElectedExcursions) userElectedExcursion.setUser(this);
+        this.userElectedExcursions = Stream.of(userElectedExcursions).collect(Collectors.toSet());
+        this.roles = roles;
+    }
 
     // security config
 

@@ -4,6 +4,8 @@ import com.alexdebur.TurMurom.Models.Excursion;
 import com.alexdebur.TurMurom.Models.Mark;
 import com.alexdebur.TurMurom.Repositories.ExcursionRepository;
 import com.alexdebur.TurMurom.Repositories.GuideRepository;
+import com.alexdebur.TurMurom.Repositories.UserElectedExcursionRepository;
+import com.alexdebur.TurMurom.Repositories.UserElectedMarkRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -11,6 +13,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -18,16 +21,33 @@ import java.util.Optional;
 public class ExcursionService {
     private ExcursionRepository excursionRepository;
     private GuideRepository guideRepository;
+    private UserElectedExcursionRepository userElectedExcursionRepository;
 
     @Autowired
     public void setRepositories(ExcursionRepository excursionRepository,
-                                       GuideRepository guideRepository) {
+                                       GuideRepository guideRepository,
+                                UserElectedExcursionRepository userElectedExcursionRepository) {
         this.excursionRepository = excursionRepository;
         this.guideRepository = guideRepository;
+        this.userElectedExcursionRepository = userElectedExcursionRepository;
     }
 
     public List<Excursion> getAllExcursions() {
         return excursionRepository.findAll();
+    }
+
+    public List<Excursion> getElectedExcursions(Long id) {
+        List<Excursion> excursions = new ArrayList<>();
+
+        for (var userExcursion : userElectedExcursionRepository.findByUserId(id)){
+            try {
+                excursions.add(userExcursion.getExcursion());
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        }
+
+        return excursions;
     }
 
     public Optional<Excursion> getExcursionById(Long id) {

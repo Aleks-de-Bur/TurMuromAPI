@@ -9,7 +9,7 @@
           crossorigin="anonymous">
 </head>
 
-<body style="background-color: #3e4145">
+<body class="bg-dark">
 <div class="container">
     <section class="vh-100">
         <div class="container py-5 h-100">
@@ -79,14 +79,16 @@
                                             </div>
                                         </div>
 
-                                        <div class="form-floating mb-3">
-                                            <input type="password" class="form-control" id="floatingConfirmPassword"
-                                                   placeholder="Подтвердите пароль" required>
-                                            <label for="floatingConfirmPassword">Подтвердите пароль</label>
-                                            <div class="invalid-feedback">
-                                                Повторите пароль.
-                                            </div>
-                                        </div>
+<!--                                        <div class="form-floating mb-3">-->
+<!--                                            <input type="password" class="form-control" id="floatingConfirmPassword"-->
+<!--                                                   placeholder="Подтвердите пароль" required>-->
+<!--                                            <label for="floatingConfirmPassword">Подтвердите пароль</label>-->
+<!--                                            <div class="invalid-feedback">-->
+<!--                                                Повторите пароль.-->
+<!--                                            </div>-->
+<!--                                        </div>-->
+
+                                        <input type="hidden" name="_csrf" value="${_csrf.token}">
 
                                         <div class="col-12">
                                             <button class="w-100 btn btn-dark btn-lg" type="submit">Зарегистрироваться

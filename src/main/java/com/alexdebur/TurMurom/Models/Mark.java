@@ -1,19 +1,11 @@
 package com.alexdebur.TurMurom.Models;
 
-import com.alexdebur.TurMurom.WorkClasses.InteractionPhoto;
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
-import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.hibernate.annotations.OnDelete;
-import org.hibernate.annotations.OnDeleteAction;
 
 import javax.persistence.*;
-import java.io.IOException;
-import java.text.DecimalFormat;
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -52,6 +44,9 @@ public class Mark {
 
     @OneToMany(mappedBy = "mark", cascade = CascadeType.ALL)
     private Set<RouteMark> routeMarks = new HashSet<>();
+
+    @OneToMany(mappedBy = "mark", cascade = CascadeType.ALL)
+    private Set<UserElectedMark> userElectedMarks = new HashSet<>();
 
     public Mark(String title) {
         this.title = title;
