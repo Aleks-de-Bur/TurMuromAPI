@@ -51,9 +51,9 @@ public class User implements UserDetails{
     private String pathPhoto;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
-    private Set<UserElectedMark> userElectedMarks;
+    private Set<UserElectedMark> userElectedMarks = new HashSet<>();
 
-    @OneToMany(mappedBy = "excursion", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private Set<UserElectedExcursion> userElectedExcursions = new HashSet<>();
 
     @ElementCollection(targetClass = Role.class, fetch = FetchType.EAGER)

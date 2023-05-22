@@ -8,7 +8,7 @@
           rel="stylesheet" integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65"
           crossorigin="anonymous">
 
-    <!--    <link rel="icon" type="image/x-icon" href="assets/favicon.ico"/>-->
+    <link rel="icon" type="image/x-icon" href="/assets/brand/tur-murom-logo-dark.ico"/>
     <!-- Font Awesome icons (free version)-->
     <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js" crossorigin="anonymous"></script>
     <!-- Google fonts-->
@@ -22,44 +22,8 @@
           href="https://cdn.jsdelivr.net/gh/fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css"/>
 </head>
 
-<!--<body class="bg-image">-->
 <body>
 <div th:replace="~{fragments/navigation :: navigation}"></div>
-<!--<div class="container">-->
-<!--    <div class="row justify-content-between">-->
-<!--        <h1 class="col-sm-4">Экскурсии</h1>-->
-<!--        <a href="/places/create" class="col-sm-3 btn-lg btn btn-outline-dark">Добавить</a>-->
-<!--    </div>-->
-<!--    <hr class="my-4">-->
-<!--    <span th:if="${excursions.size() == 0}">Список экскурсий пуст</span>-->
-<!--    <table th:if="${excursions.size() > 0}" class="table table-hover">-->
-<!--        <thead class="thead-dark">-->
-<!--        <tr>-->
-<!--            <td>ID</td>-->
-<!--            <td>Название</td>-->
-<!--            <td>Длительность</td>-->
-<!--            <td>Стоимость</td>-->
-<!--            <td></td>-->
-<!--        </tr>-->
-<!--        </thead>-->
-<!--        <tbody>-->
-<!--        <tr th:each="excursion : ${excursions}">-->
-<!--            <td th:text="${excursion.id}"/>-->
-<!--            <td th:text="${excursion.title}"/>-->
-<!--            <td th:text="${excursion.duration}"/>-->
-<!--            <td th:text="${excursion.price}"/>-->
-<!--            &lt;!&ndash;            <td><img src="/assets/static/photos/guides/${guide.pathPhoto}.jpg"></td>&ndash;&gt;-->
-<!--&lt;!&ndash;            <td><a type="button" class="btn btn-secondary"&ndash;&gt;-->
-<!--&lt;!&ndash;                   th:href="@{'/excursions/details/' + ${excursion.id}}">Подробнее</a>&ndash;&gt;-->
-<!--&lt;!&ndash;                <a type="button" class="btn btn-secondary"&ndash;&gt;-->
-<!--&lt;!&ndash;                   th:href="@{'/excursions/edit/' + ${excursion.id}}">Редактировать</a>&ndash;&gt;-->
-<!--&lt;!&ndash;                <a type="button" class="btn btn-danger"&ndash;&gt;-->
-<!--&lt;!&ndash;                   th:href="@{'/excursions/delete/' + ${excursion.id}}">Удалить</a></td>&ndash;&gt;-->
-<!--        </tr>-->
-<!--        </tbody>-->
-<!--    </table>-->
-<!--</div>-->
-
 
 <div class="container mt-4">
     <div class="row justify-content-between">
@@ -205,8 +169,6 @@
                      class="card-img-top rounded-4"
                      style="object-fit: cover; height: 280px; margin-bottom: -12px;" alt="...">
 
-                <!--                <h5 class="card-header pb-3" style="padding-top: 28px;" th:text="${excursion.title}"></h5>-->
-
                 <div class="card-body">
                     <h5 class="title pb-1 pt-3" th:text="${excursion.title}"></h5>
                     <!--                    <h2 class="card-title" ></h2>-->
@@ -230,7 +192,9 @@
                 <!--                </div>-->
                 <!------------------------------------------------------------------------------------>
 
-                <div class="card-footer p-0" style="border-bottom-left-radius: 16px; border-bottom-right-radius: 16px;">
+                <!----------    Действия для зарег пользователя    ----------------------------------->
+                <div class="card-footer p-0" sec:authorize="hasRole('ROLE_USER')"
+                     style="border-bottom-left-radius: 16px; border-bottom-right-radius: 16px;">
                     <div class="btn-group w-100" role="group" aria-label="Базовая группа переключателей флажков">
                         <button class="btn btn-primary" type="button" data-bs-toggle="offcanvas"
                                 th:data-bs-target="'#offcanvasExcursion' + ${excursion.id}"
@@ -238,11 +202,24 @@
                                 style="border-bottom-left-radius: 16px; border-top-left-radius: 0px;">Подробнее
                         </button>
 
-                        <input type="checkbox" class="btn-check" th:id="${excursion.id}" autocomplete="off">
-                        <label class="btn btn-outline-danger"
-                               style="border-bottom-right-radius: 16px; border-top-right-radius: 0px;"
-                               th:for="${excursion.id}">Избранное</label><br>
+                        <form class="needs-validation" action="#" th:action="@{'/excursion/' + ${excursion.id} + '/elect'}"
+                              th:object="${excursion}" enctype="multipart/form-data" method="post" id="form1">
+                            <input type="submit" class="btn-check" th:id="${excursion.id}" autocomplete="off">
+                            <label class="btn btn-outline-danger"
+                                   style="border-bottom-right-radius: 16px; border-top-right-radius: 0px;"
+                                   th:for="${excursion.id}">Избранное</label><br>
+                        </form>
                     </div>
+                </div>
+                <!----------    Действия для нерег пользователя    ----------------------------------->
+                <div class="card-footer p-0" sec:authorize="!isAuthenticated() || hasRole('ROLE_ADMIN')"
+                     style="border-bottom-left-radius: 16px; border-bottom-right-radius: 16px;">
+                    <button class="btn btn-primary w-100" type="button" data-bs-toggle="offcanvas"
+                            th:data-bs-target="'#offcanvasExcursion' + ${excursion.id}"
+                            aria-controls="offcanvasResponsive"
+                            style="border-bottom-left-radius: 16px; border-top-left-radius: 0px; border-bottom-right-radius: 16px; border-top-right-radius: 0px;">
+                        Подробнее
+                    </button>
                 </div>
             </div>
 
@@ -344,6 +321,13 @@
 
         </div>
     </div>
+
+
+    <!--                        <div th:each="routeMark, stat : *{routeMarks}">-->
+    <!--                            <input type="hidden" th:field="*{routeMarks[__${stat.index}__].ordinal}"/>-->
+    <!--                        </div>-->
+
+
 
     <!------------------------------------------------------------------------------------>
     <!--    Отображение экскурсий списком-->
@@ -470,11 +454,8 @@
         <hr class="featurette-divider">
     </div>
 
-
     <!------------------------------------------------------------------------------------>
 
-
-    <!--    <div><i>Отсортировано по [[${sortField}]] в [[${sortDir}]] порядке</i></div>-->
     <div>&nbsp;</div>
 
     <nav aria-label="Pagination" th:if="${totalPages > 0}">
@@ -509,7 +490,10 @@
 
 <div th:replace="~{fragments/footer :: footer}"></div>
 
-<script src="https://cdn.jsdelivr.net/npm/jquery@3.4.1/dist/jquery.min.js"></script>
+<script
+        src="https://code.jquery.com/jquery-3.6.4.js"
+        integrity="sha256-a9jBBRygX1Bh5lt8GZjXDzyOB+bWve9EiO7tROUtj/E="
+        crossorigin="anonymous"></script>
 
 <script src="https://cdn.jsdelivr.net/gh/fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js"></script>
 

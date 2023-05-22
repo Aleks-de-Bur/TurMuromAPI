@@ -10,4 +10,5 @@ import java.util.List;
 @Component
 public interface UserElectedMarkRepository extends JpaRepository<UserElectedMark, Long> {
     List<UserElectedMark> findByUserId(Long id);
+    UserElectedMark findByUserIdAndMarkId(Long userId, Long markId);
 }

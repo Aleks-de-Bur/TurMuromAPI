@@ -48,12 +48,16 @@ public class MarkService {
         return marks;
     }
 
-    public Optional<Mark> getMarkById(Long id) {
-        return markRepository.findById(id);
+    public Mark getMarkById(Long id) {
+        return markRepository.findById(id).get();
     }
 
     public Optional<Mark> getMarkByTitleAndDescription(String title, String description) {
         return markRepository.findByTitleAndDescription(title, description);
+    }
+
+    public void deleteElectedMark(Long id){
+        userElectedMarkRepository.deleteById(id);
     }
 
     public void insertMark(Mark mark) {

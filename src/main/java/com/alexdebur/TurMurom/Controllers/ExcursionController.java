@@ -1,15 +1,18 @@
 package com.alexdebur.TurMurom.Controllers;
 
 import com.alexdebur.TurMurom.Models.*;
+import com.alexdebur.TurMurom.Repositories.MarkRepository;
+import com.alexdebur.TurMurom.Repositories.UserElectedExcursionRepository;
+import com.alexdebur.TurMurom.Repositories.UserElectedMarkRepository;
 import com.alexdebur.TurMurom.Services.ExcursionPhotoService;
 import com.alexdebur.TurMurom.Services.ExcursionService;
 import com.alexdebur.TurMurom.Services.GuideService;
+import com.alexdebur.TurMurom.Services.UserService;
 import com.alexdebur.TurMurom.WorkClasses.InteractionPhoto;
-import org.apache.juli.logging.Log;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.repository.query.Param;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -19,26 +22,34 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.security.Principal;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import java.util.logging.Logger;
+import java.util.Set;
 
 @Controller
 public class ExcursionController {
     private ExcursionService excursionService;
     private ExcursionPhotoService excursionPhotoService;
     private GuideService guideService;
+    private UserService userService;
 
     public static String EXCURSION_UPLOAD_DIRECTORY = System.getProperty("user.dir") + "\\Photos\\Excursions\\";
     public static String GUIDE_UPLOAD_DIRECTORY = System.getProperty("user.dir") + "\\Photos\\Guides\\";
 
+    private final UserElectedExcursionRepository userElectedExcursionRepository;
+
+    public ExcursionController(UserElectedExcursionRepository userElectedExcursionRepository) {
+        this.userElectedExcursionRepository = userElectedExcursionRepository;
+    }
+
     @Autowired
     public void setExcursionService(ExcursionService excursionService, ExcursionPhotoService excursionPhotoService,
-                                    GuideService guideService) {
+                                    GuideService guideService, UserService userService) {
         this.excursionService = excursionService;
         this.excursionPhotoService = excursionPhotoService;
         this.guideService = guideService;
+        this.userService = userService;
     }
 
     private void fillModelWithExcursion(Model model, Excursion excursion, List<ExcursionPhoto> photos) {
@@ -57,9 +68,14 @@ public class ExcursionController {
                                  @RequestParam(defaultValue = "1") int page, @RequestParam(defaultValue = "9") int size,
                                  @RequestParam(defaultValue = "title") String sortField,
                                  @RequestParam(defaultValue = "asc") String sortDir,
-                                 @RequestParam(defaultValue = "card") String scheme) {
+                                 @RequestParam(defaultValue = "card") String scheme,
+                                 Principal principal) {
         if (referrer != null) {
             model.addAttribute("previousUrl", referrer);
+        }
+
+        if(principal != null){
+            model.addAttribute("user", userService.getUserByPrincipal(principal));
         }
 
         try {
@@ -149,6 +165,24 @@ public class ExcursionController {
         return "excursions/excursions";
     }
 
+//    @RequestMapping("/excursion/elect")
+//    public ResponseEntity<?> electedExcursion(Long excursionId, Long userId) throws IOException {
+//        User user = userService.getUserById(userId);
+//        Set<UserElectedExcursion> elected = user.getUserElectedExcursions();
+//
+//        UserElectedExcursion check = new UserElectedExcursion(user, excursionService.getExcursionById(excursionId));
+//
+//        if (elected.contains(check)){
+//            elected.remove(check);
+//        } else {
+//            elected.add(check);
+//        }
+//        user.setUserElectedExcursions(elected);
+//        userService.editUser(user);
+//
+//        return ResponseEntity.ok(check);
+//    }
+
     @GetMapping("/guides/edit/{guideId}/excursion/create")
     public String createExcursion(@RequestHeader(value = HttpHeaders.REFERER, required = false) final String referrer,
                                   Model model, @PathVariable("guideId") Long guideId) {
@@ -189,7 +223,7 @@ public class ExcursionController {
             model.addAttribute("previousUrl", referrer);
         }
 
-        Excursion selectedExcursion = excursionService.getExcursionById(excursionId).get();
+        Excursion selectedExcursion = excursionService.getExcursionById(excursionId);
         List<String> photos = new ArrayList<>();
         for (var photo : selectedExcursion.getExcursionPhotos()){
             try {
@@ -213,9 +247,9 @@ public class ExcursionController {
             model.addAttribute("previousUrl", referrer);
         }
 
-        List<ExcursionPhoto> photos = excursionService.getExcursionById(excursionId).get().getExcursionPhotos();
+        List<ExcursionPhoto> photos = excursionService.getExcursionById(excursionId).getExcursionPhotos();
 
-        fillModelWithExcursion(model, excursionService.getExcursionById(excursionId).get(), photos);
+        fillModelWithExcursion(model, excursionService.getExcursionById(excursionId), photos);
         return "excursions/edit";
     }
 
@@ -246,7 +280,7 @@ public class ExcursionController {
                                       @PathVariable("excursionId") Long excursionId,
                                       @PathVariable("guideId") Long guideId) {
 
-        Excursion excursion = excursionService.getExcursionById(excursionId).get();
+        Excursion excursion = excursionService.getExcursionById(excursionId);
 
         String path;
         for (var photo: excursion.getExcursionPhotos()){
@@ -256,5 +290,27 @@ public class ExcursionController {
 
         excursionService.deleteExcursionById(excursionId);
         return "redirect:" + referrer;
+    }
+
+
+    @PostMapping("/excursion/{excursionId}/elect")
+    public String electExcursion(Excursion excursion, Principal principal,
+                                @PathVariable("excursionId") Long excursionId) throws IOException {
+        User user = userService.getUserByPrincipal(principal);
+        Set<UserElectedExcursion> elected = user.getUserElectedExcursions();
+
+        UserElectedExcursion check = new UserElectedExcursion(user, excursionService.getExcursionById(excursionId));
+
+        if (elected.contains(check)){
+            check = userElectedExcursionRepository.findByUserIdAndExcursionId(user.getId(), excursionId);
+            elected.remove(check);
+            userElectedExcursionRepository.deleteById(check.getId());
+        } else {
+            elected.add(check);
+        }
+        user.setUserElectedExcursions(elected);
+        userService.editUser(user);
+
+        return "redirect:/excursions";
     }
 }

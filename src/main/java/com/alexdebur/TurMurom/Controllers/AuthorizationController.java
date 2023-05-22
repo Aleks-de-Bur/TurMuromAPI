@@ -147,14 +147,26 @@ public class AuthorizationController {
         return "authorization/sign_up";
     }
 
-
     @PostMapping("/sign_up")
-    public String createUser(User user, Model model) {
+    public String createUser(User user, Model model, @RequestParam("image") MultipartFile file) throws IOException {
+        String fileName = user.getLastName() + "_" + user.getFirstName() + "_" +
+                file.getOriginalFilename().substring(file.getOriginalFilename().length() - 4);
+
+        user.setPathPhoto(fileName);
+
         if (!userService.createUser(user)) {
             model.addAttribute("errorMessage", "Пользователь с email: " + user.getEmail() + " уже существует");
 //            return "authorization/registration";
             return "authorization/sign_up";
         }
+
+        Path fileNameAndPath = Paths.get(UPLOAD_DIRECTORY, fileName);
+        try {
+            Files.write(fileNameAndPath, file.getBytes());
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
         return "redirect:/log_in";
     }
 

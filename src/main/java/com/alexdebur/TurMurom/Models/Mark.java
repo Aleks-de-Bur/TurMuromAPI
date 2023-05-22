@@ -1,6 +1,9 @@
 package com.alexdebur.TurMurom.Models;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -14,6 +17,7 @@ import java.util.Set;
 @Getter
 @Setter
 @NoArgsConstructor
+
 public class Mark {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -42,6 +46,7 @@ public class Mark {
 //    @JsonManagedReference
 //    private List<Route> routes;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "mark", cascade = CascadeType.ALL)
     private Set<RouteMark> routeMarks = new HashSet<>();
 

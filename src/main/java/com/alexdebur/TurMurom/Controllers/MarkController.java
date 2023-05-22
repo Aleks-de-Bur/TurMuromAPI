@@ -1,14 +1,9 @@
 package com.alexdebur.TurMurom.Controllers;
 
-import com.alexdebur.TurMurom.Models.Category;
-import com.alexdebur.TurMurom.Models.Mark;
-import com.alexdebur.TurMurom.Models.MarkPhoto;
-import com.alexdebur.TurMurom.Models.Schedule;
+import com.alexdebur.TurMurom.Models.*;
 import com.alexdebur.TurMurom.Repositories.MarkRepository;
-import com.alexdebur.TurMurom.Services.CategoryService;
-import com.alexdebur.TurMurom.Services.MarkPhotoService;
-import com.alexdebur.TurMurom.Services.MarkService;
-import com.alexdebur.TurMurom.Services.ScheduleService;
+import com.alexdebur.TurMurom.Repositories.UserElectedMarkRepository;
+import com.alexdebur.TurMurom.Services.*;
 import com.alexdebur.TurMurom.WorkClasses.InteractionPhoto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -26,6 +21,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.security.Principal;
 import java.util.*;
 
 @Controller
@@ -44,16 +40,21 @@ public class MarkController {
     private CategoryService categoryService;
     private ScheduleService scheduleService;
     private MarkPhotoService markPhotoService;
+    private UserService userService;
     private final MarkRepository markRepository;
+    private final UserElectedMarkRepository userElectedMarkRepository;
 
-    public MarkController(MarkRepository markRepository) {
+    public MarkController(MarkRepository markRepository,
+                          UserElectedMarkRepository userElectedMarkRepository) {
         this.markRepository = markRepository;
+        this.userElectedMarkRepository = userElectedMarkRepository;
     }
 
     @Autowired
-    public void setServices(MarkService markService, CategoryService categoryService,
+    public void setServices(MarkService markService, CategoryService categoryService, UserService userService,
                             ScheduleService scheduleService, MarkPhotoService markPhotoService){
         this.markService = markService;
+        this.userService = userService;
         this.categoryService = categoryService;
         this.scheduleService = scheduleService;
         this.markPhotoService = markPhotoService;
@@ -133,46 +134,6 @@ public class MarkController {
         return "marks/places";
     }
 
-//    @RequestMapping("/places/{pageNum}")
-//    public String placesPage(@RequestHeader(value = HttpHeaders.REFERER, required = false) final String referrer,
-//                             Model model, @PathVariable(name = "pageNum") int pageNum,
-//                             @Param("sortField") String sortField,
-//                             @RequestParam(required = false) String keyword,
-//                             @RequestParam(defaultValue = "9") int size,
-//                             @Param("sortDir") String sortDir,
-//                             @Param("scheme") String scheme) {
-//
-//        if (referrer != null) {
-//            model.addAttribute("previousUrl", referrer);
-//        }
-//
-//        Page<Mark> page = markService.listAll(pageNum, size, keyword, sortField, sortDir);
-//        List<Mark> allMarks = page.getContent();
-//
-//        for (var mark : allMarks){
-//            for (var photo : mark.getMarkPhotos()){
-//                try {
-//                    photo.setPathPhoto(InteractionPhoto.getPhoto(UPLOAD_DIRECTORY + photo.getPathPhoto()));
-//                } catch (IOException e) {
-//                    throw new RuntimeException(e);
-//                }
-//            }
-//        }
-//
-//        model.addAttribute("marks", allMarks);
-//        model.addAttribute("activePage", "places");
-//
-//        model.addAttribute("currentPage", pageNum);
-//        model.addAttribute("totalPages", page.getTotalPages());
-//        model.addAttribute("totalItems", page.getTotalElements());
-//
-//        model.addAttribute("sortField", sortField);
-//        model.addAttribute("sortDir", sortDir);
-//        model.addAttribute("scheme", scheme);
-//        model.addAttribute("reverseSortDir", sortDir.equals("asc") ? "desc" : "asc");
-//        return "marks/places";
-//    }
-
     @GetMapping("/places/create")
     public String createMark(@RequestHeader(value = HttpHeaders.REFERER, required = false) final String referrer, Model model) {
         if (referrer != null) {
@@ -194,7 +155,7 @@ public class MarkController {
             model.addAttribute("previousUrl", referrer);
         }
 
-        Mark selectedMark = markService.getMarkById(id).get();
+        Mark selectedMark = markService.getMarkById(id);
         List<String> photos = new ArrayList<>();
         for (var photo : selectedMark.getMarkPhotos()){
             try {
@@ -282,7 +243,7 @@ public class MarkController {
         schedule7.setDay(7);
         schedule7.setMark(mrk);
         scheduleService.insertSchedule(schedule7);
-        return "redirect:/places/1?sortField=title&sortDir=asc&scheme=list";
+        return "redirect:/places";
     }
 
     @GetMapping("/places/edit/{id}")
@@ -293,9 +254,9 @@ public class MarkController {
             model.addAttribute("previousUrl", referrer);
         }
 
-        List<Schedule> schedules = scheduleService.getSchedulesByMark(markService.getMarkById(id).get());
+        List<Schedule> schedules = scheduleService.getSchedulesByMark(markService.getMarkById(id));
 
-        fillModelWithMark(model, markService.getMarkById(id).get(), schedules.get(0),
+        fillModelWithMark(model, markService.getMarkById(id), schedules.get(0),
                 schedules.get(1), schedules.get(2),
                 schedules.get(3), schedules.get(4),
                 schedules.get(5), schedules.get(6));
@@ -323,7 +284,7 @@ public class MarkController {
         }
 
         Mark mrk = markService.getMarkByTitleAndDescription(mark.getTitle(), mark.getDescription()).get();
-        List<Schedule> schedules = scheduleService.getSchedulesByMark(markService.getMarkById(mrk.getId()).get());
+        List<Schedule> schedules = scheduleService.getSchedulesByMark(markService.getMarkById(mrk.getId()));
 
         schedules.get(0).setStart(s1_start);
         schedules.get(0).setEnd(s1_end);
@@ -372,7 +333,7 @@ public class MarkController {
     @GetMapping("/places/delete/{id}")
     public String deleteMarkById(@RequestHeader(value = HttpHeaders.REFERER, required = false) final String referrer,
                                  @PathVariable("id") Long id){
-        Mark mark = markService.getMarkById(id).get();
+        Mark mark = markService.getMarkById(id);
 
         String path;
         for (var photo: mark.getMarkPhotos()){
@@ -382,5 +343,26 @@ public class MarkController {
 
         markService.deleteMarkById(id);
         return "redirect:" + referrer;
+    }
+
+    @PostMapping("/place/{markId}/elect")
+    public String electMark(Mark mark, Principal principal,
+                                 @PathVariable("markId") Long markId) throws IOException {
+        User user = userService.getUserByPrincipal(principal);
+        Set<UserElectedMark> elected = user.getUserElectedMarks();
+
+        UserElectedMark check = new UserElectedMark(user, markService.getMarkById(markId));
+
+        if (elected.contains(check)){
+            check = userElectedMarkRepository.findByUserIdAndMarkId(user.getId(), markId);
+            elected.remove(check);
+            markService.deleteElectedMark(check.getId());
+        } else {
+            elected.add(check);
+        }
+        user.setUserElectedMarks(elected);
+        userService.editUser(user);
+
+        return "redirect:/places";
     }
 }

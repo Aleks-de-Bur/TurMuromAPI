@@ -17,17 +17,15 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @Controller
 public class RouteController {
     private RouteService routeService;
     private MarkService markService;
 
-    public static String UPLOAD_DIRECTORY = System.getProperty("user.dir") + "\\Photos\\Routes\\";
+    public static String ROUTE_UPLOAD_DIRECTORY = System.getProperty("user.dir") + "\\Photos\\Routes\\";
+    public static String MARK_UPLOAD_DIRECTORY = System.getProperty("user.dir") + "\\Photos\\Marks\\";
 
     @Autowired
     public void setRouteService(RouteService routeService, MarkService markService) {
@@ -57,7 +55,7 @@ public class RouteController {
 
         for (var route : allRoutes) {
             try {
-                route.setPathPhoto(InteractionPhoto.getPhoto(UPLOAD_DIRECTORY + route.getPathPhoto()));
+                route.setPathPhoto(InteractionPhoto.getPhoto(ROUTE_UPLOAD_DIRECTORY + route.getPathPhoto()));
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
@@ -87,25 +85,71 @@ public class RouteController {
 
         Route selectedRoute = routeService.getRouteById(id);
 
-        String photo = UPLOAD_DIRECTORY + selectedRoute.getPathPhoto();
+        List<String> photos = new ArrayList<>();
+
         try {
-            photo = InteractionPhoto.getPhoto(photo);
+            photos.add(InteractionPhoto.getPhoto(ROUTE_UPLOAD_DIRECTORY + selectedRoute.getPathPhoto()));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
 
+        List<List<Double>> routePoints = new ArrayList<>();
+
+        if(selectedRoute.getRouteMarks().size() != 0) {
+            for (var mark : selectedRoute.getRouteMarks()) {
+                for (var photo : mark.getMark().getMarkPhotos()) {
+                    try {
+                        photos.add(InteractionPhoto.getPhoto(MARK_UPLOAD_DIRECTORY + photo.getPathPhoto()));
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+
+                routePoints.add(List.of(Double.valueOf(mark.getMark().getAxisY()), Double.valueOf(mark.getMark().getAxisX())));
+            }
+        }
+
+        ArrayList<Long> list = new ArrayList<>();
+        ArrayList<Integer> arr = new ArrayList<>(Arrays.asList(0, 2, 4, 6, 8));
+
         try {
             List<Mark> marks = new ArrayList<>();
-            for (var mark : routeService.getRouteMarks(id)) {
+
+            for (var mark : selectedRoute.getRouteMarks()){
+                for (var photo : mark.getMark().getMarkPhotos()){
+                    try {
+                        photo.setPathPhoto(InteractionPhoto.getPhoto(MARK_UPLOAD_DIRECTORY + photo.getPathPhoto()));
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+                for (var routeMarks : mark.getMark().getRouteMarks()) {
+                    if (!list.contains(routeMarks.getRoute().getId())) {
+                        try {
+                            routeMarks.getRoute().setPathPhoto(InteractionPhoto.getPhoto(ROUTE_UPLOAD_DIRECTORY + routeMarks.getRoute().getPathPhoto()));
+                            list.add(routeMarks.getRoute().getId());
+                        } catch (IOException e) {
+                            throw new RuntimeException(e);
+                        }
+                    }
+                }
                 marks.add(mark.getMark());
             }
+
+//            for (var mark : routeService.getRouteMarks(id)) {
+//                marks.add(mark.getMark());
+//            }
             model.addAttribute("marks", marks);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
 
-        model.addAttribute("photo", photo);
-        model.addAttribute("selectedRoute", selectedRoute);
+        model.addAttribute("photos", photos);
+        model.addAttribute("routePoints", routePoints);
+
+        model.addAttribute("arr", arr);
+
+        model.addAttribute("route", selectedRoute);
 
 
         return "routes/details";
@@ -130,7 +174,7 @@ public class RouteController {
                 (routeService.getAllRoutes().size() + 1) +
                 file.getOriginalFilename().substring(file.getOriginalFilename().length() - 4);
 
-        Path fileNameAndPath = Paths.get(UPLOAD_DIRECTORY, fileName);
+        Path fileNameAndPath = Paths.get(ROUTE_UPLOAD_DIRECTORY, fileName);
         try {
             Files.write(fileNameAndPath, file.getBytes());
         } catch (IOException e) {
@@ -153,7 +197,7 @@ public class RouteController {
             model.addAttribute("previousUrl", referrer);
         }
 
-        String photo = UPLOAD_DIRECTORY + routeService.getRouteById(id).getPathPhoto();
+        String photo = ROUTE_UPLOAD_DIRECTORY + routeService.getRouteById(id).getPathPhoto();
         try {
             photo = InteractionPhoto.getPhoto(photo);
         } catch (IOException e) {
@@ -183,7 +227,7 @@ public class RouteController {
                     route.getId() +
                     file.getOriginalFilename().substring(file.getOriginalFilename().length() - 4);
 
-            Path fileNameAndPath = Paths.get(UPLOAD_DIRECTORY, fileName);
+            Path fileNameAndPath = Paths.get(ROUTE_UPLOAD_DIRECTORY, fileName);
             try {
                 Files.write(fileNameAndPath, file.getBytes());
             } catch (IOException e) {
@@ -212,7 +256,7 @@ public class RouteController {
                 i = item.getOrdinal();
         }
 
-        marks.add(new RouteMark(markService.getMarkById(markId).get(), route, i + 1));
+        marks.add(new RouteMark(markService.getMarkById(markId), route, i + 1));
         route.setRouteMarks(marks);
 //        route.setMarks(marks);
 

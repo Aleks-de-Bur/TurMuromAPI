@@ -26,7 +26,12 @@ public class GuideService {
     }
 
     public List<Guide> getAllGuides() {
-        return guideRepository.findAll();
+        List<Guide> guides =guideRepository.findAll();
+        guides.forEach(guide -> {
+            guide.setPathPhoto("http://192.168.0.75:8080/api/photo/guides/" + guide.getId());
+                });
+
+        return guides;
     }
 
     public Optional<Guide> getGuideById(Long id) {

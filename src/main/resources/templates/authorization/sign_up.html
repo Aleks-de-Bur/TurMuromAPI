@@ -21,7 +21,7 @@
                             <div class="col-md-6 col-lg-7 d-flex align-items-center">
                                 <div class="card-body p-4 p-lg-5 text-black">
 
-                                    <form class="needs-validation" th:action="@{/sign_up}"
+                                    <form class="needs-validation" th:action="@{/sign_up}" enctype="multipart/form-data"
                                           th:object="${user}" method="post" novalidate>
 
                                         <div class="d-flex align-items-center mb-3 pb-1">
@@ -64,9 +64,17 @@
                                         <div class="form-floating mb-3">
                                             <input type="email" class="form-control" id="floatingInput"
                                                    placeholder="Email" th:field="*{email}" required>
-                                            <label for="floatingInput">Email</label>
+                                            <label for="floatingInput" th:if="${errorMessage == ''}">Email</label>
+                                                <label class="text-danger" for="floatingInput" th:if="${errorMessage != ''}" th:text="${errorMessage}"></label>
                                             <div class="invalid-feedback">
                                                 Введите адрес эл.почты.
+                                            </div>
+                                        </div>
+
+                                        <div class="form-floating mb-3">
+                                            <div class="input-group">
+                                                <input type="file" class="form-control" name="image" id="photo" required>
+                                                <label class="input-group-text" for="photo">Фото</label>
                                             </div>
                                         </div>
 

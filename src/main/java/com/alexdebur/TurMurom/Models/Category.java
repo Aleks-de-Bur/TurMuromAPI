@@ -20,4 +20,9 @@ public class Category {
     private String title;
     @OneToMany(mappedBy = "category", cascade = CascadeType.ALL)
     private List<Mark> marks;
+
+    public Category(Long id, String title) {
+        this.id = id;
+        this.title = title;
+    }
 }

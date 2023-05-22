@@ -50,8 +50,8 @@ public class ExcursionService {
         return excursions;
     }
 
-    public Optional<Excursion> getExcursionById(Long id) {
-        return excursionRepository.findById(id);
+    public Excursion getExcursionById(Long id) {
+        return excursionRepository.findById(id).get();
     }
 
     public void insertExcursion(Excursion excursion) {
