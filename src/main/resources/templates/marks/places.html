@@ -34,74 +34,9 @@
     <hr class="my-4">
 
     <div class="row justify-content-between">
-        <div class="col-sm-6 col-md-7 col-lg-9">
-            <div class="input-group input-group-sm" role="group" aria-label="Small button group">
-                <label class="input-group-text">Сортировать по:</label>
-                <a th:href="@{'/places?' + ${keyword!=null && keyword!=''? 'keyword=' + keyword + '&' : ''} +
-                'page=' + ${currentPage} + '&size=' + ${pageSize} + '&sortField=id&sortDir=' + ${reverseSortDir} + '&scheme=' + ${scheme}}"
-                   class="btn btn-outline-dark">
-                    <span class="h6" th:if="${sortField} == 'id'">Id</span>
-                    <span class="h6" th:unless="${sortField} == 'id'"><small>Id</small></span>
-                    <span th:if="${sortDir} == 'asc' and ${sortField} == 'id'">&#9650;</span>
-                    <span th:if="${sortDir} == 'desc' and ${sortField} == 'id'">&#9660;</span>
-                </a>
-                <a th:href="@{'/places?' + ${keyword!=null && keyword!=''? 'keyword=' + keyword + '&' : ''} +
-                'page=' + ${currentPage} + '&size=' + ${pageSize} + '&sortField=title&sortDir=' + ${reverseSortDir} + '&scheme=' + ${scheme}}"
-                   class="btn btn-outline-dark">
-                    <span class="h6" th:if="${sortField} == 'title'">Названию</span>
-                    <span class="h6" style="text-transform: capitalize;" th:unless="${sortField} == 'title'"><small>Названию</small></span>
-                    <span th:if="${sortDir} == 'asc' and ${sortField} == 'title'">&#9650;</span>
-                    <span th:if="${sortDir} == 'desc' and ${sortField} == 'title'">&#9660;</span>
-                </a>
-                <a th:href="@{'/places?' + ${keyword!=null && keyword!=''? 'keyword=' + keyword + '&' : ''} +
-                'page=' + ${currentPage} + '&size=' + ${pageSize} + '&sortField=category&sortDir=' + ${reverseSortDir} + '&scheme=' + ${scheme}}"
-                   class="btn btn-outline-dark">
-                    <span class="h6" th:if="${sortField} == 'category'">Категории</span>
-                    <span class="h6" style="text-transform: capitalize;" th:unless="${sortField} == 'category'"><small>Категории</small></span>
-                    <span th:if="${sortDir} == 'asc' and ${sortField} == 'category'">&#9650;</span>
-                    <span th:if="${sortDir} == 'desc' and ${sortField} == 'category'">&#9660;</span>
-                </a>
-            </div>
-        </div>
-
-        <!--        Смена режима отображения каталога-->
-        <div class="col-sm-2 col-md-2 col-lg-1">
-            <div class="btn-group" role="group" aria-label="Basic radio toggle button group">
-                <input type="radio" class="btn-check" name="btnradio" id="btnRadioTableOn" autocomplete="off"
-                       th:if="${scheme} == 'card'" checked>
-                <a th:href="@{'/places?' + ${keyword!=null && keyword!=''? 'keyword=' + keyword + '&' : ''} +
-                'page=' + ${currentPage} + '&size=' + ${pageSize} + '&sortField=' + ${sortField} + '&sortDir=' + ${sortDir} + '&scheme=card'}"
-                   th:if="${scheme} == 'card'" class="btn btn-outline-dark" for="btnRadioTableOn">&#9638;</a>
-
-                <input type="radio" class="btn-check" name="btnradio" id="btnRadioTable" autocomplete="off"
-                       th:unless="${scheme} == 'card'">
-                <a th:href="@{'/places?' + ${keyword!=null && keyword!=''? 'keyword=' + keyword + '&' : ''} +
-                'page=' + ${currentPage} + '&size=' + ${pageSize} + '&sortField=' + ${sortField} + '&sortDir=' + ${sortDir} + '&scheme=card'}"
-                   th:unless="${scheme} == 'card'" class="btn btn-outline-dark" for="btnRadioTable">&#9638;</a>
-
-                <input type="radio" class="btn-check" name="btnradio" id="btnRadioListOn" autocomplete="off"
-                       th:if="${scheme} == 'list'" checked>
-                <a th:href="@{'/places?' + ${keyword!=null && keyword!=''? 'keyword=' + keyword + '&' : ''} +
-                'page=' + ${currentPage} + '&size=' + ${pageSize} + '&sortField=' + ${sortField} + '&sortDir=' + ${sortDir} + '&scheme=list'}"
-                   th:if="${scheme} == 'list'" class="btn btn-outline-dark" for="btnRadioListOn">&#9636;</a>
-
-                <input type="radio" class="btn-check" name="btnradio" id="btnRadioList" autocomplete="off"
-                       th:unless="${scheme} == 'list'">
-                <a th:href="@{'/places?' + ${keyword!=null && keyword!=''? 'keyword=' + keyword + '&' : ''} +
-                'page=' + ${currentPage} + '&size=' + ${pageSize} + '&sortField=' + ${sortField} + '&sortDir=' + ${sortDir} + '&scheme=list'}"
-                   th:unless="${scheme} == 'list'" class="btn btn-outline-dark" for="btnRadioList">&#9636;</a>
-            </div>
-        </div>
-    </div>
-
-    <!------------------------------------------------------------------------------------>
-    <!--    Панель поиска и количества отображения элементов-->
-    <!------------------------------------------------------------------------------------>
-
-    <div class="my-3">
-        <form th:action="@{/places}" th:id="searchForm">
-            <div class="row row-cols-1 row-cols-md-3 g-4">
-                <div class="col-6">
+        <div class="col-6">
+            <form th:action="@{/places}" th:id="searchForm">
+                <div class="col-12 mb-4">
                     <div class="input-group">
                         <span class="input-group-text" id="basic-addon1"><i class="fa fa-search"></i></span>
                         <input id="keyword" type="search" name="keyword" th:value="${keyword}" class="form-control"
@@ -109,22 +44,102 @@
                         <button class="btn btn-info btn-sm" type="submit" id="button-addon1">Найти</button>
                     </div>
                 </div>
-                <div class="col-3">
-                    <div class="input-group">
-                        <label class="input-group-text" for="pageSize">Кол-во элементов:</label>
+                <div class="row">
+                    <div class="col-6">
+                        <div class="input-group">
+                            <label class="input-group-text" for="pageSize">Кол-во элементов:</label>
 
-                        <select th:form="searchForm" name="size" th:value="${pageSize}" onchange="changePageSize()"
-                                class="form-select" id="pageSize">
-                            <option th:each="s : ${ {3, 6, 9} }" th:value="${s}" th:text="${s}"
-                                    th:selected="${s == pageSize}"></option>
-                        </select>
+                            <select th:form="searchForm" name="size" th:value="${pageSize}" onchange="changePageSize()"
+                                    class="form-select" id="pageSize">
+                                <option th:each="s : ${ {3, 6, 9} }" th:value="${s}" th:text="${s}"
+                                        th:selected="${s == pageSize}"></option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-3">
+                        <a id="btnClear" th:href="@{/places}" class="btn btn-info btn-sm">Очистить</a>
                     </div>
                 </div>
-                <div class="col-1">
-                    <a id="btnClear" th:href="@{/places}" class="btn btn-info btn-sm">Очистить</a>
+            </form>
+        </div>
+
+        <div class="col-6">
+            <div class="row justify-content-between mb-4">
+                <div class="input-group input-group-sm" role="group" aria-label="Small button group">
+                    <label class="input-group-text">Сортировать по:</label>
+                    <!--                <a th:href="@{'/places?' + ${keyword!=null && keyword!=''? 'keyword=' + keyword + '&' : ''} +-->
+                    <!--                'page=' + ${currentPage} + '&size=' + ${pageSize} + '&sortField=id&sortDir=' + ${reverseSortDir} + '&scheme=' + ${scheme}}"-->
+                    <!--                   class="btn btn-outline-dark">-->
+                    <!--                    <span class="h6" th:if="${sortField} == 'id'">Id</span>-->
+                    <!--                    <span class="h6" th:unless="${sortField} == 'id'"><small>Id</small></span>-->
+                    <!--                    <span th:if="${sortDir} == 'asc' and ${sortField} == 'id'">&#9650;</span>-->
+                    <!--                    <span th:if="${sortDir} == 'desc' and ${sortField} == 'id'">&#9660;</span>-->
+                    <!--                </a>-->
+                    <a th:href="@{'/places?' + ${keyword!=null && keyword!=''? 'keyword=' + keyword + '&' : ''} +
+                'page=' + ${currentPage} + '&size=' + ${pageSize} + '&sortField=title&sortDir=' + ${reverseSortDir} + '&scheme=' + ${scheme}}"
+                       class="btn btn-outline-dark">
+                        <span class="h6" th:if="${sortField} == 'title'">Названию</span>
+                        <span class="h6" style="text-transform: capitalize;" th:unless="${sortField} == 'title'"><small>Названию</small></span>
+                        <span th:if="${sortDir} == 'asc' and ${sortField} == 'title'">&#9650;</span>
+                        <span th:if="${sortDir} == 'desc' and ${sortField} == 'title'">&#9660;</span>
+                    </a>
+                    <a th:href="@{'/places?' + ${keyword!=null && keyword!=''? 'keyword=' + keyword + '&' : ''} +
+                'page=' + ${currentPage} + '&size=' + ${pageSize} + '&sortField=category&sortDir=' + ${reverseSortDir} + '&scheme=' + ${scheme}}"
+                       class="btn btn-outline-dark">
+                        <span class="h6" th:if="${sortField} == 'category'">Категории</span>
+                        <span class="h6" style="text-transform: capitalize;"
+                              th:unless="${sortField} == 'category'"><small>Категории</small></span>
+                        <span th:if="${sortDir} == 'asc' and ${sortField} == 'category'">&#9650;</span>
+                        <span th:if="${sortDir} == 'desc' and ${sortField} == 'category'">&#9660;</span>
+                    </a>
+
                 </div>
             </div>
-        </form>
+            <!--        Смена режима отображения каталога-->
+            <div class="row justify-content-between">
+                <div class="input-group input-group-sm" role="group" aria-label="Basic radio toggle button group">
+                    <label class="input-group-text">Отобразить:</label>
+                    <input type="radio" class="btn-check" name="btnradio" id="btnRadioTableOn" autocomplete="off"
+                           th:if="${scheme} == 'card'" checked>
+                    <a th:href="@{'/places?' + ${keyword!=null && keyword!=''? 'keyword=' + keyword + '&' : ''} +
+                'page=' + ${currentPage} + '&size=' + ${pageSize} + '&sortField=' + ${sortField} + '&sortDir=' + ${sortDir} + '&scheme=card'}"
+                       th:if="${scheme} == 'card'" style="text-transform: capitalize;" class="btn btn-outline-dark"
+                       for="btnRadioTableOn">Карточки</a>
+
+                    <input type="radio" class="btn-check" name="btnradio" id="btnRadioTable" autocomplete="off"
+                           th:unless="${scheme} == 'card'">
+                    <a th:href="@{'/places?' + ${keyword!=null && keyword!=''? 'keyword=' + keyword + '&' : ''} +
+                'page=' + ${currentPage} + '&size=' + ${pageSize} + '&sortField=' + ${sortField} + '&sortDir=' + ${sortDir} + '&scheme=card'}"
+                       th:unless="${scheme} == 'card'" style="text-transform: capitalize;"
+                       class="btn btn-outline-dark" for="btnRadioTable">Карточки</a>
+
+                    <input type="radio" class="btn-check" name="btnradio" id="btnRadioListOn" autocomplete="off"
+                           th:if="${scheme} == 'list'" checked>
+                    <a th:href="@{'/places?' + ${keyword!=null && keyword!=''? 'keyword=' + keyword + '&' : ''} +
+                'page=' + ${currentPage} + '&size=' + ${pageSize} + '&sortField=' + ${sortField} + '&sortDir=' + ${sortDir} + '&scheme=list'}"
+                       th:if="${scheme} == 'list'" style="text-transform: capitalize;" class="btn btn-outline-dark"
+                       for="btnRadioListOn">Список</a>
+
+                    <input type="radio" class="btn-check" name="btnradio" id="btnRadioList" autocomplete="off"
+                           th:unless="${scheme} == 'list'">
+                    <a th:href="@{'/places?' + ${keyword!=null && keyword!=''? 'keyword=' + keyword + '&' : ''} +
+                'page=' + ${currentPage} + '&size=' + ${pageSize} + '&sortField=' + ${sortField} + '&sortDir=' + ${sortDir} + '&scheme=list'}"
+                       th:unless="${scheme} == 'list'" style="text-transform: capitalize;"
+                       class="btn btn-outline-dark" for="btnRadioList">Список</a>
+                </div>
+            </div>
+
+        </div>
+
+
+    </div>
+
+    <!------------------------------------------------------------------------------------>
+    <!--    Панель поиска и количества отображения элементов-->
+    <!------------------------------------------------------------------------------------>
+
+    <div class="my-3">
+
     </div>
 
     <hr class="my-4">
@@ -249,7 +264,8 @@
                             <div class="carousel-inner">
                                 <div class="carousel-item" th:each="photo : ${mark.markPhotos}"
                                      th:classappend="${photoStat.first} ? active : ''">
-                                    <a th:href="|data:image/jpeg;base64,${photo.pathPhoto}|" th:data-fancybox="'gallery' + ${mark.id}">
+                                    <a th:href="|data:image/jpeg;base64,${photo.pathPhoto}|"
+                                       th:data-fancybox="'gallery' + ${mark.id}">
                                         <img th:src="|data:image/jpeg;base64,${photo.pathPhoto}|" class="d-block w-100"
                                              style="object-fit: cover;"
                                              height="600px" alt="Фотография достопримечательности">
@@ -399,11 +415,11 @@
                                                                    style="border-bottom-left-radius: 16px; border-top-left-radius: 0px;">Подробнее
                                                                 </a>
 
-<!--                                                                <input type="checkbox" class="btn-check"-->
-<!--                                                                       th:id="${routeMark.route.id}" autocomplete="off">-->
-<!--                                                                <label class="btn btn-outline-danger"-->
-<!--                                                                       style="border-bottom-right-radius: 16px; border-top-right-radius: 0px;"-->
-<!--                                                                       th:for="${mark.routeMarks[item].route.id}">Избранное</label><br>-->
+                                                                <!--                                                                <input type="checkbox" class="btn-check"-->
+                                                                <!--                                                                       th:id="${routeMark.route.id}" autocomplete="off">-->
+                                                                <!--                                                                <label class="btn btn-outline-danger"-->
+                                                                <!--                                                                       style="border-bottom-right-radius: 16px; border-top-right-radius: 0px;"-->
+                                                                <!--                                                                       th:for="${mark.routeMarks[item].route.id}">Избранное</label><br>-->
                                                             </div>
                                                         </div>
                                                         <!----------    Действия для нерег пользователя    ----------------------------------->
@@ -451,11 +467,11 @@
                                                                    style="border-bottom-left-radius: 16px; border-top-left-radius: 0px;">Подробнее
                                                                 </a>
 
-<!--                                                                <input type="checkbox" class="btn-check"-->
-<!--                                                                       th:id="${routeMark.route.id}" autocomplete="off">-->
-<!--                                                                <label class="btn btn-outline-danger"-->
-<!--                                                                       style="border-bottom-right-radius: 16px; border-top-right-radius: 0px;"-->
-<!--                                                                       th:for="${mark.routeMarks[item + 1].route.id}">Избранное</label><br>-->
+                                                                <!--                                                                <input type="checkbox" class="btn-check"-->
+                                                                <!--                                                                       th:id="${routeMark.route.id}" autocomplete="off">-->
+                                                                <!--                                                                <label class="btn btn-outline-danger"-->
+                                                                <!--                                                                       style="border-bottom-right-radius: 16px; border-top-right-radius: 0px;"-->
+                                                                <!--                                                                       th:for="${mark.routeMarks[item + 1].route.id}">Избранное</label><br>-->
                                                             </div>
                                                         </div>
                                                         <!----------    Действия для нерег пользователя    ----------------------------------->
@@ -648,6 +664,8 @@
     function changePageSize() {
       $("#searchForm").submit();
     }
+
+
 
 
 </script>

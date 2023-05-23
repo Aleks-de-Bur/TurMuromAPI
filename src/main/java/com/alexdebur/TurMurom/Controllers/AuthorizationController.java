@@ -143,6 +143,7 @@ public class AuthorizationController {
     @GetMapping("/sign_up")
     public String registration(Principal principal, Model model) {
         model.addAttribute("user", userService.getUserByPrincipal(principal));
+        model.addAttribute("errorMessage", "");
 //        return "authorization/registration";
         return "authorization/sign_up";
     }

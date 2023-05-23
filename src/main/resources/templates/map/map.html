@@ -112,13 +112,13 @@
 
                     </div>
                     <button class="carousel-control-prev" type="button"
-                            data-bs-target="carouselControls"
+                            data-bs-target="#carouselControls"
                             data-bs-slide="prev">
                         <span class="carousel-control-prev-icon" aria-hidden="true"></span>
                         <span class="visually-hidden">Previous</span>
                     </button>
                     <button class="carousel-control-next" type="button"
-                            data-bs-target="carouselControls"
+                            data-bs-target="#carouselControls"
                             data-bs-slide="next">
                         <span class="carousel-control-next-icon" aria-hidden="true"></span>
                         <span class="visually-hidden">Next</span>
@@ -129,7 +129,7 @@
                 <div th:id="placeOffcanvasContainer" class="bg-light text-center pb-4">
                     <!-------------------------Категория------------------------->
                     <h3 style="margin-top: -20px;position: absolute;left: 0;right: 0;text-align: center;">
-                        <span class="badge bg-warning rounded-5" id="Category"></span></h3>
+                        <span class="badge bg-warning rounded-5" id="Category" th:text="${marks[0].category.title}"></span></h3>
 
                     <ul class="navbar-nav justify-content-end flex-grow-1 pe-5 ps-5">
                         <!-------------------------Название-------------------------->
@@ -161,41 +161,8 @@
                                     <div id="flush-collapseOne" class="accordion-collapse collapse"
                                          aria-labelledby="flush-headingOne"
                                          data-bs-parent="#accordionFlushSchedule">
-                                        <div class="accordion-body">
-                                            <div th:each="schedule : ${mark.schedules}">
-                                                <div class="row d-flex align-items-end">
-                                                    <div class="col-6" th:switch="${schedule.day}">
-                                                        <h6 class="text-start mt-1 mb-1" th:case="1">
-                                                            Понедельник</h6>
-                                                        <h6 class="text-start mt-1 mb-1" th:case="2">
-                                                            Вторник</h6>
-                                                        <h6 class="text-start mt-1 mb-1" th:case="3">
-                                                            Среда</h6>
-                                                        <h6 class="text-start mt-1 mb-1" th:case="4">
-                                                            Четверг</h6>
-                                                        <h6 class="text-start mt-1 mb-1" th:case="5">
-                                                            Пятница</h6>
-                                                        <h6 class="text-start mt-1 mb-1" th:case="6">
-                                                            Суббота</h6>
-                                                        <h6 class="text-start mt-1 mb-1" th:case="7">
-                                                            Воскресенье</h6>
-                                                    </div>
+                                        <div class="accordion-body" id="Schedule">
 
-                                                    <div class="col-6">
-                                                        <p class="text-end mt-1 mb-1"
-                                                           th:if="${schedule.start == schedule.end}"
-                                                           th:text="Выходной"></p>
-                                                        <p class="text-end mt-1 mb-1"
-                                                           th:if="${schedule.start == '00:00' && schedule.end == '23:59'}"
-                                                           th:text="Круглосуточно"></p>
-                                                        <p class="text-end mt-1 mb-1"
-                                                           th:if="${schedule.start != schedule.end && schedule.end != '23:59'}"
-                                                           th:text="${schedule.start} + '-' + ${schedule.end}"></p>
-                                                    </div>
-
-                                                </div>
-                                                <hr class="featurette-divider">
-                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -278,9 +245,9 @@
                     coordinates: [mark.axisY, mark.axisX],
                     //icon: 'https://cdn-icons-png.flaticon.com/512/1237/1237707.png',
                     //size: [50, 60],
-                    label: {
-                        text: mark.axisX + ", " + mark.axisY,
-                    },
+                    //label: {
+                    //    text: mark.axisX + ", " + mark.axisY,
+                    //},
                     userData: { marker: mark }
                 });
             });
@@ -333,82 +300,60 @@
                     document.getElementById("carouselInner").innerHTML = inner;
 
 <!--                Категория   -->
-<!--                    document.getElementById("Category").innerHTML = event.target.data.userData.marker.category.title;-->
-
-<!--                Подробнее    -->
-                    document.getElementById("Details").innerHTML = `<a type=\"button\" class=\"btn btn-secondary\"
-                                              href=\"/places/details/${event.target.data.userData.marker.id}">Подробнее</a>`;
-
+                    //document.getElementById("Category").innerHTML = event.target.data.userData.marker.category.title;
 
 <!--                Расписание    -->
 
                     let sched = ``;
                     event.target.data.userData.marker.schedules.forEach((elem) => {
+
                         sched += `<div>
-                                    <div class=\"row justify-content-end\">
-                                        <div class=\"col-6\"\n>`;
+                                    <div class=\"row d-flex align-items-end\">
+                                        <div class=\"col-6\">`;
                         switch (elem.day) {
                             case 1:
-                                sched += `<h6 class=\"text-end\"> Понедельник</h6>`;
+                                sched += `<h6 class=\"text-start mt-1 mb-1\"> Понедельник</h6>`;
                                 break;
                             case 2:
-                                sched += `<h6 class=\"text-end\"> Вторник</h6>`;
+                                sched += `<h6 class=\"text-start mt-1 mb-1\"> Вторник</h6>`;
                                 break;
                             case 3:
-                                sched += `<h6 class=\"text-end\"> Среда</h6>`;
+                                sched += `<h6 class=\"text-start mt-1 mb-1\"> Среда</h6>`;
                                 break;
                             case 4:
-                                sched += `<h6 class=\"text-end\"> Четверг</h6>`;
+                                sched += `<h6 class=\"text-start mt-1 mb-1\"> Четверг</h6>`;
                                 break;
                             case 5:
-                                sched += `<h6 class=\"text-end\"> Пятница</h6>`;
+                                sched += `<h6 class=\"text-start mt-1 mb-1\"> Пятница</h6>`;
                                 break;
                             case 6:
-                                sched += `<h6 class=\"text-end\"> Суббота</h6>`;
+                                sched += `<h6 class=\"text-start mt-1 mb-1\"> Суббота</h6>`;
                                 break;
                             case 7:
-                                sched += `<h6 class=\"text-end\"> Воскресенье</h6>`;
+                                sched += `<h6 class=\"text-start mt-1 mb-1\"> Воскресенье</h6>`;
                                 break;
                         }
                         sched += `</div>
-                                      </div>
-                                      <div class=\"row g-3\">
-                                          <div class=\"col-6\">
-                                              <div class=\"cs-form\">
-                                                  <input type=\"time\" class=\"form-control\"
-                                                         value=\"${elem.start}\" disabled readonly/>
-                                              </div>
-                                          </div>
-                                          <div class=\"col-6\">
-                                              <div class=\"cs-form\">
-                                                  <input type=\"time\" class=\"form-control\"
-                                                        value=\"${elem.end}\" disabled readonly/>
-                                              </div>
-                                          </div>
-                                      </div>
-                                      <hr class=\"featurette-divider\">`;
-                        sched += `</div>`;
-                    })
+                                <div class=\"col-6\">`
+
+                        if(elem.start == elem.end){
+                            sched += `<h6 class=\"text-end mt-1 mb-1\">Выходной</h6>`
+                        }
+                        if(elem.start == '00:00' && elem.end == '23:59'){
+                            sched += `<h6 class=\"text-end mt-1 mb-1\">Круглосуточно</h6>`
+                        }
+                        if(elem.start != elem.end && elem.end != '23:59'){
+                            sched += `<h6 class=\"text-end mt-1 mb-1\">${elem.start} - ${elem.end}</h6>`
+                        }
+
+                        sched += `</div>
+                              </div>
+                              <hr class=\"featurette-divider\">`;
+                    });
+
+                    document.getElementById("Schedule").innerHTML = sched;
 
 
-                    document.getElementById("dl").innerHTML =`<div class=\"modal\" id=\"scheduleModal${event.target.data.userData.marker.id}\" tabindex=\"-1\" aria-labelledby=\"scheduleModalLabel\" aria-hidden=\"true\">
-                                <div class=\"modal-dialog\">
-                                    <div class=\"modal-content\">
-                                        <div class=\"modal-header\">
-                                            <h1 class=\"modal-title fs-5\">Расписание</h1>
-                                            <button type=\"button\" class=\"btn-close\" data-bs-dismiss=\"modal\" aria-label=\"Close\"></button>
-                                        </div>
-                                        <div class=\"modal-body\">
-
-                                        ${sched}
-
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>`;
-                    document.getElementById("Schedule").innerHTML = `<button type=\"button\" class=\"btn btn-secondary\" data-bs-toggle=\"modal\" data-bs-target=\"#scheduleModal${event.target.data.userData.marker.id}\">
-                                Расписание
-                            </button>`;
 
 
                     return offcanvas.toggle();
@@ -498,6 +443,9 @@
 //============================================================================================
 </script>
 
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.4.1/dist/jquery.min.js"></script>
+
+<script src="https://cdn.jsdelivr.net/gh/fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js"></script>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4"
