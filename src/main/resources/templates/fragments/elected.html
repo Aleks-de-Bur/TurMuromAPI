@@ -20,29 +20,38 @@
 
         <!----------    Действия для модератора    ----------------------------------------------->
         <div class="card-footer p-0" sec:authorize="hasRole('ROLE_MODERATOR')">
-            <div class="btn-group w-100" role="group" aria-label="Buttons for Admin">
-                <a type="button" class="btn btn-primary" th:href="@{'/places/edit/' + ${marks[item + index].id}}"
-                   style="border-top-left-radius: 16px; border-bottom-left-radius: 0px;">Редактировать</a>
-                <a type="button" class="btn btn-danger" th:href="@{'/places/delete/' + ${marks[item + index].id}}"
+            <div class="btn-group w-100" role="group" aria-label="Buttons for Moderator">
+                <a type="button" class="btn btn-primary w-100" th:href="@{'/places/edit/' + ${marks[item + index].id}}"
+                   style="border-top-left-radius: 16px; border-bottom-left-radius: 0px;">Изменить</a>
+                <a type="button" class="btn btn-danger w-100" th:href="@{'/places/delete/' + ${marks[item + index].id}}"
                    style="border-top-right-radius: 16px; border-bottom-right-radius: 0px;">Удалить</a>
             </div>
         </div>
+
         <!----------    Действия для зарег пользователя    ----------------------------------->
-        <div class="card-footer p-0" sec:authorize="hasRole('ROLE_USER')"
+        <div class="card-footer p-0" sec:authorize="hasRole('ROLE_USER') || hasRole('ROLE_GUIDE') || hasRole('ROLE_MODERATOR')"
              style="border-bottom-left-radius: 16px; border-bottom-right-radius: 16px;">
+            <form class="needs-validation" action="#" th:action="@{'/place/' + ${marks[item + index].id} + '/elect/elected'}"
+                  th:object="${marks[item + index]}" enctype="multipart/form-data" method="post" id="form2">
             <div class="btn-group w-100" role="group" aria-label="Базовая группа переключателей флажков">
-                <button class="btn btn-primary" type="button" data-bs-toggle="offcanvas"
+                <button class="btn btn-primary w-100" type="button" data-bs-toggle="offcanvas"
                         th:data-bs-target="'#offcanvasPlace' + ${marks[item + index].id}"
                         aria-controls="offcanvasResponsive"
                         style="border-bottom-left-radius: 16px; border-top-left-radius: 0px;">Подробнее
                 </button>
 
-                <input type="checkbox" class="btn-check" th:id="${marks[item + index].id}" autocomplete="off">
-                <label class="btn btn-outline-danger"
-                       style="border-bottom-right-radius: 16px; border-top-right-radius: 0px;"
-                       th:for="${marks[item + index].id}">Избранное</label><br>
+                <button type="submit" th:if="${not user.userElectedMarks.?[mark.title == '__${marks[item + index].title}__'].isEmpty()}"
+                        style="border-bottom-right-radius: 16px; border-top-right-radius: 0px;"
+                        class="btn btn-danger w-100" th:id="${marks[item + index].id}" autocomplete="off">В избранном
+                </button>
+                <button type="submit" th:unless="${not user.userElectedMarks.?[mark.title == '__${marks[item + index].title}__'].isEmpty()}"
+                        style="border-bottom-right-radius: 16px; border-top-right-radius: 0px;"
+                        class="btn btn-outline-danger w-100" th:id="${marks[item + index].id}" autocomplete="off">В избранное
+                </button>
             </div>
+            </form>
         </div>
+
         <!----------    Действия для нерег пользователя    ----------------------------------->
         <div class="card-footer p-0" sec:authorize="!isAuthenticated() || hasRole('ROLE_ADMIN')"
              style="border-bottom-left-radius: 16px; border-bottom-right-radius: 16px;">
@@ -54,7 +63,6 @@
             </button>
         </div>
     </div>
-
 
 </div>
 
@@ -347,32 +355,69 @@
                th:text="${excursions[item + index].description}"></p>
         </div>
 
-        <!----------    Действия для зарег пользователя    ----------------------------------->
-        <div class="card-footer p-0" sec:authorize="hasRole('ROLE_USER')"
-             style="border-bottom-left-radius: 16px; border-bottom-right-radius: 16px;">
-            <div class="btn-group w-100" role="group" aria-label="Базовая группа переключателей флажков">
-                <button class="btn btn-primary" type="button" data-bs-toggle="offcanvas"
-                        th:data-bs-target="'#offcanvasExcursion' + ${excursions[item + index].id}"
-                        aria-controls="offcanvasResponsive"
-                        style="border-bottom-left-radius: 16px; border-top-left-radius: 0px;">Подробнее
-                </button>
-
-                <input type="checkbox" class="btn-check" th:id="${excursions[item + index].id}" autocomplete="off">
-                <label class="btn btn-outline-danger"
-                       style="border-bottom-right-radius: 16px; border-top-right-radius: 0px;"
-                       th:for="${excursions[item + index].id}">Избранное</label><br>
+        <!----------    Действия для гида    ------------------------------------------------->
+        <div class="card-footer p-0" sec:authorize="hasRole('ROLE_GUIDE')"
+             th:if="${excursions[item + index].guide.id} == ${user.guideId}">
+            <div class="btn-group w-100" role="group" aria-label="Buttons for Guide">
+                <a type="button" class="btn btn-primary w-100"
+                   th:href="@{'guides/edit/' + ${excursions[item + index].guide.id} + '/excursion/' + ${excursions[item + index].id} + '/edit'}"
+                   style="border-top-left-radius: 16px; border-bottom-left-radius: 0px;">Изменить</a>
+                <a type="button" class="btn btn-danger w-100"
+                   th:href="@{'guides/edit/' + ${excursions[item + index].guide.id} + '/excursion/' + ${excursions[item + index].id} + '/delete'}"
+                   style="border-top-right-radius: 16px; border-bottom-right-radius: 0px;">Удалить</a>
             </div>
         </div>
-        <!----------    Действия для нерег пользователя    ----------------------------------->
-        <div class="card-footer p-0" sec:authorize="!isAuthenticated() || hasRole('ROLE_ADMIN')"
+
+        <!----------    Действия для зарег пользователя    ----------------------------------->
+        <div class="card-footer p-0" sec:authorize="hasRole('ROLE_USER') || hasRole('ROLE_MODERATOR') || hasRole('ROLE_GUIDE')"
              style="border-bottom-left-radius: 16px; border-bottom-right-radius: 16px;">
-            <button class="btn btn-primary w-100" type="button" data-bs-toggle="offcanvas"
-                    th:data-bs-target="'#offcanvasExcursion' + ${excursions[item + index].id}"
-                    aria-controls="offcanvasResponsive"
-                    style="border-bottom-left-radius: 16px; border-top-left-radius: 0px; border-bottom-right-radius: 16px; border-top-right-radius: 0px;">
-                Подробнее
-            </button>
+            <form class="needs-validation" action="#" th:action="@{'/excursion/' + ${excursions[item + index].id} + '/elect/elected'}"
+                  th:object="${excursions[item + index]}" enctype="multipart/form-data" method="post" id="form1">
+                <div class="btn-group w-100" role="group" aria-label="Базовая группа переключателей флажков">
+                    <button class="btn btn-primary w-100" type="button" data-bs-toggle="offcanvas"
+                            th:data-bs-target="'#offcanvasExcursion' + ${excursions[item + index].id}"
+                            aria-controls="offcanvasResponsive"
+                            style="border-bottom-left-radius: 16px; border-top-left-radius: 0px;">Подробнее
+                    </button>
+
+                    <button type="submit" th:if="${not user.userElectedExcursions.?[excursion.title == '__${excursions[item + index].title}__'].isEmpty()}"
+                            style="border-bottom-right-radius: 16px; border-top-right-radius: 0px;"
+                            class="btn btn-danger w-100" th:id="${excursions[item + index].id}" autocomplete="off">В избранном
+                    </button>
+                    <button type="submit" th:unless="${not user.userElectedExcursions.?[excursion.title == '__${excursions[item + index].title}__'].isEmpty()}"
+                            style="border-bottom-right-radius: 16px; border-top-right-radius: 0px;"
+                            class="btn btn-outline-danger w-100" th:id="${excursions[item + index].id}" autocomplete="off">В избранное
+                    </button>
+                </div>
+            </form>
         </div>
+
+        <!----------    Действия для зарег пользователя    ----------------------------------->
+<!--        <div class="card-footer p-0" sec:authorize="hasRole('ROLE_USER')"-->
+<!--             style="border-bottom-left-radius: 16px; border-bottom-right-radius: 16px;">-->
+<!--            <div class="btn-group w-100" role="group" aria-label="Базовая группа переключателей флажков">-->
+<!--                <button class="btn btn-primary" type="button" data-bs-toggle="offcanvas"-->
+<!--                        th:data-bs-target="'#offcanvasExcursion' + ${excursions[item + index].id}"-->
+<!--                        aria-controls="offcanvasResponsive"-->
+<!--                        style="border-bottom-left-radius: 16px; border-top-left-radius: 0px;">Подробнее-->
+<!--                </button>-->
+
+<!--                <input type="checkbox" class="btn-check" th:id="${excursions[item + index].id}" autocomplete="off">-->
+<!--                <label class="btn btn-outline-danger"-->
+<!--                       style="border-bottom-right-radius: 16px; border-top-right-radius: 0px;"-->
+<!--                       th:for="${excursions[item + index].id}">Избранное</label><br>-->
+<!--            </div>-->
+<!--        </div>-->
+        <!----------    Действия для нерег пользователя    ----------------------------------->
+<!--        <div class="card-footer p-0" sec:authorize="!isAuthenticated() || hasRole('ROLE_ADMIN')"-->
+<!--             style="border-bottom-left-radius: 16px; border-bottom-right-radius: 16px;">-->
+<!--            <button class="btn btn-primary w-100" type="button" data-bs-toggle="offcanvas"-->
+<!--                    th:data-bs-target="'#offcanvasExcursion' + ${excursions[item + index].id}"-->
+<!--                    aria-controls="offcanvasResponsive"-->
+<!--                    style="border-bottom-left-radius: 16px; border-top-left-radius: 0px; border-bottom-right-radius: 16px; border-top-right-radius: 0px;">-->
+<!--                Подробнее-->
+<!--            </button>-->
+<!--        </div>-->
     </div>
 </div>
 

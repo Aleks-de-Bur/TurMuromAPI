@@ -30,8 +30,20 @@
         transition: all 0.5s;
     }
 
+    .guideCard {
+        width: 450px;
+        background-color: #efefef;
+        border: none;
+        transition: all 0.5s;
+    }
+
     .name {
         font-size: 22px;
+        font-weight: bold
+    }
+
+    .guideTitle {
+        font-size: 18px;
         font-weight: bold
     }
 
@@ -78,12 +90,13 @@
     .date {
         background-color: #ccc
     }
+
     </style>
 </head>
 <body class="bg-dark">
 <div th:replace="~{fragments/navigation :: navigation}"></div>
 
-<div class="container mt-4 mb-4 p-3 d-flex justify-content-center">
+<div class="container mt-4 mb-4 p-3 d-flex justify-content-center" th:unless="${guide != ''}">
 
     <div class="card p-4">
         <div class=" image d-flex flex-column justify-content-center align-items-center">
@@ -152,7 +165,7 @@
                                     <div class="input-group">
                                         <div class="form-floating mb-3">
                                             <input type="text" class="form-control" id="floatingLastName"
-                                                    th:field="*{lastName}" placeholder="Фамилия" required>
+                                                   th:field="*{lastName}" placeholder="Фамилия" required>
                                             <label for="floatingLastName">Фамилия</label>
                                             <div class="invalid-feedback">
                                                 Введите фамилию.
@@ -168,38 +181,38 @@
                                         </div>
                                     </div>
 
-<!--                                    <div class="form-floating mb-3">-->
-<!--                                        <input type="email" class="form-control" id="floatingInput"-->
-<!--                                               placeholder="Email" th:field="*{email}" required>-->
-<!--                                        <label for="floatingInput">Email</label>-->
-<!--                                        <div class="invalid-feedback">-->
-<!--                                            Введите адрес эл.почты.-->
-<!--                                        </div>-->
-<!--                                    </div>-->
+                                    <!--                                    <div class="form-floating mb-3">-->
+                                    <!--                                        <input type="email" class="form-control" id="floatingInput"-->
+                                    <!--                                               placeholder="Email" th:field="*{email}" required>-->
+                                    <!--                                        <label for="floatingInput">Email</label>-->
+                                    <!--                                        <div class="invalid-feedback">-->
+                                    <!--                                            Введите адрес эл.почты.-->
+                                    <!--                                        </div>-->
+                                    <!--                                    </div>-->
 
-<!--                                    <label for="photo">Фото</label>-->
-<!--                                    <input id="photo" class="form-control mb-3" type="file" name="image">-->
+                                    <!--                                    <label for="photo">Фото</label>-->
+                                    <!--                                    <input id="photo" class="form-control mb-3" type="file" name="image">-->
 
                                     <div class="input-group">
                                         <input type="file" class="form-control" name="image" id="photo">
                                         <label class="input-group-text" for="photo">Фото</label>
                                     </div>
 
-<!--                                    <div class="form-floating mb-3">-->
-<!--                                        <input id="photo" class="form-control form-control-sm" type="file" name="image">-->
+                                    <!--                                    <div class="form-floating mb-3">-->
+                                    <!--                                        <input id="photo" class="form-control form-control-sm" type="file" name="image">-->
 
-<!--                                        <label for="photo">Фото</label>-->
-<!--                                    </div>-->
-<!--                                    <div th:each="role, stat : *{roles}">-->
-<!--                                        <input type="hidden" th:field="*{roles[__${stat.index}__].name}" />-->
-<!--                                    </div>-->
+                                    <!--                                        <label for="photo">Фото</label>-->
+                                    <!--                                    </div>-->
+                                    <!--                                    <div th:each="role, stat : *{roles}">-->
+                                    <!--                                        <input type="hidden" th:field="*{roles[__${stat.index}__].name}" />-->
+                                    <!--                                    </div>-->
 
-                                    <input id="id" type="hidden" th:field="*{id}" />
+                                    <input id="id" type="hidden" th:field="*{id}"/>
                                     <input type="hidden" id="password" th:field="*{password}">
-                                    <input id="pathPhoto" type="hidden" th:field="*{pathPhoto}" />
-                                    <input id="email" type="hidden" th:field="*{email}" />
-                                    <input id="active" type="hidden" th:field="*{active}" />
-                                    <input type="hidden" th:field="*{roles}" />
+                                    <input id="pathPhoto" type="hidden" th:field="*{pathPhoto}"/>
+                                    <input id="email" type="hidden" th:field="*{email}"/>
+                                    <input id="active" type="hidden" th:field="*{active}"/>
+                                    <input type="hidden" th:field="*{roles}"/>
 
                                 </div>
                                 <div class="modal-footer p-0"
@@ -212,7 +225,9 @@
                                         </button>
 
                                         <button type="submit" class="btn btn-outline-success"
-                                                style="border-bottom-right-radius: 12px; border-top-right-radius: 0px;">Сохранить</button>
+                                                style="border-bottom-right-radius: 12px; border-top-right-radius: 0px;">
+                                            Сохранить
+                                        </button>
                                     </div>
                                 </div>
                             </form>
@@ -228,7 +243,142 @@
             <!--            <div class="gap-3 mt-3 icons d-flex flex-row justify-content-center align-items-center"><span><i-->
             <!--                    class="fa fa-twitter"></i></span> <span><i class="fa fa-facebook-f"></i></span> <span><i-->
             <!--                    class="fa fa-instagram"></i></span> <span><i class="fa fa-linkedin"></i></span></div>-->
-<!--            <div class=" px-2 rounded mt-4 date "><span class="join">Joined May,2021</span></div>-->
+            <!--            <div class=" px-2 rounded mt-4 date "><span class="join">Joined May,2021</span></div>-->
+        </div>
+    </div>
+
+</div>
+
+<!--    Карточка гида-->
+<div class="container mt-4 mb-4 p-3 d-flex justify-content-center" th:if="${guide != ''}">
+
+    <div class="guideCard rounded-3 p-4">
+        <div class=" image d-flex flex-column justify-content-center align-items-center">
+
+            <div class="col-md-6">
+                <div style="
+    width: 100%;
+    height: 0;
+    padding-top: 100%;
+    position: relative;
+    overflow: hidden;
+    border-radius: 50%;
+">
+                    <a th:href="|data:image/jpeg;base64,${photo}|" data-fancybox="profile_photo1">
+                        <img class="d-block w-100"
+                             th:src="|data:image/jpeg;base64,${photo}|" role="img"
+                             preserveAspectRatio="xMidYMid slice"
+                             style="object-fit: cover;/* max-height: 300px; */top: 0;position: absolute;/* max-width: 100%; */object-fit: cover;width: 100%;height: 100%;"/>
+                    </a>
+                </div>
+            </div>
+
+            <span class="badge bg-warning guideTitle mt-3">Гид</span>
+            <span class="name mt-3"
+                  th:text="${guide.lastName} + ' ' + ${guide.firstName} + ' ' + ${guide.patronymic}"></span>
+
+            <span class="idd" th:text="${user.email}"></span>
+            <span class="idd mt-3" >Контактные данные:</span>
+            <span class="idd" th:text="${guide.email}"></span>
+            <span class="idd" th:text="${guide.telNumber}"></span>
+
+            <div class=" d-flex mt-4">
+
+                <!-- Кнопка-триггер модального окна -->
+                <button type="button" class="btn btn-dark" data-bs-toggle="modal"
+                        data-bs-target="#editGuideModal">Редактировать
+                </button>
+
+                <!-- Модальное окно -->
+                <div class="modal fade" id="editGuideModal" tabindex="-1" aria-labelledby="editGuideModalLabel"
+                     aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered">
+                        <div class="modal-content rounded-4">
+                            <form class="needs-validation" th:action="@{/profile/editGuide}"
+                                  enctype="multipart/form-data"
+                                  th:object="${guide}" method="post" novalidate>
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="editGuideModalLabel">Редактирование профиля гида</h5>
+                                    <!--                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>-->
+                                </div>
+                                <div class="modal-body">
+
+                                    <div class="input-group">
+                                        <div class="form-floating mb-3">
+                                            <input type="text" class="form-control" id="floatingGuideLastName"
+                                                   th:field="*{lastName}" placeholder="Фамилия" required>
+                                            <label for="floatingGuideLastName">Фамилия</label>
+                                            <div class="invalid-feedback">
+                                                Введите фамилию.
+                                            </div>
+                                        </div>
+                                        <div class="form-floating mb-3">
+                                            <input type="text" class="form-control" id="floatingGuideFirstName"
+                                                   th:field="*{firstName}" placeholder="Имя" required>
+                                            <label for="floatingGuideFirstName">Имя</label>
+                                            <div class="invalid-feedback">
+                                                Введите имя.
+                                            </div>
+                                        </div>
+                                        <div class="form-floating mb-3">
+                                            <input type="text" class="form-control" id="floatingGuidePatronymic"
+                                                   th:field="*{patronymic}" placeholder="Отчество" required>
+                                            <label for="floatingGuidePatronymic">Отчество</label>
+                                            <div class="invalid-feedback">
+                                                Введите отчество.
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="input-group">
+                                        <div class="form-floating mb-3">
+                                            <input type="text" class="form-control" id="floatingGuideTelNumber"
+                                                   th:field="*{telNumber}" placeholder="Номер телефона" required>
+                                            <label for="floatingGuideTelNumber">Номер телефона</label>
+                                            <div class="invalid-feedback">
+                                                Введите номер телефона.
+                                            </div>
+                                        </div>
+                                        <div class="form-floating mb-3">
+                                            <input type="text" class="form-control" id="floatingGuideEmail"
+                                                   th:field="*{email}" placeholder="EMail" required>
+                                            <label for="floatingGuideEmail">EMail</label>
+                                            <div class="invalid-feedback">
+                                                Введите EMail.
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="input-group">
+                                        <input type="file" class="form-control" name="image" id="guidePhoto">
+                                        <label class="input-group-text" for="guidePhoto">Фото</label>
+                                    </div>
+
+                                    <input id="guideId" type="hidden" th:field="*{id}"/>
+                                    <input id="guidePathPhoto" type="hidden" th:field="*{pathPhoto}"/>
+
+                                </div>
+                                <div class="modal-footer p-0"
+                                     style="border-bottom-left-radius: 16px; border-bottom-right-radius: 16px;">
+
+                                    <div class="btn-group w-100 m-0" role="group">
+                                        <button type="button" class="btn btn-outline-dark" data-bs-dismiss="modal"
+                                                style="border-bottom-left-radius: 12px; border-top-left-radius: 0px;">
+                                            Закрыть
+                                        </button>
+
+                                        <button type="submit" class="btn btn-outline-success"
+                                                style="border-bottom-right-radius: 12px; border-top-right-radius: 0px;">
+                                            Сохранить
+                                        </button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
         </div>
     </div>
 </div>

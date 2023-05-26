@@ -32,6 +32,7 @@ import java.nio.file.Paths;
 import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @RestController
@@ -72,6 +73,31 @@ public class ApiController {
         this.guideService = guideService;
         this.routeService = routeService;
         this.scheduleService = scheduleService;
+    }
+
+    @GetMapping("/admin/user/{id}/changeRole/{role}")
+    public String userEdit(@PathVariable Long id, @PathVariable String role) {
+        User user = userService.getUserById(id);
+
+        if(role.equals("ROLE_GUIDE")){
+            Guide guide = new Guide();
+            guide.setLastName(user.getLastName());
+            guide.setFirstName(user.getFirstName());
+            guide.setPatronymic("");
+            guide.setEmail(user.getEmail());
+            guide.setTelNumber("");
+            guide.setPathPhoto(user.getPathPhoto());
+
+            guideService.insertGuide(guide);
+            user.setGuideId(guideService.getGuideByEMail(user.getEmail()).getId());
+        }
+        if(user.getRoles().contains(Role.ROLE_GUIDE)){
+            guideService.deleteGuideById(user.getGuideId());
+            user.setGuideId(null);
+        }
+
+        userService.changeUserRole(user, role);
+        return "true";
     }
 
     @GetMapping("/auth/login")

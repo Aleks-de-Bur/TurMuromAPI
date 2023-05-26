@@ -1,11 +1,9 @@
 package com.alexdebur.TurMurom.Controllers;
 
-import com.alexdebur.TurMurom.Models.Excursion;
-import com.alexdebur.TurMurom.Models.Guide;
-import com.alexdebur.TurMurom.Models.Mark;
-import com.alexdebur.TurMurom.Models.Schedule;
+import com.alexdebur.TurMurom.Models.*;
 import com.alexdebur.TurMurom.Services.ExcursionService;
 import com.alexdebur.TurMurom.Services.GuideService;
+import com.alexdebur.TurMurom.Services.UserService;
 import com.alexdebur.TurMurom.WorkClasses.InteractionPhoto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -20,18 +18,22 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.security.Principal;
 import java.util.List;
 
 @Controller
 public class GuideController {
     private GuideService guideService;
+    private UserService userService;
     private ExcursionService excursionService;
 
-    public static String UPLOAD_DIRECTORY = System.getProperty("user.dir") + "\\Photos\\Guides\\";
+//    public static String UPLOAD_DIRECTORY = System.getProperty("user.dir") + "\\Photos\\Guides\\";
+    public static String USER_UPLOAD_DIRECTORY = System.getProperty("user.dir") + "\\Photos\\Users\\";
 
     @Autowired
-    public void setServices(GuideService guideService, ExcursionService excursionService) {
+    public void setServices(GuideService guideService, UserService userService, ExcursionService excursionService) {
         this.guideService = guideService;
+        this.userService = userService;
         this.excursionService = excursionService;
     }
 
@@ -53,7 +55,7 @@ public class GuideController {
 
         for (var guide : allGuides){
                 try {
-                    guide.setPathPhoto(InteractionPhoto.getPhoto(UPLOAD_DIRECTORY + guide.getPathPhoto()));
+                    guide.setPathPhoto(InteractionPhoto.getPhoto(USER_UPLOAD_DIRECTORY + guide.getPathPhoto()));
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }
@@ -88,7 +90,7 @@ public class GuideController {
             model.addAttribute("previousUrl", referrer);
         }
 
-        String photo = UPLOAD_DIRECTORY + selectedGuide.getPathPhoto();
+        String photo = USER_UPLOAD_DIRECTORY + selectedGuide.getPathPhoto();
         try {
             photo = InteractionPhoto.getPhoto(photo);
         } catch (IOException e) {
@@ -112,7 +114,7 @@ public class GuideController {
 
         Guide selectedGuide = guideService.getGuideById(id).get();
 
-        String photo = UPLOAD_DIRECTORY + selectedGuide.getPathPhoto();
+        String photo = USER_UPLOAD_DIRECTORY + selectedGuide.getPathPhoto();
         try {
             photo = InteractionPhoto.getPhoto(photo);
         } catch (IOException e) {
@@ -134,7 +136,7 @@ public class GuideController {
         String fileName = guide.getLastName() + "_" + guide.getTelNumber() +
                 file.getOriginalFilename().substring(file.getOriginalFilename().length() - 4);
 
-        Path fileNameAndPath = Paths.get(UPLOAD_DIRECTORY, fileName);
+        Path fileNameAndPath = Paths.get(USER_UPLOAD_DIRECTORY, fileName);
         try {
             Files.write(fileNameAndPath, file.getBytes());
         } catch (IOException e) {
@@ -160,13 +162,16 @@ public class GuideController {
 
 
     @PostMapping("/guides/editGuide")
-    public String editGuide(Guide guide, @RequestParam("image") MultipartFile file) throws IOException {
+    public String editGuide(Guide guide, @RequestParam("image") MultipartFile file, Principal principal) throws IOException {
 
         if (!file.isEmpty()) {
-            String fileName = guide.getLastName() + "_" + guide.getTelNumber() +
+            User user = userService.getUserByPrincipal(principal);
+//            String fileName = guide.getLastName() + "_" + guide.getTelNumber() +
+//                    file.getOriginalFilename().substring(file.getOriginalFilename().length() - 4);
+            String fileName = user.getLastName() + "_" + user.getId() + "_" +
                     file.getOriginalFilename().substring(file.getOriginalFilename().length() - 4);
 
-            Path fileNameAndPath = Paths.get(UPLOAD_DIRECTORY, fileName);
+            Path fileNameAndPath = Paths.get(USER_UPLOAD_DIRECTORY, fileName);
             try {
                 Files.write(fileNameAndPath, file.getBytes());
             } catch (IOException e) {
@@ -176,7 +181,7 @@ public class GuideController {
             guide.setPathPhoto(fileName);
         }
         guideService.insertGuide(guide);
-        return "redirect:/guides/1?sortField=lastName&sortDir=asc&scheme=list";
+        return "redirect:/profile";
     }
 
     @GetMapping("/guides/delete/{id}")

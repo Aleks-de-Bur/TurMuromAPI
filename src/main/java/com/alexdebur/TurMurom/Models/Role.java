@@ -8,7 +8,20 @@ import org.springframework.security.core.GrantedAuthority;
 import javax.persistence.*;
 
 public enum Role implements GrantedAuthority {
-    ROLE_USER, ROLE_ADMIN, ROLE_MODERATOR, ROLE_GUIDE;
+    ROLE_USER("Пользователь"),
+    ROLE_ADMIN("Админ"),
+    ROLE_MODERATOR("Модератор"),
+    ROLE_GUIDE("Гид");
+
+    private final String displayValue;
+
+    private Role(String displayValue) {
+        this.displayValue = displayValue;
+    }
+
+    public String getDisplayValue() {
+        return displayValue;
+    }
 
     @Override
     public String getAuthority() {

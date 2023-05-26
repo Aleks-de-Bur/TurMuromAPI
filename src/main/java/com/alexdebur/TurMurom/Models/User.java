@@ -49,6 +49,7 @@ public class User implements UserDetails{
     private boolean active;
     //private String activationCode;
     private String pathPhoto;
+    private Long guideId;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private Set<UserElectedMark> userElectedMarks = new HashSet<>();
@@ -66,25 +67,27 @@ public class User implements UserDetails{
         return roles.contains(Role.ROLE_ADMIN);
     }
 
-    public User(String lastName, String firstName, String email, String password, boolean active, String pathPhoto, Set<Role> roles, UserElectedMark... userElectedMarks) {
+    public User(String lastName, String firstName, String email, String password, boolean active, String pathPhoto, Long guideId, Set<Role> roles, UserElectedMark... userElectedMarks) {
         this.lastName = lastName;
         this.firstName = firstName;
         this.email = email;
         this.password = password;
         this.active = active;
         this.pathPhoto = pathPhoto;
+        this.guideId = guideId;
         for(UserElectedMark userElectedMark : userElectedMarks) userElectedMark.setUser(this);
         this.userElectedMarks = Stream.of(userElectedMarks).collect(Collectors.toSet());
         this.roles = roles;
     }
 
-    public User(String lastName, String firstName, String email, String password, boolean active, String pathPhoto, Set<Role> roles, UserElectedExcursion... userElectedExcursions) {
+    public User(String lastName, String firstName, String email, String password, boolean active, String pathPhoto, Long guideId, Set<Role> roles, UserElectedExcursion... userElectedExcursions) {
         this.lastName = lastName;
         this.firstName = firstName;
         this.email = email;
         this.password = password;
         this.active = active;
         this.pathPhoto = pathPhoto;
+        this.guideId = guideId;
         for(UserElectedExcursion userElectedExcursion : userElectedExcursions) userElectedExcursion.setUser(this);
         this.userElectedExcursions = Stream.of(userElectedExcursions).collect(Collectors.toSet());
         this.roles = roles;

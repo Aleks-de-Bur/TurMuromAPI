@@ -1,9 +1,11 @@
 package com.alexdebur.TurMurom.Controllers;
 
 import com.alexdebur.TurMurom.Models.Excursion;
+import com.alexdebur.TurMurom.Models.Guide;
 import com.alexdebur.TurMurom.Models.Mark;
 import com.alexdebur.TurMurom.Models.User;
 import com.alexdebur.TurMurom.Services.ExcursionService;
+import com.alexdebur.TurMurom.Services.GuideService;
 import com.alexdebur.TurMurom.Services.MarkService;
 import com.alexdebur.TurMurom.Services.UserService;
 import com.alexdebur.TurMurom.WorkClasses.InteractionPhoto;
@@ -30,6 +32,7 @@ public class AuthorizationController {
     private final UserService userService;
     private final MarkService markService;
     private final ExcursionService excursionService;
+    private final GuideService guideService;
 
     public static String UPLOAD_DIRECTORY = System.getProperty("user.dir") + "\\Photos\\Users\\";
     public static String MARK_UPLOAD_DIRECTORY = System.getProperty("user.dir") + "\\Photos\\Marks\\";
@@ -56,6 +59,11 @@ public class AuthorizationController {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+
+        if(user.getGuideId() != null){
+            Guide guide = guideService.getGuideById(user.getGuideId()).get();
+            model.addAttribute("guide", guide);
+        } else model.addAttribute("guide", "");
 
         model.addAttribute("user", user);
         model.addAttribute("photo", photo);
@@ -105,13 +113,15 @@ public class AuthorizationController {
             if (!list.contains(excursion.getGuide().getId())) {
                 try {
                     excursion.getGuide().setPathPhoto(InteractionPhoto
-                            .getPhoto(GUIDE_UPLOAD_DIRECTORY + excursion.getGuide().getPathPhoto()));
+                            .getPhoto(UPLOAD_DIRECTORY + excursion.getGuide().getPathPhoto()));
                     list.add(excursion.getGuide().getId());
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }
             }
         }
+
+        model.addAttribute("user", user);
 
         model.addAttribute("marks", marks);
         model.addAttribute("excursions", excursions);
@@ -137,6 +147,42 @@ public class AuthorizationController {
             user.setPathPhoto(fileName);
         }
         userService.editUser(user);
+        return "redirect:/profile";
+    }
+
+    @PostMapping("/profile/editGuide")
+    public String editGuide(Guide guide, @RequestParam("image") MultipartFile file, Principal principal) throws IOException {
+
+        User user = userService.getUserByPrincipal(principal);
+        if (!file.isEmpty()) {
+//            String fileName = guide.getLastName() + "_" + guide.getTelNumber() +
+//                    file.getOriginalFilename().substring(file.getOriginalFilename().length() - 4);
+            String fileName = user.getLastName() + "_" + user.getId() +
+                    file.getOriginalFilename().substring(file.getOriginalFilename().length() - 4);
+
+            Path fileNameAndPath = Paths.get(UPLOAD_DIRECTORY, fileName);
+
+            try {
+                Files.delete(Paths.get(UPLOAD_DIRECTORY, user.getPathPhoto()));
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+
+            try {
+                Files.write(fileNameAndPath, file.getBytes());
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+
+            user.setPathPhoto(fileName);
+            guide.setPathPhoto(fileName);
+        }
+
+        user.setLastName(guide.getLastName());
+        user.setFirstName(guide.getFirstName());
+
+        userService.editUser(user);
+        guideService.insertGuide(guide);
         return "redirect:/profile";
     }
 

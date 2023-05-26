@@ -28,7 +28,7 @@
 <div class="container mt-4">
     <div class="row justify-content-between">
         <h1 class="col-sm-4">Достопримечательности</h1>
-        <a href="/places/create" class="col-sm-3 btn-lg btn btn-outline-dark">Добавить</a>
+        <a sec:authorize="hasRole('ROLE_MODERATOR')" href="/places/create" class="col-sm-3 btn-lg btn btn-outline-dark">Добавить</a>
     </div>
 
     <hr class="my-4">
@@ -199,34 +199,42 @@
 
                 <!----------    Действия для модератора    ----------------------------------------------->
                 <div class="card-footer p-0" sec:authorize="hasRole('ROLE_MODERATOR')">
-                    <div class="btn-group w-100" role="group" aria-label="Buttons for Admin">
-                        <a type="button" class="btn btn-primary" th:href="@{'/places/edit/' + ${mark.id}}"
+                    <div class="btn-group w-100" role="group" aria-label="Buttons for Moderator">
+                        <a type="button" class="btn btn-primary w-100" th:href="@{'/places/edit/' + ${mark.id}}"
                            style="border-top-left-radius: 16px; border-bottom-left-radius: 0px;">Редактировать</a>
-                        <a type="button" class="btn btn-danger" th:href="@{'/places/delete/' + ${mark.id}}"
+                        <a type="button" class="btn btn-danger w-100" th:href="@{'/places/delete/' + ${mark.id}}"
                            style="border-top-right-radius: 16px; border-bottom-right-radius: 0px;">Удалить</a>
                     </div>
                 </div>
                 <!----------    Действия для зарег пользователя    ----------------------------------->
-                <div class="card-footer p-0" sec:authorize="hasRole('ROLE_USER')"
+                <div class="card-footer p-0" sec:authorize="hasRole('ROLE_USER') || hasRole('ROLE_GUIDE') || hasRole('ROLE_MODERATOR')"
                      style="border-bottom-left-radius: 16px; border-bottom-right-radius: 16px;">
-                    <div class="btn-group w-100" role="group" aria-label="Базовая группа переключателей флажков">
-                        <!--                        <a class="btn btn-primary" type="button" th:href="@{'/places/details/' + ${mark.id}}"-->
-                        <!--                           style="border-bottom-left-radius: 16px; border-top-left-radius: 0px;">Подробнее-->
-                        <!--                        </a>-->
-                        <button class="btn btn-primary" type="button" data-bs-toggle="offcanvas"
-                                th:data-bs-target="'#offcanvasPlace' + ${mark.id}"
-                                aria-controls="offcanvasResponsive"
-                                style="border-bottom-left-radius: 16px; border-top-left-radius: 0px;">Подробнее
-                        </button>
+                    <form class="needs-validation" action="#" th:action="@{'/place/' + ${mark.id} + '/elect/places'}"
+                          th:object="${mark}" enctype="multipart/form-data" method="post" id="form1">
+                        <div class="btn-group w-100" role="group" aria-label="Базовая группа переключателей флажков">
+                            <!--                        <a class="btn btn-primary" type="button" th:href="@{'/places/details/' + ${mark.id}}"-->
+                            <!--                           style="border-bottom-left-radius: 16px; border-top-left-radius: 0px;">Подробнее-->
+                            <!--                        </a>-->
+                            <button class="btn btn-primary w-100" type="button" data-bs-toggle="offcanvas"
+                                    th:data-bs-target="'#offcanvasPlace' + ${mark.id}"
+                                    aria-controls="offcanvasResponsive"
+                                    style="border-bottom-left-radius: 16px; border-top-left-radius: 0px;">Подробнее
+                            </button>
 
-                        <form class="needs-validation" action="#" th:action="@{'/place/' + ${mark.id} + '/elect'}"
-                              th:object="${mark}" enctype="multipart/form-data" method="post" id="form1">
-                            <input type="submit" class="btn-check" th:id="${mark.id}" autocomplete="off">
-                            <label class="btn btn-outline-danger"
-                                   style="border-bottom-right-radius: 16px; border-top-right-radius: 0px;"
-                                   th:for="${mark.id}">Избранное</label><br>
-                        </form>
-                    </div>
+                            <button type="submit"
+                                    th:if="${not user.userElectedMarks.?[mark.title == '__${mark.title}__'].isEmpty()}"
+                                    style="border-bottom-right-radius: 16px; border-top-right-radius: 0px;"
+                                    class="btn btn-danger w-100" th:id="${mark.id}" autocomplete="off">В избранном
+                            </button>
+                            <button type="submit"
+                                    th:unless="${not user.userElectedMarks.?[mark.title == '__${mark.title}__'].isEmpty()}"
+                                    style="border-bottom-right-radius: 16px; border-top-right-radius: 0px;"
+                                    class="btn btn-outline-danger w-100" th:id="${mark.id}" autocomplete="off">В
+                                избранное
+                            </button>
+
+                        </div>
+                    </form>
                 </div>
                 <!----------    Действия для нерег пользователя    ----------------------------------->
                 <div class="card-footer p-0" sec:authorize="!isAuthenticated() || hasRole('ROLE_ADMIN')"
@@ -362,12 +370,25 @@
 
                                 </li>
                                 <!-------------------------Избранное------------------------>
-                                <li class="nav-item mt-4">
-                                    <input type="checkbox" class="btn-check mt-2" th:id="${'btn' + mark.id}"
-                                           autocomplete="off">
-                                    <label class="btn btn-outline-danger w-100 rounded-4"
-                                           style="box-shadow: 0 0.1875rem 1rem 0 rgba(0, 0, 0, 0.1) !important;"
-                                           th:for="${'btn' + mark.id}">Избранное</label><br>
+                                <li class="nav-item mt-4" sec:authorize="isAuthenticated()">
+                                    <form class="needs-validation" action="#" th:action="@{'/place/' + ${mark.id} + '/elect/places'}"
+                                          th:object="${mark}" enctype="multipart/form-data" method="post" th:id="'form' + ${mark.id}">
+
+                                        <button type="submit" th:if="${not user.userElectedMarks.?[mark.title == '__${mark.title}__'].isEmpty()}"
+                                                style="box-shadow: 0 0.1875rem 1rem 0 rgba(0, 0, 0, 0.1) !important; border-bottom-right-radius: 16px; border-top-right-radius: 0px;"
+                                                class="btn btn-danger w-100 rounded-4" th:id="${mark.id}" autocomplete="off">В избранном
+                                        </button>
+                                        <button type="submit" th:unless="${not user.userElectedMarks.?[mark.title == '__${mark.title}__'].isEmpty()}"
+                                                style="box-shadow: 0 0.1875rem 1rem 0 rgba(0, 0, 0, 0.1) !important; border-bottom-right-radius: 16px; border-top-right-radius: 0px;"
+                                                class="btn btn-outline-danger w-100 rounded-4" th:id="${mark.id}" autocomplete="off">В избранное
+                                        </button>
+
+<!--                                    <input type="checkbox" class="btn-check mt-2" th:id="${'btn' + mark.id}"-->
+<!--                                           autocomplete="off">-->
+<!--                                    <label class="btn btn-outline-danger w-100 rounded-4"-->
+<!--                                           style="box-shadow: 0 0.1875rem 1rem 0 rgba(0, 0, 0, 0.1) !important;"-->
+<!--                                           th:for="${'btn' + mark.id}">Избранное</label><br>-->
+                                    </form>
                                 </li>
                                 <li class="nav-item mt-4">
 
@@ -406,13 +427,14 @@
 
                                                         <!----------    Действия для зарег пользователя    ----------------------------------->
                                                         <div class="card-footer p-0"
-                                                             sec:authorize="hasRole('ROLE_USER')"
+                                                             sec:authorize="hasRole('ROLE_USER') || hasRole('ROLE_GUIDE') || hasRole('ROLE_MODERATOR')"
                                                              style="border-bottom-left-radius: 16px; border-bottom-right-radius: 16px;">
                                                             <div class="btn-group w-100" role="group"
                                                                  aria-label="Базовая группа переключателей флажков">
-                                                                <a class="btn btn-primary" type="button"
+                                                                <a class="btn btn-primary w-100" type="button"
                                                                    th:href="@{'/routes/details/' + ${mark.routeMarks[item].route.id}}"
-                                                                   style="border-bottom-left-radius: 16px; border-top-left-radius: 0px;">Подробнее
+                                                                   style="border-bottom-left-radius: 16px; border-top-left-radius: 0px;
+                                                                            border-bottom-right-radius: 16px; border-top-right-radius: 0px;">Подробнее
                                                                 </a>
 
                                                                 <!--                                                                <input type="checkbox" class="btn-check"-->
@@ -458,13 +480,14 @@
 
                                                         <!----------    Действия для зарег пользователя    ----------------------------------->
                                                         <div class="card-footer p-0"
-                                                             sec:authorize="hasRole('ROLE_USER')"
+                                                             sec:authorize="hasRole('ROLE_USER') || hasRole('ROLE_GUIDE') || hasRole('ROLE_MODERATOR')"
                                                              style="border-bottom-left-radius: 16px; border-bottom-right-radius: 16px;">
                                                             <div class="btn-group w-100" role="group"
                                                                  aria-label="Базовая группа переключателей флажков">
                                                                 <a class="btn btn-primary" type="button"
                                                                    th:href="@{'/routes/details/' + ${mark.routeMarks[item + 1].route.id}}"
-                                                                   style="border-bottom-left-radius: 16px; border-top-left-radius: 0px;">Подробнее
+                                                                   style="border-bottom-left-radius: 16px; border-top-left-radius: 0px;
+                                                                            border-bottom-right-radius: 16px; border-top-right-radius: 0px;">Подробнее
                                                                 </a>
 
                                                                 <!--                                                                <input type="checkbox" class="btn-check"-->
@@ -489,14 +512,14 @@
 
                                             </div>
                                         </div>
-                                        <button class="carousel-control-prev" style="justify-content: flex-start;"
+                                        <button class="carousel-control-prev" style="justify-content: flex-start; width: 3.75rem;"
                                                 type="button"
                                                 th:data-bs-target="'#carouselRouteIndicators' + ${mark.id}"
                                                 data-bs-slide="prev">
                                             <span class="carousel-control-prev-icon" aria-hidden="true"></span>
                                             <span class="visually-hidden">Previous</span>
                                         </button>
-                                        <button class="carousel-control-next" style="justify-content: flex-end;"
+                                        <button class="carousel-control-next" style="justify-content: flex-end; width: 3.75rem;"
                                                 type="button"
                                                 th:data-bs-target="'#carouselRouteIndicators' + ${mark.id}"
                                                 data-bs-slide="next">
@@ -664,8 +687,6 @@
     function changePageSize() {
       $("#searchForm").submit();
     }
-
-
 
 
 </script>

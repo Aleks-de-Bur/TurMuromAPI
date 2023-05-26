@@ -8,7 +8,7 @@
           rel="stylesheet" integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65"
           crossorigin="anonymous">
 
-    <!--    <link rel="icon" type="image/x-icon" href="assets/favicon.ico"/>-->
+    <link rel="icon" type="image/x-icon" href="/assets/brand/tur-murom-logo-dark.ico"/>
     <!-- Font Awesome icons (free version)-->
     <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js" crossorigin="anonymous"></script>
     <!-- Google fonts-->
@@ -24,7 +24,7 @@
 <div class="container mt-4">
     <div class="row justify-content-between">
         <h1 class="col-sm-4">Маршруты</h1>
-        <a href="/routes/create" class="col-sm-3 btn-lg btn btn-outline-dark">Добавить</a>
+        <a sec:authorize="hasRole('ROLE_MODERATOR')" href="/routes/create" class="col-sm-3 btn-lg btn btn-outline-dark">Добавить</a>
     </div>
     <hr class="my-4">
     <div class="row justify-content-between">
@@ -142,27 +142,39 @@
                        th:text="${route.description}"></p>
                 </div>
 
-                <!----------    Действия для админа    ----------------------------------------------->
+                <!----------    Действия для модератора    ------------------------------------------->
                 <div class="card-footer p-0" sec:authorize="hasRole('ROLE_MODERATOR')">
-                    <div class="btn-group w-100" role="group" aria-label="Buttons for Admin">
-                        <a type="button" class="btn btn-primary" th:href="@{'/routes/edit/' + ${route.id}}"
+                    <div class="btn-group w-100" role="group" aria-label="Buttons for Moderator">
+                        <a type="button" class="btn btn-primary w-100" th:href="@{'/routes/edit/' + ${route.id}}"
                            style="border-top-left-radius: 16px; border-bottom-left-radius: 0px;">Редактировать</a>
-                        <a type="button" class="btn btn-danger" th:href="@{'/routes/delete/' + ${route.id}}"
+                        <a type="button" class="btn btn-danger w-100" th:href="@{'/routes/delete/' + ${route.id}}"
                            style="border-top-right-radius: 16px; border-bottom-right-radius: 0px;">Удалить</a>
                     </div>
                 </div>
                 <!----------    Действия для зарег пользователя    ----------------------------------->
-                <div class="card-footer p-0" sec:authorize="hasRole('ROLE_USER')" style="border-bottom-left-radius: 16px; border-bottom-right-radius: 16px;">
-                    <div class="btn-group w-100" role="group" aria-label="Базовая группа переключателей флажков">
-                        <a class="btn btn-primary" type="button" th:href="@{'/routes/details/' + ${route.id}}"
-                           style="border-bottom-left-radius: 16px; border-top-left-radius: 0px;">Подробнее
-                        </a>
+                <div class="card-footer p-0" sec:authorize="hasRole('ROLE_USER') || hasRole('ROLE_GUIDE') || hasRole('ROLE_MODERATOR')"
+                     style="border-bottom-left-radius: 16px; border-bottom-right-radius: 16px;">
+<!--                    <form class="needs-validation" action="#" th:action="@{'/route/' + ${route.id} + '/elect'}"-->
+<!--                          th:object="${mark}" enctype="multipart/form-data" method="post" th:id="'form' + ${route.id}">-->
+                        <div class="btn-group w-100" role="group" aria-label="Базовая группа переключателей флажков">
+                            <a class="btn btn-primary" type="button" th:href="@{'/routes/details/' + ${route.id}}"
+                               style="border-bottom-left-radius: 16px; border-top-left-radius: 0px;
+                                border-bottom-right-radius: 16px; border-top-right-radius: 0px;">Подробнее
+                            </a>
 
-                        <input type="checkbox" class="btn-check" th:id="${route.id}" autocomplete="off">
-                        <label class="btn btn-outline-danger"
-                               style="border-bottom-right-radius: 16px; border-top-right-radius: 0px;"
-                               th:for="${route.id}">Избранное</label><br>
-                    </div>
+<!--                            <button type="submit"-->
+<!--                                    th:if="${not user.userElectedMarks.?[route.title == '__${route.title}__'].isEmpty()}"-->
+<!--                                    style="border-bottom-right-radius: 16px; border-top-right-radius: 0px;"-->
+<!--                                    class="btn btn-danger w-100" th:id="${mark.id}" autocomplete="off">В избранном-->
+<!--                            </button>-->
+<!--                            <button type="submit"-->
+<!--                                    th:unless="${not user.userElectedMarks.?[route.title == '__${route.title}__'].isEmpty()}"-->
+<!--                                    style="border-bottom-right-radius: 16px; border-top-right-radius: 0px;"-->
+<!--                                    class="btn btn-outline-danger w-100" th:id="${mark.id}" autocomplete="off">В-->
+<!--                                избранное-->
+<!--                            </button>-->
+                        </div>
+<!--                    </form>-->
                 </div>
                 <!----------    Действия для нерег пользователя    ----------------------------------->
                 <div class="card-footer p-0" sec:authorize="!isAuthenticated() || hasRole('ROLE_ADMIN')"

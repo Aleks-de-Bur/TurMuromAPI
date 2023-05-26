@@ -37,6 +37,9 @@ public class GuideService {
     public Optional<Guide> getGuideById(Long id) {
         return guideRepository.findById(id);
     }
+    public Guide getGuideByEMail(String email) {
+        return guideRepository.findByEmail(email).get();
+    }
 
     public void insertGuide(Guide guide) {
         guideRepository.save(guide);

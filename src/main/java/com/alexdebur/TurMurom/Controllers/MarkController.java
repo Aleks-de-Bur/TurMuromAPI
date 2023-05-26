@@ -80,7 +80,7 @@ public class MarkController {
     public String getAll(Model model, @RequestParam(required = false) String keyword,
                          @RequestParam(defaultValue = "1") int page, @RequestParam(defaultValue = "9") int size,
                          @RequestParam(defaultValue = "title") String sortField,
-                         @RequestParam(defaultValue = "asc") String sortDir,
+                         @RequestParam(defaultValue = "asc") String sortDir, Principal principal,
                          @RequestParam(defaultValue = "card") String scheme) {
         try {
             if (keyword != null) {
@@ -89,6 +89,11 @@ public class MarkController {
 
             Page<Mark> pageMarks = markService.listAll(page, size, keyword,sortField, sortDir);
             List<Mark> marks = pageMarks.getContent();
+
+            if(principal != null){
+                User user = userService.getUserByPrincipal(principal);
+                model.addAttribute("user", user);
+            }
 
             ArrayList<Long> list = new ArrayList<>();
             ArrayList<Integer> arr = new ArrayList<>(Arrays.asList(0, 2, 4));
@@ -345,8 +350,8 @@ public class MarkController {
         return "redirect:" + referrer;
     }
 
-    @PostMapping("/place/{markId}/elect")
-    public String electMark(Mark mark, Principal principal,
+    @PostMapping("/place/{markId}/elect/{locate}")
+    public String electMark(Mark mark, Principal principal, @PathVariable("locate") String locate,
                                  @PathVariable("markId") Long markId) throws IOException {
         User user = userService.getUserByPrincipal(principal);
         Set<UserElectedMark> elected = user.getUserElectedMarks();
@@ -360,9 +365,15 @@ public class MarkController {
         } else {
             elected.add(check);
         }
+
         user.setUserElectedMarks(elected);
         userService.editUser(user);
 
-        return "redirect:/places";
+        if(locate.equals("places"))
+            return "redirect:/places";
+        else if(locate.equals("elected"))
+            return "redirect:/profile/elected";
+        else
+            return "redirect:/routes/details/" + locate;
     }
 }

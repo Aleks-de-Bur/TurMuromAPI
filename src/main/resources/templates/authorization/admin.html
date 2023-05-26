@@ -87,7 +87,15 @@
             <td th:text="${user.email}"/>
             <td th:if="${user.active}" th:text="Активен"/>
             <td th:unless="${user.active}" th:text="Заблокирован"/>
-            <td th:text="${user.roles[0]}"/>
+<!--            <td th:text="${user.roles[0]}"/>-->
+            <td>
+                <div class="mb-3">
+                    <select class="form-select role" th:onchange="'changeRole(' + ${user.id} + ')'" aria-label="select role" th:id="'role' + ${user.id}" name="role">
+                        <option th:each="role : ${roles}" th:value="${role}" th:text="${role.displayValue}"
+                                th:selected="${user.roles[0] == role}"></option>
+                    </select>
+                </div>
+            </td>
             <td>
                 <form th:action="'/admin_cabinet/user/ban/' + ${user.id}" method="post">
                     <input type="hidden" name="_csrf" value="${_csrf.token}">
@@ -135,6 +143,18 @@
         </tr>
         </tbody>
     </table>
+
+    <script th:inline="javascript">
+        function changeRole(id) {
+            const selectElement = document.getElementById("role" + id);
+
+            fetch("http://192.168.0.75:8080/api/admin/user/" + id + "/changeRole/" + selectElement.value, {
+                method: "GET" // default, so we can ignore
+            });
+
+            alert("Изменено");
+        }
+    </script>
 
 <!--    <div><i>Отсортировано по [[${sortField}]] в [[${sortDir}]] порядке</i></div>-->
     <div>&nbsp;</div>

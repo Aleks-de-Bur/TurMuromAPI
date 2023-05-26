@@ -24,6 +24,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.security.Principal;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 
@@ -35,7 +36,8 @@ public class ExcursionController {
     private UserService userService;
 
     public static String EXCURSION_UPLOAD_DIRECTORY = System.getProperty("user.dir") + "\\Photos\\Excursions\\";
-    public static String GUIDE_UPLOAD_DIRECTORY = System.getProperty("user.dir") + "\\Photos\\Guides\\";
+    //public static String GUIDE_UPLOAD_DIRECTORY = System.getProperty("user.dir") + "\\Photos\\Guides\\";
+    public static String USER_UPLOAD_DIRECTORY = System.getProperty("user.dir") + "\\Photos\\Users\\";
 
     private final UserElectedExcursionRepository userElectedExcursionRepository;
 
@@ -75,8 +77,20 @@ public class ExcursionController {
         }
 
         if(principal != null){
-            model.addAttribute("user", userService.getUserByPrincipal(principal));
-        }
+            User user = userService.getUserByPrincipal(principal);
+            model.addAttribute("user", user);
+
+            model.addAttribute("guide", "");
+
+            if(user.getGuideId() != null){
+                Guide guide = guideService.getGuideById(user.getGuideId()).get();
+                model.addAttribute("guide", guide);
+                ArrayList<Integer> arr = new ArrayList<>(Arrays.asList(0, 3, 6, 9, 12, 15, 18, 21));
+                model.addAttribute("arr", arr);
+            }
+
+
+        } else model.addAttribute("guide", "");
 
         try {
             if (keyword != null) {
@@ -99,7 +113,7 @@ public class ExcursionController {
                 if (!list.contains(excursion.getGuide().getId())) {
                     try {
                         excursion.getGuide().setPathPhoto(InteractionPhoto
-                                .getPhoto(GUIDE_UPLOAD_DIRECTORY + excursion.getGuide().getPathPhoto()));
+                                .getPhoto(USER_UPLOAD_DIRECTORY + excursion.getGuide().getPathPhoto()));
                         list.add(excursion.getGuide().getId());
                     } catch (IOException e) {
                         throw new RuntimeException(e);
@@ -122,46 +136,6 @@ public class ExcursionController {
         } catch (Exception e) {
             model.addAttribute("message", e.getMessage());
         }
-
-
-
-        //List<Excursion> allExcursions = excursionService.getAllExcursions();
-
-//        Page<Excursion> page = excursionService.listAll(pageNum, sortField, sortDir);
-//        List<Excursion> allExcursions = page.getContent();
-//
-//        ArrayList<Long> list = new ArrayList<>();
-//
-//        for (var excursion : allExcursions){
-//            for (var photo : excursion.getExcursionPhotos()){
-//                try {
-//                    photo.setPathPhoto(InteractionPhoto.getPhoto(UPLOAD_DIRECTORY + photo.getPathPhoto()));
-//                } catch (IOException e) {
-//                    throw new RuntimeException(e);
-//                }
-//            }
-//            if (!list.contains(excursion.getGuide().getId())) {
-//                try {
-//                    excursion.getGuide().setPathPhoto(InteractionPhoto
-//                            .getPhoto(GUIDE_UPLOAD_DIRECTORY + excursion.getGuide().getPathPhoto()));
-//                    list.add(excursion.getGuide().getId());
-//                } catch (IOException e) {
-//                    throw new RuntimeException(e);
-//                }
-//            }
-//        }
-//
-//        model.addAttribute("excursions", allExcursions);
-//        model.addAttribute("activePage", "excursions");
-//
-//        model.addAttribute("currentPage", pageNum);
-//        model.addAttribute("totalPages", page.getTotalPages());
-//        model.addAttribute("totalItems", page.getTotalElements());
-//
-//        model.addAttribute("sortField", sortField);
-//        model.addAttribute("sortDir", sortDir);
-//        model.addAttribute("scheme", scheme);
-//        model.addAttribute("reverseSortDir", sortDir.equals("asc") ? "desc" : "asc");
         return "excursions/excursions";
     }
 
@@ -293,8 +267,8 @@ public class ExcursionController {
     }
 
 
-    @PostMapping("/excursion/{excursionId}/elect")
-    public String electExcursion(Excursion excursion, Principal principal,
+    @PostMapping("/excursion/{excursionId}/elect/{locate}")
+    public String electExcursion(Excursion excursion, Principal principal, @PathVariable("locate") String locate,
                                 @PathVariable("excursionId") Long excursionId) throws IOException {
         User user = userService.getUserByPrincipal(principal);
         Set<UserElectedExcursion> elected = user.getUserElectedExcursions();
@@ -311,6 +285,9 @@ public class ExcursionController {
         user.setUserElectedExcursions(elected);
         userService.editUser(user);
 
-        return "redirect:/excursions";
+        if(locate.equals("excursions"))
+            return "redirect:/excursions";
+        else
+            return "redirect:/profile/elected";
     }
 }

@@ -85,6 +85,13 @@ public class CategoryController {
         return "redirect:/categories";
     }
 
+//    @GetMapping("/categories/editCategory/{id}/{title}")
+//    public String editCategory(@PathVariable("id") Long id, @PathVariable("title") String title){
+//        Category category = categoryService.getCategoryById(id).get();
+//        categoryService.insertCategory(category);
+//        return "redirect:/categories";
+//    }
+
     @GetMapping("/categories/delete/{id}")
     public String deleteCategoryById(@PathVariable("id") Long id){
         categoryService.deleteCategoryById(id);

@@ -3,6 +3,7 @@ package com.alexdebur.TurMurom.Controllers;
 import com.alexdebur.TurMurom.Models.*;
 import com.alexdebur.TurMurom.Services.MarkService;
 import com.alexdebur.TurMurom.Services.RouteService;
+import com.alexdebur.TurMurom.Services.UserService;
 import com.alexdebur.TurMurom.WorkClasses.InteractionPhoto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -17,19 +18,22 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.security.Principal;
 import java.util.*;
 
 @Controller
 public class RouteController {
     private RouteService routeService;
     private MarkService markService;
+    private UserService userService;
 
     public static String ROUTE_UPLOAD_DIRECTORY = System.getProperty("user.dir") + "\\Photos\\Routes\\";
     public static String MARK_UPLOAD_DIRECTORY = System.getProperty("user.dir") + "\\Photos\\Marks\\";
 
     @Autowired
-    public void setRouteService(RouteService routeService, MarkService markService) {
+    public void setRouteService(RouteService routeService, MarkService markService, UserService userService) {
         this.markService = markService;
+        this.userService = userService;
         this.routeService = routeService;
     }
 
@@ -77,7 +81,7 @@ public class RouteController {
 
     @GetMapping("/routes/details/{id}")
     public String detailsPage(@RequestHeader(value = HttpHeaders.REFERER, required = false) final String referrer,
-                              Model model, @PathVariable("id") Long id) {
+                              Model model, @PathVariable("id") Long id, Principal principal) {
 
         if (referrer != null) {
             model.addAttribute("previousUrl", referrer);
@@ -86,6 +90,16 @@ public class RouteController {
         Route selectedRoute = routeService.getRouteById(id);
 
         List<String> photos = new ArrayList<>();
+
+        if(principal != null){
+            User user = userService.getUserByPrincipal(principal);
+            model.addAttribute("user", user);
+
+            if(user.getGuideId() != null){
+                ArrayList<Integer> arr = new ArrayList<>(Arrays.asList(0, 3, 6, 9, 12, 15, 18, 21));
+                model.addAttribute("arr", arr);
+            }
+        }
 
         try {
             photos.add(InteractionPhoto.getPhoto(ROUTE_UPLOAD_DIRECTORY + selectedRoute.getPathPhoto()));

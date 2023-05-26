@@ -47,6 +47,7 @@ public class AdminController {
 
         //model.addAttribute("users", userService.list());
         model.addAttribute("user", userService.getUserByPrincipal(principal));
+        model.addAttribute("roles", Role.values());
 
         model.addAttribute("users", allUsers);
         model.addAttribute("activePage", "admin");

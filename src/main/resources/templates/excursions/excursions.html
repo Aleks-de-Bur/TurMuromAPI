@@ -26,9 +26,63 @@
 <div th:replace="~{fragments/navigation :: navigation}"></div>
 
 <div class="container mt-4">
+
+    <div th:if="${guide != ''}">
+
+        <div class="row justify-content-between mb-4">
+            <h1 class="col-sm-4">Мои экскурсии</h1>
+            <!--        <a href="/excursions/create" class="col-sm-3 btn-lg btn btn-outline-dark">Добавить</a>-->
+            <a th:if="${guide != ''}" th:href="@{'/guides/edit/' + ${guide.id} + '/excursion/create'}"
+               class="col-8 btn-lg btn btn-outline-dark">Добавить</a>
+        </div>
+
+        <span th:if="${guide.excursions.size() == 0}">Список моих экскурсий пуст</span>
+
+        <!-----------Карусель---------->
+        <div th:unless="${guide.excursions.size() == 0}" id="carouselExcursionsIndicators"
+             class="carousel carousel-dark slide carousel-fade" data-bs-ride="carousel">
+            <div class="carousel-inner px-5">
+                <div class="carousel-item d-flex row row-cols-1 row-cols-md-3 g-4 ms-0"
+                     th:each="item : ${arr}"
+                     th:if="${#arrays.length(guide.excursions) >= item}"
+                     th:classappend="${itemStat.first} ? active : ''">
+
+                    <div th:replace="fragments/elected :: electedExcursions(${item}, 0)"></div>
+                    <div th:replace="fragments/elected :: electedExcursions(${item}, 1)"></div>
+                    <div th:replace="fragments/elected :: electedExcursions(${item}, 2)"></div>
+
+                </div>
+            </div>
+            <button class="carousel-control-prev" style="justify-content: flex-start; width: 3.75rem;"
+                    type="button"
+                    data-bs-target="#carouselExcursionsIndicators"
+                    data-bs-slide="prev">
+                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Previous</span>
+            </button>
+            <button class="carousel-control-next" style="justify-content: flex-end; width: 3.75rem;"
+                    type="button"
+                    data-bs-target="#carouselExcursionsIndicators"
+                    data-bs-slide="next">
+                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Next</span>
+            </button>
+        </div>
+
+        <hr class="my-4">
+
+        <div th:each="item : ${arr}">
+            <!-----------Канвас---------->
+            <div th:replace="fragments/elected :: electedExcursionsCanvas(${item}, 0)"></div>
+            <div th:replace="fragments/elected :: electedExcursionsCanvas(${item}, 1)"></div>
+            <div th:replace="fragments/elected :: electedExcursionsCanvas(${item}, 2)"></div>
+            <!-------------------Конец канваса------------------>
+        </div>
+
+    </div>
+
     <div class="row justify-content-between">
         <h1 class="col-sm-4">Экскурсии</h1>
-        <!--        <a href="/excursions/create" class="col-sm-3 btn-lg btn btn-outline-dark">Добавить</a>-->
     </div>
 
     <hr class="my-4">
@@ -181,35 +235,41 @@
                        th:text="${excursion.description}"></p>
                 </div>
 
-                <!----------    Действия для админа    ----------------------------------------------->
-                <!--                <div class="card-footer p-0">-->
-                <!--                    <div class="btn-group w-100" role="group" aria-label="Buttons for Admin">-->
-                <!--                        <a type="button" class="btn btn-primary" th:href="@{'/routes/edit/' + ${route.id}}"-->
-                <!--                           style="border-top-left-radius: 16px; border-bottom-left-radius: 0px;">Редактировать</a>-->
-                <!--                        <a type="button" class="btn btn-danger" th:href="@{'/routes/delete/' + ${route.id}}"-->
-                <!--                           style="border-top-right-radius: 16px; border-bottom-right-radius: 0px;">Удалить</a>-->
-                <!--                    </div>-->
-                <!--                </div>-->
-                <!------------------------------------------------------------------------------------>
+                <!----------    Действия для гида    ------------------------------------------------->
+                <div class="card-footer p-0" sec:authorize="hasRole('ROLE_GUIDE')"
+                     th:if="${excursion.guide.id} == ${guide.id}">
+                    <div class="btn-group w-100" role="group" aria-label="Buttons for Guide">
+                        <a type="button" class="btn btn-primary w-100"
+                           th:href="@{'guides/edit/' + ${guide.id} + '/excursion/' + ${excursion.id} + '/edit'}"
+                           style="border-top-left-radius: 16px; border-bottom-left-radius: 0px;">Редактировать</a>
+                        <a type="button" class="btn btn-danger w-100"
+                           th:href="@{'guides/edit/' + ${guide.id} + '/excursion/' + ${excursion.id} + '/delete'}"
+                           style="border-top-right-radius: 16px; border-bottom-right-radius: 0px;">Удалить</a>
+                    </div>
+                </div>
 
                 <!----------    Действия для зарег пользователя    ----------------------------------->
-                <div class="card-footer p-0" sec:authorize="hasRole('ROLE_USER')"
+                <div class="card-footer p-0" sec:authorize="hasRole('ROLE_USER') || hasRole('ROLE_MODERATOR') || hasRole('ROLE_GUIDE')"
                      style="border-bottom-left-radius: 16px; border-bottom-right-radius: 16px;">
-                    <div class="btn-group w-100" role="group" aria-label="Базовая группа переключателей флажков">
-                        <button class="btn btn-primary" type="button" data-bs-toggle="offcanvas"
-                                th:data-bs-target="'#offcanvasExcursion' + ${excursion.id}"
-                                aria-controls="offcanvasResponsive"
-                                style="border-bottom-left-radius: 16px; border-top-left-radius: 0px;">Подробнее
-                        </button>
+                    <form class="needs-validation" action="#" th:action="@{'/excursion/' + ${excursion.id} + '/elect/excursions'}"
+                          th:object="${excursion}" enctype="multipart/form-data" method="post" id="form1">
+                        <div class="btn-group w-100" role="group" aria-label="Базовая группа переключателей флажков">
+                            <button class="btn btn-primary w-100" type="button" data-bs-toggle="offcanvas"
+                                    th:data-bs-target="'#offcanvasExcursion' + ${excursion.id}"
+                                    aria-controls="offcanvasResponsive"
+                                    style="border-bottom-left-radius: 16px; border-top-left-radius: 0px;">Подробнее
+                            </button>
 
-                        <form class="needs-validation" action="#" th:action="@{'/excursion/' + ${excursion.id} + '/elect'}"
-                              th:object="${excursion}" enctype="multipart/form-data" method="post" id="form1">
-                            <input type="submit" class="btn-check" th:id="${excursion.id}" autocomplete="off">
-                            <label class="btn btn-outline-danger"
-                                   style="border-bottom-right-radius: 16px; border-top-right-radius: 0px;"
-                                   th:for="${excursion.id}">Избранное</label><br>
-                        </form>
-                    </div>
+                            <button type="submit" th:if="${not user.userElectedExcursions.?[excursion.title == '__${excursion.title}__'].isEmpty()}"
+                                    style="border-bottom-right-radius: 16px; border-top-right-radius: 0px;"
+                                    class="btn btn-danger w-100" th:id="${excursion.id}" autocomplete="off">В избранном
+                            </button>
+                            <button type="submit" th:unless="${not user.userElectedExcursions.?[excursion.title == '__${excursion.title}__'].isEmpty()}"
+                                    style="border-bottom-right-radius: 16px; border-top-right-radius: 0px;"
+                                    class="btn btn-outline-danger w-100" th:id="${excursion.id}" autocomplete="off">В избранное
+                            </button>
+                        </div>
+                    </form>
                 </div>
                 <!----------    Действия для нерег пользователя    ----------------------------------->
                 <div class="card-footer p-0" sec:authorize="!isAuthenticated() || hasRole('ROLE_ADMIN')"
@@ -246,7 +306,8 @@
                             <div class="carousel-inner">
                                 <div class="carousel-item" th:each="photo : ${excursion.excursionPhotos}"
                                      th:classappend="${photoStat.first} ? active : ''">
-                                    <a th:href="|data:image/jpeg;base64,${photo.pathPhoto}|" th:data-fancybox="'gallery' + ${excursion.id}">
+                                    <a th:href="|data:image/jpeg;base64,${photo.pathPhoto}|"
+                                       th:data-fancybox="'gallery' + ${excursion.id}">
                                         <img th:src="|data:image/jpeg;base64,${photo.pathPhoto}|" class="d-block w-100"
                                              style="object-fit: cover;"
                                              height="600px" alt="Фотография достопримечательности">
@@ -326,7 +387,6 @@
     <!--                        <div th:each="routeMark, stat : *{routeMarks}">-->
     <!--                            <input type="hidden" th:field="*{routeMarks[__${stat.index}__].ordinal}"/>-->
     <!--                        </div>-->
-
 
 
     <!------------------------------------------------------------------------------------>

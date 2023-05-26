@@ -56,11 +56,14 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 //Доступ только для не зарегистрированных пользователей
                 .antMatchers("/sign_up", "/log_in").not().fullyAuthenticated()
                 //Доступ только для пользователей с ролью Администратор
-                .antMatchers("/authorization/example", "/personal_cabinet/admin", "/authorization/admin").hasRole("ADMIN")
-                .antMatchers("/map", "/personal_cabinet").hasRole("USER")
+                .antMatchers("/authorization/example","/guides/**", "/personal_cabinet/admin", "/authorization/admin").hasRole("ADMIN")
+                .antMatchers("/personal_cabinet").hasRole("GUIDE")
+                .antMatchers("/personal_cabinet", "/places/create/**", "/excursions/create/**", "/places/details/**",
+                        "/excursions/**", "routes/create/**").hasRole("MODERATOR")
+                .antMatchers("/personal_cabinet").hasRole("USER")
                 //Доступ разрешен всем пользователей
-                .antMatchers("/places/**","/api/**", "/","/guides/**",
-                        "/assets/**", "/photos/**", "routes/**").permitAll()
+                .antMatchers("/map", "/places/**","/api/**", "/", "/excursions/**",
+                        "/assets/**", "/photos/**", "/routes/*").permitAll()
                 //Все остальные страницы требуют аутентификации
                 .anyRequest().authenticated()
                 .and()

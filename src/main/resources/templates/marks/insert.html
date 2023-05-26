@@ -7,6 +7,16 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css"
           rel="stylesheet" integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65"
           crossorigin="anonymous">
+
+    <link rel="icon" type="image/x-icon" href="/assets/brand/tur-murom-logo-dark.ico"/>
+    <!-- Font Awesome icons (free version)-->
+    <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js" crossorigin="anonymous"></script>
+    <!-- Google fonts-->
+    <link href="https://fonts.googleapis.com/css?family=Varela+Round" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i"
+          rel="stylesheet"/>
+    <!-- Core theme CSS (includes Bootstrap)-->
+    <link href="../assets/dist/css/styles.css" rel="stylesheet"/>
 </head>
 <body class="bg-light">
 
@@ -140,21 +150,73 @@
 
                         <script>
                         function schedule(id){
-                            var chbox;
-                            chbox=document.getElementById(id);
+                            var chbox1;
+                            var chbox2;
+                            let startId = "s"
+                            let endId = "s"
 
-                            if (chbox.checked) {
-                        		alert('Выбран');
+                            if(id % 2 != 0){
+                                startId += id + "_start"
+                                endId += id + "_end"
+                                chbox1=document.getElementById(id);
+                                chbox2=document.getElementById(id + 1);
+                            } else {
+                                startId += (id - 1) + "_start"
+                                endId += (id - 1) + "_end"
+                                chbox1=document.getElementById(id - 1);
+                                chbox2=document.getElementById(id);
+                            }
+
+                            let start = document.getElementById(startId);
+                            let end = document.getElementById(endId);
+
+                            if (chbox1.checked && id % 2 != 0) {
+                                start.value = '00:00';
+                                end.value = '23:59';
+                                chbox2.checked = false;
+                                start.disabled = true;
+                                end.disabled = true;
+
+                        		//alert('Круглосуточно');
                         	}
-                        	else {
-                        		alert ('Не выбран');
+                        	if (!chbox1.checked && id % 2 != 0) {
+                                start.value = '00:00';
+                                end.value = '23:59';
+                                //chbox2.checked = false;
+                                start.disabled = false;
+                                end.disabled = false;
+
+                        		//alert('Круглосуточно');
                         	}
+                        	if (chbox2.checked && id % 2 == 0) {
+                                start.value = '00:00';
+                                end.value = '00:00';
+                                chbox1.checked = false;
+                                start.disabled = true;
+                                end.disabled = true;
+
+                                //alert ('Выходной');
+                        	}
+                        	if (!chbox2.checked && id % 2 == 0) {
+                                start.value = '00:00';
+                                end.value = '00:00';
+                                //chbox1.checked = false;
+                                start.disabled = false;
+                                end.disabled = false;
+
+                                //alert ('Выходной');
+                        	}
+                        	//else {
+                        	//    start.value = '00:00';
+                            //    end.value = '00:00';
+                        	//	alert ('Выходной');
+                        	//}
                         }
 
                         </script>
 
                         <h4>Расписание</h4>
-                        <p class="lead">При отсутствии графика работы оставьте значения полей по умолчанию.</p>
+<!--                        <p class="lead">При отсутствии графика работы оставьте значения полей по умолчанию.</p>-->
                         <div class="accordion" id="accordionExample">
                             <div class="accordion-item">
                                 <h2 class="accordion-header" id="headingOne">
@@ -171,23 +233,23 @@
                                         <div class="row g-3">
 
                                             <h6>Понедельник</h6>
-                                            <div class="col-sm-4">
+                                            <div class="col-lg-4 col-md-12">
                                                 <div class="cs-form">
-                                                    <input type="time" name="s1_start" class="form-control" value="00:00"/>
+                                                    <input type="time" name="s1_start" id="s1_start" class="form-control" value="00:00"/>
                                                 </div>
                                             </div>
-                                            <div class="col-sm-4">
+                                            <div class="col-lg-4 col-md-12">
                                                 <div class="cs-form">
-                                                    <input type="time" name="s1_end" class="form-control" value="23:59"/>
+                                                    <input type="time" name="s1_end" id="s1_end" class="form-control" value="23:59"/>
                                                 </div>
                                             </div>
-                                            <div class="col-sm-4">
-                                                <div class="btn-group text-end" role="group" aria-label="Basic outlined">
-                                                    <input type="checkbox" class="btn-check" id="1" name="mon" value="every" autocomplete="off">
-                                                    <label class="btn btn-outline-primary" for="1">Флажок 1</label>
+                                            <div class="col-lg-4 col-md-12">
+                                                <div class="btn-group btn-group-sm text-end w-100" role="group" aria-label="Basic outlined">
+                                                    <input type="checkbox" onclick="schedule(1)" class="btn-check" id="1" name="mon" value="every" autocomplete="off">
+                                                    <label class="btn btn-outline-info" for="1">Круглосуточно</label>
 
-                                                    <input type="checkbox" class="btn-check" id="2" name="mon" value="never" autocomplete="off">
-                                                    <label class="btn btn-outline-primary" for="2">Флажок 2</label>
+                                                    <input type="checkbox" onclick="schedule(2)" class="btn-check" id="2" name="mon" value="never" autocomplete="off">
+                                                    <label class="btn btn-outline-info" for="2">Выходной</label>
                                                 </div>
                                             </div>
                                         </div>
@@ -195,14 +257,23 @@
                                         <hr class="my-4">
                                         <div class="row g-3">
                                             <h6>Вторник</h6>
-                                            <div class="col-sm-6">
+                                            <div class="col-lg-4 col-md-12">
                                                 <div class="cs-form">
-                                                    <input type="time" name="s2_start" class="form-control" value="00:00"/>
+                                                    <input type="time" name="s3_start" id="s3_start" class="form-control" value="00:00"/>
                                                 </div>
                                             </div>
-                                            <div class="col-sm-6">
+                                            <div class="col-lg-4 col-md-12">
                                                 <div class="cs-form">
-                                                    <input type="time" name="s2_end" class="form-control" value="23:59"/>
+                                                    <input type="time" name="s3_end" id="s3_end" class="form-control" value="23:59"/>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-4 col-md-12">
+                                                <div class="btn-group btn-group-sm text-end w-100" role="group" aria-label="Basic outlined">
+                                                    <input type="checkbox" onclick="schedule(3)" class="btn-check" id="3" name="mon" value="every" autocomplete="off">
+                                                    <label class="btn btn-outline-info" for="3">Круглосуточно</label>
+
+                                                    <input type="checkbox" onclick="schedule(4)" class="btn-check" id="4" name="mon" value="never" autocomplete="off">
+                                                    <label class="btn btn-outline-info" for="4">Выходной</label>
                                                 </div>
                                             </div>
                                         </div>
@@ -210,14 +281,23 @@
                                         <hr class="my-4">
                                         <div class="row g-3">
                                             <h6>Среда</h6>
-                                            <div class="col-sm-6">
+                                            <div class="col-lg-4 col-md-12">
                                                 <div class="cs-form">
-                                                    <input type="time" name="s3_start" class="form-control" value="00:00"/>
+                                                    <input type="time" name="s5_start" id="s5_start" class="form-control" value="00:00"/>
                                                 </div>
                                             </div>
-                                            <div class="col-sm-6">
+                                            <div class="col-lg-4 col-md-12">
                                                 <div class="cs-form">
-                                                    <input type="time" name="s3_end" class="form-control" value="23:59"/>
+                                                    <input type="time" name="s5_end" id="s5_end" class="form-control" value="23:59"/>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-4 col-md-12">
+                                                <div class="btn-group btn-group-sm text-end w-100" role="group" aria-label="Basic outlined">
+                                                    <input type="checkbox" onclick="schedule(5)" class="btn-check" id="5" name="mon" value="every" autocomplete="off">
+                                                    <label class="btn btn-outline-info" for="5">Круглосуточно</label>
+
+                                                    <input type="checkbox" onclick="schedule(6)" class="btn-check" id="6" name="mon" value="never" autocomplete="off">
+                                                    <label class="btn btn-outline-info" for="6">Выходной</label>
                                                 </div>
                                             </div>
                                         </div>
@@ -225,14 +305,23 @@
                                         <hr class="my-4">
                                         <div class="row g-3">
                                             <h6>Четверг</h6>
-                                            <div class="col-sm-6">
+                                            <div class="col-lg-4 col-md-12">
                                                 <div class="cs-form">
-                                                    <input type="time" name="s4_start" class="form-control" value="00:00"/>
+                                                    <input type="time" name="s7_start" id="s7_start" class="form-control" value="00:00"/>
                                                 </div>
                                             </div>
-                                            <div class="col-sm-6">
+                                            <div class="col-lg-4 col-md-12">
                                                 <div class="cs-form">
-                                                    <input type="time" name="s4_end" class="form-control" value="23:59"/>
+                                                    <input type="time" name="s7_end" id="s7_end" class="form-control" value="23:59"/>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-4 col-md-12">
+                                                <div class="btn-group btn-group-sm text-end w-100" role="group" aria-label="Basic outlined">
+                                                    <input type="checkbox" onclick="schedule(7)" class="btn-check" id="7" name="mon" value="every" autocomplete="off">
+                                                    <label class="btn btn-outline-info" for="7">Круглосуточно</label>
+
+                                                    <input type="checkbox" onclick="schedule(8)" class="btn-check" id="8" name="mon" value="never" autocomplete="off">
+                                                    <label class="btn btn-outline-info" for="8">Выходной</label>
                                                 </div>
                                             </div>
                                         </div>
@@ -240,14 +329,23 @@
                                         <hr class="my-4">
                                         <div class="row g-3">
                                             <h6>Пятница</h6>
-                                            <div class="col-sm-6">
+                                            <div class="col-lg-4 col-md-12">
                                                 <div class="cs-form">
-                                                    <input type="time" name="s5_start" class="form-control" value="00:00"/>
+                                                    <input type="time" name="s9_start" id="s9_start" class="form-control" value="00:00"/>
                                                 </div>
                                             </div>
-                                            <div class="col-sm-6">
+                                            <div class="col-lg-4 col-md-12">
                                                 <div class="cs-form">
-                                                    <input type="time" name="s5_end" class="form-control" value="23:59"/>
+                                                    <input type="time" name="s9_end" id="s9_end" class="form-control" value="23:59"/>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-4 col-md-12">
+                                                <div class="btn-group btn-group-sm text-end w-100" role="group" aria-label="Basic outlined">
+                                                    <input type="checkbox" onclick="schedule(9)" class="btn-check" id="9" name="mon" value="every" autocomplete="off">
+                                                    <label class="btn btn-outline-info" for="9">Круглосуточно</label>
+
+                                                    <input type="checkbox" onclick="schedule(10)" class="btn-check" id="10" name="mon" value="never" autocomplete="off">
+                                                    <label class="btn btn-outline-info" for="10">Выходной</label>
                                                 </div>
                                             </div>
                                         </div>
@@ -255,14 +353,23 @@
                                         <hr class="my-4">
                                         <div class="row g-3">
                                             <h6>Суббота</h6>
-                                            <div class="col-sm-6">
+                                            <div class="col-lg-4 col-md-12">
                                                 <div class="cs-form">
-                                                    <input type="time" name="s6_start" class="form-control" value="00:00"/>
+                                                    <input type="time" name="s11_start" id="s11_start" class="form-control" value="00:00"/>
                                                 </div>
                                             </div>
-                                            <div class="col-sm-6">
+                                            <div class="col-lg-4 col-md-12">
                                                 <div class="cs-form">
-                                                    <input type="time" name="s6_end" class="form-control" value="23:59"/>
+                                                    <input type="time" name="s11_end" id="s11_end" class="form-control" value="23:59"/>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-4 col-md-12">
+                                                <div class="btn-group btn-group-sm text-end w-100" role="group" aria-label="Basic outlined">
+                                                    <input type="checkbox" onclick="schedule(11)" class="btn-check" id="11" name="mon" value="every" autocomplete="off">
+                                                    <label class="btn btn-outline-info" for="11">Круглосуточно</label>
+
+                                                    <input type="checkbox" onclick="schedule(12)" class="btn-check" id="12" name="mon" value="never" autocomplete="off">
+                                                    <label class="btn btn-outline-info" for="12">Выходной</label>
                                                 </div>
                                             </div>
                                         </div>
@@ -270,14 +377,23 @@
                                         <hr class="my-4">
                                         <div class="row g-3">
                                             <h6>Воскресенье</h6>
-                                            <div class="col-sm-6">
+                                            <div class="col-lg-4 col-md-12">
                                                 <div class="cs-form">
-                                                    <input type="time" name="s7_start" class="form-control" value="00:00"/>
+                                                    <input type="time" name="s13_start" id="s13_start" class="form-control" value="00:00"/>
                                                 </div>
                                             </div>
-                                            <div class="col-sm-6">
+                                            <div class="col-lg-4 col-md-12">
                                                 <div class="cs-form">
-                                                    <input type="time" name="s7_end" class="form-control" value="23:59"/>
+                                                    <input type="time" name="s13_end" id="s13_end" class="form-control" value="23:59"/>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-4 col-md-12">
+                                                <div class="btn-group btn-group-sm text-end w-100" role="group" aria-label="Basic outlined">
+                                                    <input type="checkbox" onclick="schedule(13)" class="btn-check" id="13" name="mon" value="every" autocomplete="off">
+                                                    <label class="btn btn-outline-info" for="13">Круглосуточно</label>
+
+                                                    <input type="checkbox" onclick="schedule(14)" class="btn-check" id="14" name="mon" value="never" autocomplete="off">
+                                                    <label class="btn btn-outline-info" for="14">Выходной</label>
                                                 </div>
                                             </div>
                                         </div>
@@ -291,7 +407,7 @@
                         <hr class="my-4">
 
                         <div class="col-sm-3">
-                            <a th:href="${previousUrl}" class="w-100 btn btn-outline-secondary btn-lg"
+                            <a th:href="${previousUrl}" class="w-100 btn btn-outline-dark btn-lg"
                                type="button">Назад</a>
                         </div>
                         <div class="col-sm-9">
