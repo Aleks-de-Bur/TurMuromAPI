@@ -104,10 +104,18 @@
                             <!-- -------------------    Карта   ------------------- -->
                             <script src="https://mapgl.2gis.com/api/js/v1"></script>
                             <script th:inline="javascript">
+                            alert();
+                            let x = [[${mark.axisX}]];
+                            let y = [[${mark.axisY}]];
+
                                 const map = new mapgl.Map('container', {
-                                    center: [42.04917148334485, 55.577488371440474],
+                                    center: [y, x],
                                     zoom: 17,
                                     key: '4ea04727-ceaf-493a-8d53-b771e22d409b',
+                                });
+
+                                let marker = new mapgl.Marker(map, {
+                                    coordinates: [y, x],
                                 });
 
                                 map.on('click', (e) => {
@@ -118,6 +126,9 @@
                                         id
                                     } = e.target;
 
+                                    if(marker != null)
+                                        marker.destroy()
+
                                     fetch("https://catalog.api.2gis.com/3.0/items/byid?id=" + id + "&fields=items.point&key=ruqmdv8432", {
                                                 method: "GET",
                                             }
@@ -127,7 +138,7 @@
                                             console.log(parsed);
                                             let coordinates = parsed["result"]["items"][0]["point"];
 
-                                            const marker = new mapgl.Marker(map, {
+                                            marker = new mapgl.Marker(map, {
                                                 coordinates: [coordinates["lon"], coordinates["lat"]],
                                             });
 

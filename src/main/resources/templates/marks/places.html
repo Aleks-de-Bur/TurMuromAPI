@@ -181,7 +181,7 @@
     <!--    Отображение достопримечательностей карточками-->
     <!------------------------------------------------------------------------------------>
 
-    <div class="row row-cols-1 row-cols-md-3 g-4" th:if="${marks.size() > 0}  and ${scheme} == 'card'">
+    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4" th:if="${marks.size() > 0}  and ${scheme} == 'card'">
         <div class="col" th:each="mark : ${marks}">
             <div class="card h-100 rounded-4">
                 <img th:src="|data:image/jpeg;base64,${mark.markPhotos[0].pathPhoto}|" class="card-img-top rounded-4"
@@ -198,7 +198,8 @@
                 </div>
 
                 <!----------    Действия для модератора    ----------------------------------------------->
-                <div class="card-footer p-0" sec:authorize="hasRole('ROLE_MODERATOR')">
+                <div class="card-footer p-0" sec:authorize="hasRole('ROLE_MODERATOR')"
+                     style="border-top-left-radius: 16px; border-top-right-radius: 16px;">
                     <div class="btn-group w-100" role="group" aria-label="Buttons for Moderator">
                         <a type="button" class="btn btn-primary w-100" th:href="@{'/places/edit/' + ${mark.id}}"
                            style="border-top-left-radius: 16px; border-bottom-left-radius: 0px;">Редактировать</a>
@@ -308,8 +309,7 @@
                                 <li class="nav-item">
                                     <div class="card text-bg-light w-100 mb-3 rounded-4">
                                         <div class="card-body">
-                                            <p class="card-text text-truncate" style="-webkit-line-clamp: 3; display: -webkit-box;
-                        -webkit-box-orient: vertical; overflow: hidden; white-space: inherit;"
+                                            <p class="card-text"
                                                th:text="${mark.description}"></p>
                                         </div>
                                     </div>

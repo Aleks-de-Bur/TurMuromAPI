@@ -20,6 +20,38 @@
     <!-- FancyBox Для изображений-->
     <link rel="stylesheet"
           href="https://cdn.jsdelivr.net/gh/fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css"/>
+
+    <style>
+        .popup {
+    position: absolute;
+    transform: translate(-50%, -150%);
+    display: flex;
+    flex-direction: column;
+    min-width: 300px;
+}
+.popup-content {
+    padding: 10px;
+    border-radius: 4px;
+    background: #fff;
+    box-shadow: 0 1px 2px 0 rgba(38, 38, 38, 0.2);
+}
+.popup-close {
+    position: absolute;
+    top: 0;
+    right: 0;
+    padding: 0 5px;
+    font-size: 12px;
+    cursor: pointer;
+}
+.popup-tip {
+    width: 0;
+    height: 0;
+    align-self: center;
+    border-left: 10px solid transparent;
+    border-right: 10px solid transparent;
+    border-top: 10px solid #fff;
+}
+    </style>
 </head>
 <body class="bg-light">
 
@@ -72,7 +104,12 @@
 
                         <div class="col-sm-4">
                             <div class="card shadow-sm">
-                                <img th:src="|data:image/jpeg;base64,${photo}|">
+                                <a th:href="|data:image/jpeg;base64,${photo}|"
+                                   data-fancybox="gallery">
+                                    <img th:src="|data:image/jpeg;base64,${photo}|" class="d-block w-100"
+                                         style="object-fit: cover;" alt="Фотография маршрута">
+                                </a>
+<!--                                <img th:src="|data:image/jpeg;base64,${photo}|">-->
                                 <!--                                <div class="card-body">-->
                                 <!--                                    <div class="d-flex justify-content-between align-items-center">-->
                                 <!--                                        <div class="btn-group">-->
@@ -88,8 +125,8 @@
                             <h5>Заменить фото:</h5>
                             <div class="input-group mb-3">
                                 <input id="photos" class="form-control" type="file" name="image">
-                                <input id="pathPhoto" type="hidden" th:field="*{pathPhoto}" />
                             </div>
+                            <input id="pathPhoto" type="hidden" th:field="*{pathPhoto}" />
                         </div>
 
                         <div class="col-sm-8">
@@ -99,7 +136,6 @@
                             <table th:if="${marks?.size() > 0}" class="table table-hover col-sm-8">
                                 <thead class="thead-dark">
                                 <tr>
-                                    <td>ID</td>
                                     <td>Название</td>
                                     <td>Адрес</td>
                                     <td></td>
@@ -107,7 +143,6 @@
                                 </thead>
                                 <tbody>
                                 <tr th:each="mark : ${marks}">
-                                    <td th:text="${mark.id}"/>
                                     <td th:text="${mark.title}"/>
                                     <td th:text="${mark.address}"/>
                                     <td><a class="btn btn-secondary"
@@ -122,6 +157,9 @@
                         </div>
                     </div>
                 </form>
+
+
+
                 <div class="row g-3">
                         <hr class="my-4">
 
@@ -129,19 +167,17 @@
                         <div class="accordion" id="accordionExample">
                             <div class="accordion-item">
                                 <h2 class="accordion-header" id="headingOne">
-                                    <button class="accordion-button" type="button" data-bs-toggle="collapse"
-                                            data-bs-target="#collapseOne" aria-expanded="true"
-                                            aria-controls="collapseOne">Достопримечательности
+                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                                            data-bs-target="#collapseOne" aria-expanded="false"
+                                            aria-controls="collapseOne">Список
                                     </button>
                                 </h2>
-                                <div id="collapseOne" class="accordion-collapse collapse show"
+                                <div id="collapseOne" class="accordion-collapse collapse"
                                      aria-labelledby="headingOne" data-bs-parent="#accordionExample">
                                     <div class="accordion-body">
-                                        <span th:if="${allMarks.size() == 0}">Список достопримечательностей пуст</span>
+                                        <span th:if="${freeMarks.size() == 0}">Список достопримечательностей пуст</span>
 
-
-
-                                        <table th:if="${allMarks.size() > 0}" class="table table-hover">
+                                        <table th:if="${freeMarks.size() > 0}" class="table table-hover">
                                             <thead class="thead-dark">
                                             <tr>
                                                 <td>ID</td>
@@ -154,7 +190,7 @@
                                             <tbody>
 
 
-                                            <tr th:each="mark : ${allMarks}">
+                                            <tr th:each="mark : ${freeMarks}">
                                                 <form class="needs-validation" action="#"
                                                       th:action="@{'/routes/edit/' + ${route.id} + '/addMarkToRoute/' + ${mark.id}}"
                                                       method="post" th:object="${mark}" novalidate>
@@ -173,8 +209,25 @@
                                     </div>
                                 </div>
                             </div>
-                        </div>
 
+                            <div class="accordion-item">
+                                <h2 class="accordion-header" id="headingMap">
+                                    <button class="accordion-button" type="button" data-bs-toggle="collapse"
+                                            data-bs-target="#collapseMap" aria-expanded="true"
+                                            aria-controls="collapseMap">Карта
+                                    </button>
+                                </h2>
+                                <div id="collapseMap" class="accordion-collapse collapse show"
+                                     aria-labelledby="headingMap" data-bs-parent="#accordionExample">
+                                    <div class="accordion-body">
+                                        <span th:if="${freeMarks.size() == 0}">Список достопримечательностей пуст</span>
+
+                                        <div id="container" style="height: 600px"></div>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
 
                         <hr class="my-4">
 
@@ -194,6 +247,100 @@
 
 
 <div th:replace="~{fragments/footer :: footer}"></div>
+
+<script src="https://mapgl.2gis.com/api/js/v1"></script>
+<script src="https://unpkg.com/@2gis/mapgl-clusterer@^2/dist/clustering.js"></script>
+
+<!--Скрипт карты-->
+<script th:inline="javascript">
+            const map = new mapgl.Map('container', {
+                center: [42.052658, 55.579289],
+                zoom: 15,
+                key: '09ea19e6-0a5b-4361-8c63-f7cbb1c4e120',
+            });
+
+            let markers = [];
+
+            [[${freeMarks}]].forEach((mark) => {
+                markers.push({
+                    id: mark.id,
+                    coordinates: [mark.axisY, mark.axisX],
+                    //icon: 'https://cdn-icons-png.flaticon.com/512/1237/1237707.png',
+                    //size: [50, 60],
+                    //label: {
+                    //    text: mark.axisX + ", " + mark.axisY,
+                    //},
+                    userData: { marker: mark }
+                });
+            });
+
+            const clusterer = new mapgl.Clusterer(map, {
+                clusterStyle: {
+                    icon: 'https://docs.2gis.com/img/mapgl/cluster.svg',
+                    hoverIcon: 'https://docs.2gis.com/img/mapgl/clusterHover.svg',
+                    labelColor: '#ffffff',
+                    labelFontSize: 16,
+                },
+            });
+            clusterer.load(markers);
+
+
+
+            const popup = new mapgl.HtmlMarker(map, {
+                coordinates: markers[0].coordinates,
+                html: `<div class="popup">
+                    <div class="popup-content">
+                        <div id="header"></div>
+                        <div id="addMark"></div>
+                    </div>
+                    <div class="popup-close">x</div>
+                    <div class="popup-tip"></div>
+                </div>`,
+            });
+
+
+            const popupHtml = popup.getContent();
+            hidePopup();
+
+            //marker.on('click', () => (popupHtml.style.display = 'block'));
+
+            clusterer.on('click', (event) => {
+                if(event.target.type == "marker"){
+
+                    let action = `/routes/edit/[[${route.id}]]/addMarkToRoute/` + event.target.data.userData.marker.id;
+
+                    let str = `<form class=\"needs-validation\" action=\"${action}\"
+                                                      method=\"post\" object=\"` + event.target.data.userData.marker + `\" novalidate>
+                                                      <input type=\"hidden\" name=\"_csrf\" value=\"[[${_csrf.token}]]\">
+                                                <button class=\"w-100 btn btn-outline-success btn-lg\" type=\"submit\">Добавить</button>
+                                                </form>`;
+
+                    popup.setCoordinates([event.target.data.userData.marker.axisY, event.target.data.userData.marker.axisX])
+                    document.getElementById("header").innerHTML = event.target.data.userData.marker.title
+                    document.getElementById("addMark").innerHTML = `<a class=\"w-100 btn btn-outline-success" type="button\"
+                                                                   href=\"${action}\">Добавить
+                                                                </a>`
+                    popupHtml.style.display = 'block';
+
+                }
+            });
+
+            popupHtml.querySelector('.popup-close').addEventListener('click', hidePopup);
+            map.on('click', hidePopup);
+
+            function hidePopup() {
+                popupHtml.style.display = 'none';
+            }
+
+
+
+
+
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.4.1/dist/jquery.min.js"></script>
+
+<script src="https://cdn.jsdelivr.net/gh/fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js"></script>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4"

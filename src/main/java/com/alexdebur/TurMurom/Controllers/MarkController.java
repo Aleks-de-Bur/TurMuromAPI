@@ -284,7 +284,9 @@ public class MarkController {
                 InteractionPhoto.deletePhoto(path);
             }
 
-            mark.setMarkPhotos(null);
+            List<MarkPhoto> markPhotos = markPhotoService.getAllMarkPhotos();
+
+
 
             int i = 1;
             for (var item: upload){

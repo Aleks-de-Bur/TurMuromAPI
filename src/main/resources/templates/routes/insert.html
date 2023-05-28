@@ -40,7 +40,7 @@
 
                         <div class="col-sm-6">
                             <label for="title" class="form-label">Название</label>
-                            <input type="text" class="form-control" id="title" placeholder=""
+                            <input type="text" class="form-control" id="title" placeholder="Название"
                                    th:field="*{title}" required>
                             <div class="invalid-feedback">
                                 Заполните название маршрута.
@@ -49,7 +49,7 @@
 
                         <div class="col-sm-6">
                             <label for="duration" class="form-label">Длительность</label>
-                            <input type="text" class="form-control" id="duration" placeholder=""
+                            <input type="text" class="form-control" id="duration" placeholder="1 час"
                                    th:field="*{duration}" required>
                             <div class="invalid-feedback">
                                 Заполните длительность маршрута.
@@ -65,19 +65,8 @@
                             </div>
                         </div>
 
-                        <div class="col-sm-4">
-<!--                            <div class="card shadow-sm">-->
-<!--                                <img th:src="${photo}">-->
-<!--                                &lt;!&ndash;                                <div class="card-body">&ndash;&gt;-->
-<!--                                &lt;!&ndash;                                    <div class="d-flex justify-content-between align-items-center">&ndash;&gt;-->
-<!--                                &lt;!&ndash;                                        <div class="btn-group">&ndash;&gt;-->
-<!--                                &lt;!&ndash;                                            <button type="button" class="btn btn-sm btn-outline-secondary">View</button>&ndash;&gt;-->
-<!--                                &lt;!&ndash;                                            <button type="button" class="btn btn-sm btn-outline-secondary">Edit</button>&ndash;&gt;-->
-<!--                                &lt;!&ndash;                                        </div>&ndash;&gt;-->
-<!--                                &lt;!&ndash;                                    </div>&ndash;&gt;-->
-<!--                                &lt;!&ndash;                                </div>&ndash;&gt;-->
-<!--                            </div>-->
-
+                        <div class="col-6">
+                            <label for="customFile" class="form-label">Фотография</label>
                             <input type="file" class="form-control" name="image" accept="image/*" required id="customFile">
                             <div class="invalid-feedback">
                                 Требуется добавить фото.

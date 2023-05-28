@@ -71,7 +71,7 @@
                                 <div class="col-12">
                                     <label for="address" class="form-label">Адрес</label>
                                     <input type="text" class="form-control" id="address" th:field="*{address}"
-                                           placeholder="Муром, улица Орловская,23" value="" required disabled>
+                                           placeholder="Муром, улица Орловская,23" value="" required readonly>
                                     <div class="invalid-feedback">
                                         Требуется указать адрес.
                                     </div>
@@ -80,7 +80,7 @@
                                 <div class="col-12">
                                     <label for="axisX" class="form-label">Координата X</label>
                                     <input type="text" class="form-control" id="axisX" th:field="*{axisX}"
-                                           placeholder="Координата X" value="" required disabled>
+                                           placeholder="Координата X" value="" required readonly>
                                     <div class="invalid-feedback">
                                         Заполните координаты.
                                     </div>
@@ -89,7 +89,7 @@
                                 <div class="col-12">
                                     <label for="axisY" class="form-label">Координата Y</label>
                                     <input type="text" class="form-control" id="axisY" th:field="*{axisY}"
-                                           placeholder="Координата Y" value="" required disabled>
+                                           placeholder="Координата Y" value="" required readonly>
                                     <div class="invalid-feedback">
                                         Заполните координаты.
                                     </div>
@@ -106,6 +106,10 @@
                                     key: '4ea04727-ceaf-493a-8d53-b771e22d409b',
                                 });
 
+                                let marker = new mapgl.Marker(map, {
+                                        coordinates: [0.0, 0.0],
+                                    });
+
                                 map.on('click', (e) => {
                                     if (!e.target) {
                                         return;
@@ -113,6 +117,10 @@
                                     const {
                                         id
                                     } = e.target;
+
+
+
+                                    marker.destroy()
 
                                     fetch("https://catalog.api.2gis.com/3.0/items/byid?id=" + id + "&fields=items.point&key=ruqmdv8432", {
                                                 method: "GET",
@@ -123,7 +131,7 @@
                                             console.log(parsed);
                                             let coordinates = parsed["result"]["items"][0]["point"];
 
-                                            const marker = new mapgl.Marker(map, {
+                                            marker = new mapgl.Marker(map, {
                                                 coordinates: [coordinates["lon"], coordinates["lat"]],
                                             });
 
@@ -255,7 +263,7 @@
                                             </div>
                                             <div class="col-lg-4 col-md-12">
                                                 <div class="cs-form">
-                                                    <input type="time" name="s1_end" id="s1_end" class="form-control" value="23:59"/>
+                                                    <input type="time" name="s1_end" id="s1_end" class="form-control" value="18:00"/>
                                                 </div>
                                             </div>
                                             <div class="col-lg-4 col-md-12">
@@ -279,7 +287,7 @@
                                             </div>
                                             <div class="col-lg-4 col-md-12">
                                                 <div class="cs-form">
-                                                    <input type="time" name="s3_end" id="s3_end" class="form-control" value="23:59"/>
+                                                    <input type="time" name="s3_end" id="s3_end" class="form-control" value="18:00"/>
                                                 </div>
                                             </div>
                                             <div class="col-lg-4 col-md-12">
@@ -303,7 +311,7 @@
                                             </div>
                                             <div class="col-lg-4 col-md-12">
                                                 <div class="cs-form">
-                                                    <input type="time" name="s5_end" id="s5_end" class="form-control" value="23:59"/>
+                                                    <input type="time" name="s5_end" id="s5_end" class="form-control" value="18:00"/>
                                                 </div>
                                             </div>
                                             <div class="col-lg-4 col-md-12">
@@ -327,7 +335,7 @@
                                             </div>
                                             <div class="col-lg-4 col-md-12">
                                                 <div class="cs-form">
-                                                    <input type="time" name="s7_end" id="s7_end" class="form-control" value="23:59"/>
+                                                    <input type="time" name="s7_end" id="s7_end" class="form-control" value="18:00"/>
                                                 </div>
                                             </div>
                                             <div class="col-lg-4 col-md-12">
@@ -351,7 +359,7 @@
                                             </div>
                                             <div class="col-lg-4 col-md-12">
                                                 <div class="cs-form">
-                                                    <input type="time" name="s9_end" id="s9_end" class="form-control" value="23:59"/>
+                                                    <input type="time" name="s9_end" id="s9_end" class="form-control" value="18:00"/>
                                                 </div>
                                             </div>
                                             <div class="col-lg-4 col-md-12">
@@ -375,7 +383,7 @@
                                             </div>
                                             <div class="col-lg-4 col-md-12">
                                                 <div class="cs-form">
-                                                    <input type="time" name="s11_end" id="s11_end" class="form-control" value="23:59"/>
+                                                    <input type="time" name="s11_end" id="s11_end" class="form-control" value="18:00"/>
                                                 </div>
                                             </div>
                                             <div class="col-lg-4 col-md-12">
@@ -399,7 +407,7 @@
                                             </div>
                                             <div class="col-lg-4 col-md-12">
                                                 <div class="cs-form">
-                                                    <input type="time" name="s13_end" id="s13_end" class="form-control" value="23:59"/>
+                                                    <input type="time" name="s13_end" id="s13_end" class="form-control" value="18:00"/>
                                                 </div>
                                             </div>
                                             <div class="col-lg-4 col-md-12">

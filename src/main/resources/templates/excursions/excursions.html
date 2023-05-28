@@ -216,7 +216,7 @@
     <!--    Отображение экскурсий карточками-->
     <!------------------------------------------------------------------------------------>
 
-    <div class="row row-cols-1 row-cols-md-3 g-4" th:if="${excursions.size() > 0}  and ${scheme} == 'card'">
+    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4" th:if="${excursions.size() > 0}  and ${scheme} == 'card'">
         <div class="col" th:each="excursion : ${excursions}">
             <div class="card h-100 rounded-4">
                 <img th:src="|data:image/jpeg;base64,${excursion.excursionPhotos[0].pathPhoto}|"
@@ -227,7 +227,10 @@
                     <h5 class="title pb-1 pt-3" th:text="${excursion.title}"></h5>
                     <!--                    <h2 class="card-title" ></h2>-->
                     <h6><span class="badge bg-warning" th:text="${excursion.duration}"></span>
-                        <span class="badge bg-warning" th:text="${excursion.price}"></span></h6>
+                        <span class="badge bg-warning">
+                            <span th:text="${excursion.price}"></span>
+                            <i class="fa fa-rub" aria-hidden="true"></i></span>
+                    </h6>
                 </div>
                 <div class="card-body">
                     <p class="text-truncate" style="-webkit-line-clamp: 3; display: -webkit-box;
@@ -237,7 +240,8 @@
 
                 <!----------    Действия для гида    ------------------------------------------------->
                 <div class="card-footer p-0" sec:authorize="hasRole('ROLE_GUIDE')"
-                     th:if="${excursion.guide.id} == ${guide.id}">
+                     th:if="${excursion.guide.id} == ${guide.id}"
+                     style="border-top-left-radius: 16px; border-top-right-radius: 16px;">
                     <div class="btn-group w-100" role="group" aria-label="Buttons for Guide">
                         <a type="button" class="btn btn-primary w-100"
                            th:href="@{'guides/edit/' + ${guide.id} + '/excursion/' + ${excursion.id} + '/edit'}"
@@ -337,7 +341,10 @@
                                 <hr class="my-4">
                                 <li class="nav-item">
                                     <h3><span class="badge bg-warning" th:text="${excursion.duration}"></span>
-                                        <span class="badge bg-warning" th:text="${excursion.price}"></span></h3>
+                                        <span class="badge bg-warning">
+                                            <span th:text="${excursion.price}"></span>
+                                            <i class="fa fa-rub" aria-hidden="true"></i></span>
+                                    </h3>
                                 </li>
                                 <li class="nav-item">
                                     <p th:text="${excursion.description}"></p>

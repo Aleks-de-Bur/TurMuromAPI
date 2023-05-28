@@ -25,9 +25,10 @@ public class Excursion {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String title;
+    @Column(columnDefinition="TEXT")
     private String description;
     private String duration;
-    private String price;
+    private Integer price;
     @ManyToOne
     @JsonBackReference
     private Guide guide;

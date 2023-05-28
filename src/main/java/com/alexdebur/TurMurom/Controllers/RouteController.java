@@ -125,8 +125,10 @@ public class RouteController {
 
         try {
             List<Mark> marks = new ArrayList<>();
+            List<RouteMark> mrk = new ArrayList<>(selectedRoute.getRouteMarks().stream().toList());
+            mrk.sort(new RouteComparator());
 
-            for (var mark : selectedRoute.getRouteMarks()){
+            for (var mark : mrk){
                 for (var photo : mark.getMark().getMarkPhotos()){
                     try {
                         photo.setPathPhoto(InteractionPhoto.getPhoto(MARK_UPLOAD_DIRECTORY + photo.getPathPhoto()));
@@ -146,6 +148,7 @@ public class RouteController {
                 }
                 marks.add(mark.getMark());
             }
+
 
 //            for (var mark : routeService.getRouteMarks(id)) {
 //                marks.add(mark.getMark());
@@ -224,6 +227,14 @@ public class RouteController {
             throw new RuntimeException(e);
         }
 
+        //Свободные достопримечательности
+        List<Mark> freeMarks = new ArrayList<>();
+        markService.getAllMarks().forEach(mark -> {
+            if(!marks.contains(mark))
+                freeMarks.add(mark);
+        });
+        model.addAttribute("freeMarks", freeMarks);
+
         fillModelWithRouteAndMarks(model, routeService.getRouteById(id), markService.getAllMarks(),
                 marks);
         return "routes/edit";
@@ -253,7 +264,7 @@ public class RouteController {
         return "redirect:/routes/1?sortField=title&sortDir=asc&scheme=card";
     }
 
-    @PostMapping("/routes/edit/{routeId}/addMarkToRoute/{markId}")
+    @GetMapping("/routes/edit/{routeId}/addMarkToRoute/{markId}")
     public String insertMarkToRoute(
             @PathVariable("markId") Long markId,
             @PathVariable("routeId") Long routeId) throws IOException {
@@ -289,5 +300,12 @@ public class RouteController {
 
         routeService.deleteRouteById(id);
         return "redirect:" + referrer;
+    }
+}
+
+class RouteComparator implements java.util.Comparator<RouteMark> {
+    @Override
+    public int compare(RouteMark a, RouteMark b) {
+        return a.getOrdinal() - b.getOrdinal();
     }
 }
