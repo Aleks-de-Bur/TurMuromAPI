@@ -179,10 +179,10 @@ public class MarkController {
     }
 
     @PostMapping("/places/addingMark")
-    public String insertMark(Mark mark, String s1_start, String s1_end, String s2_start, String s2_end,
-                             String s3_start, String s3_end, String s4_start, String s4_end,
-                             String s5_start, String s5_end, String s6_start, String s6_end,
-                             String s7_start, String s7_end, @RequestParam MultipartFile[] upload) throws IOException {
+    public String insertMark(Mark mark, String s1_start, String s1_end, String s3_start, String s3_end,
+                             String s5_start, String s5_end, String s7_start, String s7_end,
+                             String s9_start, String s9_end, String s11_start, String s11_end,
+                             String s13_start, String s13_end, @RequestParam MultipartFile[] upload) throws IOException {
         mark.setElected(false);
         markService.insertMark(mark);
 
@@ -213,38 +213,38 @@ public class MarkController {
         schedule1.setMark(mrk);
         scheduleService.insertSchedule(schedule1);
         Schedule schedule2 = new Schedule();
-        schedule2.setStart(s2_start);
-        schedule2.setEnd(s2_end);
+        schedule2.setStart(s3_start);
+        schedule2.setEnd(s3_end);
         schedule2.setDay(2);
         schedule2.setMark(mrk);
         scheduleService.insertSchedule(schedule2);
         Schedule schedule3 = new Schedule();
-        schedule3.setStart(s3_start);
-        schedule3.setEnd(s3_end);
+        schedule3.setStart(s5_start);
+        schedule3.setEnd(s5_end);
         schedule3.setDay(3);
         schedule3.setMark(mrk);
         scheduleService.insertSchedule(schedule3);
         Schedule schedule4 = new Schedule();
-        schedule4.setStart(s4_start);
-        schedule4.setEnd(s4_end);
+        schedule4.setStart(s7_start);
+        schedule4.setEnd(s7_end);
         schedule4.setDay(4);
         schedule4.setMark(mrk);
         scheduleService.insertSchedule(schedule4);
         Schedule schedule5 = new Schedule();
-        schedule5.setStart(s5_start);
-        schedule5.setEnd(s5_end);
+        schedule5.setStart(s9_start);
+        schedule5.setEnd(s9_end);
         schedule5.setDay(5);
         schedule5.setMark(mrk);
         scheduleService.insertSchedule(schedule5);
         Schedule schedule6 = new Schedule();
-        schedule6.setStart(s6_start);
-        schedule6.setEnd(s6_end);
+        schedule6.setStart(s11_start);
+        schedule6.setEnd(s11_end);
         schedule6.setDay(6);
         schedule6.setMark(mrk);
         scheduleService.insertSchedule(schedule6);
         Schedule schedule7 = new Schedule();
-        schedule7.setStart(s7_start);
-        schedule7.setEnd(s7_end);
+        schedule7.setStart(s13_start);
+        schedule7.setEnd(s13_end);
         schedule7.setDay(7);
         schedule7.setMark(mrk);
         scheduleService.insertSchedule(schedule7);
@@ -269,24 +269,45 @@ public class MarkController {
     }
 
     @PostMapping("/places/editMark")
-    public String editMark(Mark mark, String s1_start, String s1_end, String s2_start, String s2_end,
-                             String s3_start, String s3_end, String s4_start, String s4_end,
-                             String s5_start, String s5_end, String s6_start, String s6_end,
-                             String s7_start, String s7_end, @RequestParam MultipartFile[] upload) throws IOException {
+    public String editMark(Mark mark, String s1_start, String s1_end, String s3_start, String s3_end,
+                           String s5_start, String s5_end, String s7_start, String s7_end,
+                           String s9_start, String s9_end, String s11_start, String s11_end,
+                           String s13_start, String s13_end, @RequestParam MultipartFile[] upload) throws IOException {
+
+        if (upload[0].getOriginalFilename() != "") {
+
+            String path;
+            for (var photo : markService.getMarkById(mark.getId()).getMarkPhotos()) {
+                path = "Marks\\" + photo.getPathPhoto();
+                markPhotoService.deleteMarkPhotoById(photo.getId());
+
+                InteractionPhoto.deletePhoto(path);
+            }
+
+            mark.setMarkPhotos(null);
+
+            int i = 1;
+            for (var item: upload){
+                MarkPhoto photo = new MarkPhoto();
+                photo.setMark(mark);
+                String fileName = "mark_" + mark.getId() + "_" +
+                        mark.getTitle() + "_" + i +
+                        item.getOriginalFilename().substring(item.getOriginalFilename().length()-4);
+                Path fileNameAndPath = Paths.get(UPLOAD_DIRECTORY, fileName);
+                try {
+                    Files.write(fileNameAndPath, item.getBytes());
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+
+                photo.setPathPhoto(fileName);
+                markPhotoService.insertMarkPhoto(photo);
+                i++;
+            }
+        }
+
         mark.setElected(false);
         markService.insertMark(mark);
-
-        //String path = System.getProperty("user.dir")+"/MarkPhotos/";
-
-        for (var item: upload){
-            Path fileNameAndPath = Paths.get(UPLOAD_DIRECTORY, item.getOriginalFilename());
-            Files.write(fileNameAndPath, item.getBytes());
-
-            MarkPhoto photo = new MarkPhoto();
-            photo.setMark(mark);
-            photo.setPathPhoto(item.getOriginalFilename());
-            markPhotoService.insertMarkPhoto(photo);
-        }
 
         Mark mrk = markService.getMarkByTitleAndDescription(mark.getTitle(), mark.getDescription()).get();
         List<Schedule> schedules = scheduleService.getSchedulesByMark(markService.getMarkById(mrk.getId()));
@@ -296,37 +317,37 @@ public class MarkController {
         schedules.get(0).setDay(1);
         schedules.get(0).setMark(mrk);
         scheduleService.insertSchedule(schedules.get(0));
-        schedules.get(1).setStart(s2_start);
-        schedules.get(1).setEnd(s2_end);
+        schedules.get(1).setStart(s3_start);
+        schedules.get(1).setEnd(s3_end);
         schedules.get(1).setDay(2);
         schedules.get(1).setMark(mrk);
         scheduleService.insertSchedule(schedules.get(1));
-        schedules.get(2).setStart(s3_start);
-        schedules.get(2).setEnd(s3_end);
+        schedules.get(2).setStart(s5_start);
+        schedules.get(2).setEnd(s5_end);
         schedules.get(2).setDay(3);
         schedules.get(2).setMark(mrk);
         scheduleService.insertSchedule(schedules.get(2));
-        schedules.get(3).setStart(s4_start);
-        schedules.get(3).setEnd(s4_end);
+        schedules.get(3).setStart(s7_start);
+        schedules.get(3).setEnd(s7_end);
         schedules.get(3).setDay(4);
         schedules.get(3).setMark(mrk);
         scheduleService.insertSchedule(schedules.get(3));
-        schedules.get(4).setStart(s5_start);
-        schedules.get(4).setEnd(s5_end);
+        schedules.get(4).setStart(s9_start);
+        schedules.get(4).setEnd(s9_end);
         schedules.get(4).setDay(5);
         schedules.get(4).setMark(mrk);
         scheduleService.insertSchedule(schedules.get(4));
-        schedules.get(5).setStart(s6_start);
-        schedules.get(5).setEnd(s6_end);
+        schedules.get(5).setStart(s11_start);
+        schedules.get(5).setEnd(s11_end);
         schedules.get(5).setDay(6);
         schedules.get(5).setMark(mrk);
         scheduleService.insertSchedule(schedules.get(5));
-        schedules.get(6).setStart(s7_start);
-        schedules.get(6).setEnd(s7_end);
+        schedules.get(6).setStart(s13_start);
+        schedules.get(6).setEnd(s13_end);
         schedules.get(6).setDay(7);
         schedules.get(6).setMark(mrk);
         scheduleService.insertSchedule(schedules.get(6));
-        return "redirect:/places/1?sortField=title&sortDir=asc&scheme=list";
+        return "redirect:/places";
     }
 
 //    @DeleteMapping("/places/delete/{id}")

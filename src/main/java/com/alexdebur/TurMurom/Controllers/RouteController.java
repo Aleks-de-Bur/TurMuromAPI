@@ -107,8 +107,6 @@ public class RouteController {
             throw new RuntimeException(e);
         }
 
-        List<List<Double>> routePoints = new ArrayList<>();
-
         if(selectedRoute.getRouteMarks().size() != 0) {
             for (var mark : selectedRoute.getRouteMarks()) {
                 for (var photo : mark.getMark().getMarkPhotos()) {
@@ -119,7 +117,6 @@ public class RouteController {
                     }
                 }
 
-                routePoints.add(List.of(Double.valueOf(mark.getMark().getAxisY()), Double.valueOf(mark.getMark().getAxisX())));
             }
         }
 
@@ -159,7 +156,6 @@ public class RouteController {
         }
 
         model.addAttribute("photos", photos);
-        model.addAttribute("routePoints", routePoints);
 
         model.addAttribute("arr", arr);
 
@@ -243,6 +239,9 @@ public class RouteController {
 
             Path fileNameAndPath = Paths.get(ROUTE_UPLOAD_DIRECTORY, fileName);
             try {
+                String path = "Routes\\" + route.getPathPhoto();
+                InteractionPhoto.deletePhoto(path);
+
                 Files.write(fileNameAndPath, file.getBytes());
             } catch (IOException e) {
                 throw new RuntimeException(e);
@@ -251,7 +250,7 @@ public class RouteController {
             route.setPathPhoto(fileName);
         }
         routeService.insertRoute(route);
-        return "redirect:/routes/1?sortField=title&sortDir=asc&scheme=list";
+        return "redirect:/routes/1?sortField=title&sortDir=asc&scheme=card";
     }
 
     @PostMapping("/routes/edit/{routeId}/addMarkToRoute/{markId}")

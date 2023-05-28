@@ -55,45 +55,45 @@
                             </div>
                         </div>
 
-                        <div class="col-12">
-                            <label for="category" class="form-label">Категория</label>
-                            <select class="form-select" id="category" required th:field="*{category}">
-                                <option th:each="category : ${categories}" th:value="${category.id}"
-                                        th:text="${category.title}"></option>
-                            </select>
-                            <div class="invalid-feedback">
-                                Выберите категорию.
-                            </div>
-                        </div>
-
                         <div class="col-sm-4">
                             <div class="row g-3">
-                            <div class="col-12">
-                                <label for="address" class="form-label">Адрес</label>
-                                <input type="text" class="form-control" id="address" th:field="*{address}"
-                                       placeholder="Муром, улица Орловская,23" value="" required>
-                                <div class="invalid-feedback">
-                                    Требуется указать адрес.
+                                <div class="col-12">
+                                    <label for="category" class="form-label">Категория</label>
+                                    <select class="form-select" id="category" required th:field="*{category}">
+                                        <option th:each="category : ${categories}" th:value="${category.id}"
+                                                th:text="${category.title}"></option>
+                                    </select>
+                                    <div class="invalid-feedback">
+                                        Выберите категорию.
+                                    </div>
                                 </div>
-                            </div>
 
-                            <div class="col-12">
-                                <label for="axisX" class="form-label">Координата X</label>
-                                <input type="text" class="form-control" id="axisX" th:field="*{axisX}"
-                                       placeholder="Координата X" value="" required>
-                                <div class="invalid-feedback">
-                                    Заполните координаты.
+                                <div class="col-12">
+                                    <label for="address" class="form-label">Адрес</label>
+                                    <input type="text" class="form-control" id="address" th:field="*{address}"
+                                           placeholder="Муром, улица Орловская,23" value="" required disabled>
+                                    <div class="invalid-feedback">
+                                        Требуется указать адрес.
+                                    </div>
                                 </div>
-                            </div>
 
-                            <div class="col-12">
-                                <label for="axisY" class="form-label">Координата Y</label>
-                                <input type="text" class="form-control" id="axisY" th:field="*{axisY}"
-                                       placeholder="Координата Y" value="" required>
-                                <div class="invalid-feedback">
-                                    Заполните координаты.
+                                <div class="col-12">
+                                    <label for="axisX" class="form-label">Координата X</label>
+                                    <input type="text" class="form-control" id="axisX" th:field="*{axisX}"
+                                           placeholder="Координата X" value="" required disabled>
+                                    <div class="invalid-feedback">
+                                        Заполните координаты.
+                                    </div>
                                 </div>
-                            </div>
+
+                                <div class="col-12">
+                                    <label for="axisY" class="form-label">Координата Y</label>
+                                    <input type="text" class="form-control" id="axisY" th:field="*{axisY}"
+                                           placeholder="Координата Y" value="" required disabled>
+                                    <div class="invalid-feedback">
+                                        Заполните координаты.
+                                    </div>
+                                </div>
                             </div>
                         </div>
 
@@ -139,16 +139,31 @@
                         <hr class="my-4">
 
                         <div class="col-12">
-                            <label for="photos" class="form-label">Фотографии</label>
-                            <input id="photos" class="form-control" type="file" name="upload" multiple required />
-                            <div class="invalid-feedback">
-                                Требуется добавить фото.
+                            <div class="input-group mb-3">
+                                <label for="photos" class="input-group-text">Фотографии</label>
+                                <input id="photos" class="form-control" type="file" name="upload" multiple required />
+
+                                <div class="invalid-feedback">
+                                    Требуется добавить фото.
+                                </div>
                             </div>
                         </div>
 
                         <hr class="my-4">
 
                         <script>
+                        function able(){
+                            var node_list = document.getElementsByTagName('input');
+
+                            for (var i = 0; i < node_list.length; i++) {
+                                var node = node_list[i];
+
+                                if (node.getAttribute('type') == 'time') {
+                                    node.disabled = false;
+                                }
+                            }
+                        }
+
                         function schedule(id){
                             var chbox1;
                             var chbox2;
@@ -411,7 +426,7 @@
                                type="button">Назад</a>
                         </div>
                         <div class="col-sm-9">
-                            <button class="w-100 btn btn-outline-success btn-lg" type="submit">Подтвердить</button>
+                            <button class="w-100 btn btn-outline-success btn-lg" onclick="able()" type="submit">Подтвердить</button>
                         </div>
                     </div>
                 </form>

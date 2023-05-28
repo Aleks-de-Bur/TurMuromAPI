@@ -230,11 +230,13 @@
 </div>
 <script src="https://mapgl.2gis.com/api/js/v1"></script>
 <script src="https://unpkg.com/@2gis/mapgl-clusterer@^2/dist/clustering.js"></script>
+<script src="https://unpkg.com/@2gis/mapgl-ruler@^2/dist/ruler.js"></script>
 <script th:inline="javascript">
             const map = new mapgl.Map('container', {
                 center: [42.052658, 55.579289],
                 zoom: 15,
-                key: '4ea04727-ceaf-493a-8d53-b771e22d409b',
+                key: '09ea19e6-0a5b-4361-8c63-f7cbb1c4e120',
+                floorControl: 'centerLeft',
             });
 
             let markers = [];
@@ -360,6 +362,40 @@
                 }
             });
 
+//====================================    Линейка    =================================================
+let mode = 'polyline';
+let control = new mapgl.RulerControl(map, { position: 'centerRight', mode });
+
+control.onClick();
+
+<!--const resetControl = new mapgl.Control(-->
+<!--    map,-->
+<!--    '<button class="button">Switch mode</button>',-->
+<!--    {-->
+<!--        position: 'topLeft',-->
+<!--    },-->
+<!--);-->
+<!--resetControl-->
+<!--    .getContainer()-->
+<!--    .querySelector('button')-->
+<!--    .addEventListener('click', function () {-->
+<!--        const data = control.getRuler().getData();-->
+<!--        control.destroy();-->
+<!--        let points = [];-->
+<!--        switch (data.type) {-->
+<!--            case 'polyline':-->
+<!--                points = data.coordinates;-->
+<!--                break;-->
+<!--            case 'polygon':-->
+<!--                points = data.coordinates[0];-->
+<!--                break;-->
+<!--        }-->
+<!--        mode = mode === 'polyline' ? 'polygon' : 'polyline';-->
+<!--        control = new mapgl.RulerControl(map, { position: 'centerRight', mode });-->
+<!--        control.getRuler().setPoints(points);-->
+<!--    });-->
+
+//============================================================================================
 
 
 <!--const control = new mapgl.Control(map, '<button>Custom control</button>', {-->

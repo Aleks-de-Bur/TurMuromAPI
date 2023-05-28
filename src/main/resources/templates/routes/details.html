@@ -23,6 +23,9 @@
 </head>
 <body class="bg-light">
 
+<!--Скрипт для отображения маршрута-->
+<script src="../../assets/dist/js/directions.js"></script>
+
 <div th:replace="~{fragments/navigation :: navigation}"></div>
 
 <div id="carouselRoutePhotosIndicators" class="carousel slide carousel-fade" data-bs-ride="carousel">
@@ -67,7 +70,6 @@
                 <div class="row g-3">
 
                     <hr class="my-4">
-
 
                     <div class="col-sm-8">
                         <h4>Ключевые точки маршрута:</h4>
@@ -389,35 +391,41 @@
                 <div id="container" style="width: 100%; height: 45em;"></div>
                 <script src="https://mapgl.2gis.com/api/js/v1"></script>
                 <script src="https://unpkg.com/@2gis/mapgl-clusterer@^2/dist/clustering.js"></script>
-                <script src="https://unpkg.com/@2gis/mapgl-directions@^2/dist/directions.js"></script>
+<!--                <script src="https://unpkg.com/@2gis/mapgl-directions@^2/dist/directions.js"></script>-->
 
                 <script th:inline="javascript">
                 const map = new mapgl.Map('container', {
                     center: [42.052658, 55.579289],
                     zoom: 15,
-                    key: '4ea04727-ceaf-493a-8d53-b771e22d409b',
+                    key: '09ea19e6-0a5b-4361-8c63-f7cbb1c4e120',
+                    floorControl: 'centerLeft',
                 });
 
                 const directions = new mapgl.Directions(map, {
-                    directionsApiKey: 'ruqmdv8432',
+                    directionsApiKey: 'ruxvmc6060',
                 });
 
 
                 let markers = [];
+                let points = [];
 
 
                 [[${marks}]].forEach((mark) => {
+                    points.push(
+                         [mark.axisY, mark.axisX]
+                    );
+
                     markers.push({
                         id: mark.id,
                         coordinates: [mark.axisY, mark.axisX],
-                        //icon: 'https://cdn-icons-png.flaticon.com/512/1237/1237707.png',
-                        //size: [50, 60],
-                        label: {
-                            text: mark.title,
-                        },
+                         //icon: 'https://cdn-icons-png.flaticon.com/512/1237/1237707.png',
+                         //size: [50, 60],
+                         //label: {
+                         //    text: mark.axisX + ", " + mark.axisY,
+                         //},
                         userData: { marker: mark }
                     });
-                });
+                 });
 
                 const clusterer = new mapgl.Clusterer(map, {
                     clusterStyle: {
@@ -430,57 +438,25 @@
 
                 clusterer.load(markers);
 
-                directions.pedestrianRoute({
-                    points: [
-                    [42.056238, 55.580192],
-                    [42.060901, 55.580269],
-                    ],
+                clusterer.on('click', (event) => {
+                    if(event.target.type == "marker"){
+                        var offcanvasElement = document.getElementById("offcanvasPlace" + event.target.data.userData.marker.id);
+                        var offcanvas = new bootstrap.Offcanvas(offcanvasElement);
+
+
+                        return offcanvas.toggle();
+                    }
                 });
+
+                if(points.length > 2) {
+                    directions.pedestrianRoute({
+                        points: points
+                    });
+                }
 
 
                 </script>
 
-<!--                const map = new mapgl.Map('container', {-->
-<!--                center: [42.052658, 55.579289],-->
-<!--                zoom: 15,-->
-<!--                key: '4ea04727-ceaf-493a-8d53-b771e22d409b',-->
-<!--                });-->
-
-<!--                const directions = new mapgl.Directions(map, {-->
-<!--                directionsApiKey: 'ruqmdv8432',-->
-<!--                });-->
-
-
-
-<!--                let markers = [];-->
-
-<!--                [[${marks}]].forEach((mark) => {-->
-<!--                markers.push({-->
-<!--                id: mark.id,-->
-<!--                coordinates: [mark.axisY, mark.axisX],-->
-<!--                //icon: 'https://cdn-icons-png.flaticon.com/512/1237/1237707.png',-->
-<!--                //size: [50, 60],-->
-<!--                label: {-->
-<!--                text: mark.axisX + ", " + mark.axisY,-->
-<!--                },-->
-<!--                userData: { marker: mark }-->
-<!--                });-->
-<!--                });-->
-
-<!--                const clusterer = new mapgl.Clusterer(map, {-->
-<!--                clusterStyle: {-->
-<!--                icon: 'https://docs.2gis.com/img/mapgl/cluster.svg',-->
-<!--                hoverIcon: 'https://docs.2gis.com/img/mapgl/clusterHover.svg',-->
-<!--                labelColor: '#ffffff',-->
-<!--                labelFontSize: 16,-->
-<!--                },-->
-<!--                });-->
-<!--                clusterer.load(markers);-->
-
-
-<!--                directions.pedestrianRoute({-->
-<!--                points: [[${routePoints}]]-->
-<!--                });-->
             </div>
             <a th:href="${previousUrl}" class="w-100 btn btn-outline-dark btn-lg" type="button">Назад</a>
         </div>
@@ -489,6 +465,8 @@
 
 
 <div th:replace="~{fragments/footer :: footer}"></div>
+
+
 
 <script src="https://cdn.jsdelivr.net/npm/jquery@3.4.1/dist/jquery.min.js"></script>
 

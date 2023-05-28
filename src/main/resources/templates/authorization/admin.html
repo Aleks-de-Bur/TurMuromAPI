@@ -116,7 +116,7 @@
                         th:data-bs-target="'#deleteModal' + ${user.id}">Удалить
                 </button>
 
-                <!-- Модальное окно -->
+                <!-- Модальное окно удаления -->
                 <div class="modal fade" th:id="'deleteModal' + ${user.id}" tabindex="-1" aria-labelledby="deleteModalLabel"
                      aria-hidden="true">
                     <div class="modal-dialog modal-dialog-centered">
@@ -133,8 +133,8 @@
                                         <button type="button" class="btn btn-outline-dark" data-bs-dismiss="modal"
                                                 style="border-bottom-left-radius: 12px; border-top-left-radius: 0px;">Закрыть</button>
 
-                                        <button th:href="@{'/admin_cabinet/user/delete/' + ${user.id}}" type="button" class="btn btn-outline-danger"
-                                                style="border-bottom-right-radius: 12px; border-top-right-radius: 0px;">Удалить</button>
+                                        <a th:href="@{'/admin_cabinet/user/delete/' + ${user.id}}" type="button" class="btn btn-outline-danger"
+                                                style="border-bottom-right-radius: 12px; border-top-right-radius: 0px;">Удалить</a>
                                     </div>
                                 </div>
                         </div>

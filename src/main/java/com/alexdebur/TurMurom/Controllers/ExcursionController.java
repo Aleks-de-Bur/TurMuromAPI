@@ -221,7 +221,19 @@ public class ExcursionController {
             model.addAttribute("previousUrl", referrer);
         }
 
+        List<String> excursionPhotos = new ArrayList<>();
+
+        for (var photo : excursionService.getExcursionById(excursionId).getExcursionPhotos()) {
+            try {
+                excursionPhotos.add(InteractionPhoto.getPhoto(EXCURSION_UPLOAD_DIRECTORY + photo.getPathPhoto()));
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
+
         List<ExcursionPhoto> photos = excursionService.getExcursionById(excursionId).getExcursionPhotos();
+
+        model.addAttribute("excursionPhotos", excursionPhotos);
 
         fillModelWithExcursion(model, excursionService.getExcursionById(excursionId), photos);
         return "excursions/edit";
