@@ -33,22 +33,6 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .passwordEncoder(passwordEncoder());
     }
 
-//    @Override
-//    protected void configure(HttpSecurity http) throws Exception {
-//        http
-//                .authorizeRequests()
-//                .antMatchers("/", "/product/**", "/images/**", "/registration", "/user/**", "/static/**")
-//                .permitAll()
-//                .anyRequest().authenticated()
-//                .and()
-//                .formLogin()
-//                .loginPage("/log_in")
-//                .permitAll()
-//                .and()
-//                .logout()
-//                .permitAll();
-//    }
-
     @Override
     protected void configure(HttpSecurity httpSecurity) throws Exception {
         httpSecurity
@@ -59,11 +43,11 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .antMatchers("/authorization/example","/guides/**", "/personal_cabinet/admin", "/authorization/admin").hasRole("ADMIN")
                 .antMatchers("/personal_cabinet", "/guides/**").hasRole("GUIDE")
                 .antMatchers("/personal_cabinet", "/places/create/**", "/excursions/create/**", "/places/details/**",
-                        "/excursions/**", "routes/create/**").hasRole("MODERATOR")
+                        "/excursions/**", "routes/create/**", "routes/edit/**").hasRole("MODERATOR")
                 .antMatchers("/personal_cabinet").hasRole("USER")
                 //Доступ разрешен всем пользователей
                 .antMatchers("/map", "/places/**","/api/**", "/", "/excursions/**",
-                        "/assets/**", "/photos/**", "/routes/*").permitAll()
+                        "/assets/**", "/photos/**", "/routes/**").permitAll()
                 //Все остальные страницы требуют аутентификации
                 .anyRequest().authenticated()
                 .and()

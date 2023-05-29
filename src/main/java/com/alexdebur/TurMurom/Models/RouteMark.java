@@ -14,7 +14,7 @@ import java.util.Objects;
 public class RouteMark {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private Long id;
 
     @ManyToOne(fetch = FetchType.EAGER, optional = false)
     @JoinColumn(name = "route_id")

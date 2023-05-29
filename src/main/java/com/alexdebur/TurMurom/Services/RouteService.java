@@ -43,9 +43,18 @@ public class RouteService {
     public void insertRoute(Route route) {
         routeRepository.save(route);
     }
+    public void insertRouteMark(RouteMark routeMark) {
+        routeMarkRepository.save(routeMark);
+    }
 
     public void deleteRouteById(Long id) {
         routeRepository.deleteById(id);
+    }
+    public void deleteRouteMarkById(Long id) {
+        routeMarkRepository.deleteM(id);
+    }
+    public void deleteRouteMark(RouteMark routeMark) {
+        routeMarkRepository.delete(routeMark);
     }
 
     public Page<Route> listAll(int pageNum, String sortField, String sortDir) {

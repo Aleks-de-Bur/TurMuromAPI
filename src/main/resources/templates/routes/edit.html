@@ -145,12 +145,16 @@
                                 <tr th:each="mark : ${marks}">
                                     <td th:text="${mark.title}"/>
                                     <td th:text="${mark.address}"/>
-                                    <td><a class="btn btn-secondary"
-                                           th:href="@{'/places/details/' + ${mark.id}}">Подробнее</a>
-                                        <a class="btn btn-secondary"
-                                           th:href="@{'/places/edit/' + ${mark.id}}">Изменить</a>
-                                        <a class="btn btn-danger"
-                                           th:href="@{'/places/delete/' + ${mark.id}}">Удалить</a></td>
+                                    <td>
+                                        <div class="btn-group btn-group-sm" role="group" aria-label="Маленькая группа кнопок">
+                                            <a class="btn btn-outline-dark"
+                                               th:href="@{'/routes/edit/' + ${route.id} + '/refreshMarksInRoute/' + ${mark.id} + '/up'}">Вверх</a>
+                                            <a class="btn btn-outline-dark"
+                                               th:href="@{'/routes/edit/' + ${route.id} + '/refreshMarksInRoute/' + ${mark.id} + '/down'}">Вниз</a>
+                                            <a class="btn btn-danger"
+                                               th:href="@{'/routes/edit/' + ${route.id} + '/deleteMarkOfRoute/' + ${mark.id}}">Удалить</a>
+                                        </div>
+                                    </td>
                                 </tr>
                                 </tbody>
                             </table>

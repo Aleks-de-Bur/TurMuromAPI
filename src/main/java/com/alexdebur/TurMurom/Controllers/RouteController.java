@@ -219,8 +219,12 @@ public class RouteController {
         model.addAttribute("photo", photo);
 
         List<Mark> marks = new ArrayList<>();
+
+        List<RouteMark> mrk = new ArrayList<>(routeService.getRouteMarks(id).stream().toList());
+        mrk.sort(new RouteComparator());
+
         try {
-            for (var mark : routeService.getRouteMarks(id)) {
+            for (var mark : mrk) {
                 marks.add(mark.getMark());
             }
         } catch (Exception e) {
@@ -283,6 +287,81 @@ public class RouteController {
         marks.add(new RouteMark(markService.getMarkById(markId), route, i + 1));
         route.setRouteMarks(marks);
 //        route.setMarks(marks);
+
+        routeService.insertRoute(route);
+
+        return "redirect:/routes/edit/" + routeId;
+    }
+
+    @GetMapping("/routes/edit/{routeId}/refreshMarksInRoute/{markId}/{refresh}")
+    public String refreshMarksInRoute(
+            @PathVariable("markId") Long markId,
+            @PathVariable("routeId") Long routeId,
+            @PathVariable("refresh") String refresh) throws IOException {
+
+        Route route = routeService.getRouteById(routeId);
+        List<RouteMark> marks = new ArrayList<>(route.getRouteMarks().stream().toList());
+
+        marks.sort(new RouteComparator());
+
+        if (refresh.equals("down")) {
+            for (int i = 0; i < marks.size(); i++) {
+                if(marks.get(i).getMark().getId().equals(markId) && (i + 1) < marks.size()) {
+                    marks.get(i).setOrdinal(marks.get(i).getOrdinal() + 1);
+                    routeService.insertRouteMark(marks.get(i));
+                    marks.get(i + 1).setOrdinal(marks.get(i).getOrdinal() - 1);
+                    routeService.insertRouteMark(marks.get(i + 1));
+                }
+            }
+        } else {
+            for (int i = 0; i < marks.size(); i++) {
+                if(marks.get(i).getMark().getId().equals(markId) && (i - 1) != 0) {
+                    marks.get(i).setOrdinal(marks.get(i).getOrdinal() - 1);
+                    routeService.insertRouteMark(marks.get(i - 1));
+                    marks.get(i - 1).setOrdinal(marks.get(i).getOrdinal() + 1);
+                    routeService.insertRouteMark(marks.get(i));
+                }
+            }
+        }
+
+        route.setRouteMarks(new HashSet<>(marks));
+
+        routeService.insertRoute(route);
+
+        return "redirect:/routes/edit/" + routeId;
+    }
+
+    @GetMapping("/routes/edit/{routeId}/deleteMarkOfRoute/{markId}")
+    public String deleteMarkOfRoute(
+            @PathVariable("markId") Long markId,
+            @PathVariable("routeId") Long routeId) throws IOException {
+
+        Route route = routeService.getRouteById(routeId);
+        //Set<RouteMark> marks = route.getRouteMarks();
+        List<RouteMark> marks = new ArrayList<>(route.getRouteMarks().stream().toList());
+
+        marks.sort(new RouteComparator());
+
+        boolean flag = false;
+        int m = 0;
+
+        for(int i = 0; i < marks.size(); i++) {
+            if(flag){
+                marks.get(i).setOrdinal(marks.get(i).getOrdinal() - 1);
+            }
+            if(marks.get(i).getMark().getId().equals(markId)) {
+                flag = true;
+
+                routeService.deleteRouteMarkById(marks.get(i).getId());
+                m = i;
+            }
+        }
+
+        marks.remove(m);
+
+        route.setRouteMarks(new HashSet<>(marks));
+
+
 
         routeService.insertRoute(route);
 
