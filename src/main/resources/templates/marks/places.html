@@ -65,19 +65,11 @@
 
         <div class="col-6">
             <div class="row justify-content-between mb-4">
-                <div class="input-group input-group-sm" role="group" aria-label="Small button group">
+                <div class="input-group" role="group" aria-label="Small button group">
                     <label class="input-group-text">Сортировать по:</label>
-                    <!--                <a th:href="@{'/places?' + ${keyword!=null && keyword!=''? 'keyword=' + keyword + '&' : ''} +-->
-                    <!--                'page=' + ${currentPage} + '&size=' + ${pageSize} + '&sortField=id&sortDir=' + ${reverseSortDir} + '&scheme=' + ${scheme}}"-->
-                    <!--                   class="btn btn-outline-dark">-->
-                    <!--                    <span class="h6" th:if="${sortField} == 'id'">Id</span>-->
-                    <!--                    <span class="h6" th:unless="${sortField} == 'id'"><small>Id</small></span>-->
-                    <!--                    <span th:if="${sortDir} == 'asc' and ${sortField} == 'id'">&#9650;</span>-->
-                    <!--                    <span th:if="${sortDir} == 'desc' and ${sortField} == 'id'">&#9660;</span>-->
-                    <!--                </a>-->
                     <a th:href="@{'/places?' + ${keyword!=null && keyword!=''? 'keyword=' + keyword + '&' : ''} +
                 'page=' + ${currentPage} + '&size=' + ${pageSize} + '&sortField=title&sortDir=' + ${reverseSortDir} + '&scheme=' + ${scheme}}"
-                       class="btn btn-outline-dark">
+                       class="btn btn-sm btn-outline-dark">
                         <span class="h6" th:if="${sortField} == 'title'">Названию</span>
                         <span class="h6" style="text-transform: capitalize;" th:unless="${sortField} == 'title'"><small>Названию</small></span>
                         <span th:if="${sortDir} == 'asc' and ${sortField} == 'title'">&#9650;</span>
@@ -85,7 +77,7 @@
                     </a>
                     <a th:href="@{'/places?' + ${keyword!=null && keyword!=''? 'keyword=' + keyword + '&' : ''} +
                 'page=' + ${currentPage} + '&size=' + ${pageSize} + '&sortField=category&sortDir=' + ${reverseSortDir} + '&scheme=' + ${scheme}}"
-                       class="btn btn-outline-dark">
+                       class="btn btn-sm btn-outline-dark">
                         <span class="h6" th:if="${sortField} == 'category'">Категории</span>
                         <span class="h6" style="text-transform: capitalize;"
                               th:unless="${sortField} == 'category'"><small>Категории</small></span>
@@ -97,40 +89,39 @@
             </div>
             <!--        Смена режима отображения каталога-->
             <div class="row justify-content-between">
-                <div class="input-group input-group-sm" role="group" aria-label="Basic radio toggle button group">
+                <div class="input-group" role="group" aria-label="Basic radio toggle button group">
                     <label class="input-group-text">Отобразить:</label>
                     <input type="radio" class="btn-check" name="btnradio" id="btnRadioTableOn" autocomplete="off"
                            th:if="${scheme} == 'card'" checked>
                     <a th:href="@{'/places?' + ${keyword!=null && keyword!=''? 'keyword=' + keyword + '&' : ''} +
                 'page=' + ${currentPage} + '&size=' + ${pageSize} + '&sortField=' + ${sortField} + '&sortDir=' + ${sortDir} + '&scheme=card'}"
-                       th:if="${scheme} == 'card'" style="text-transform: capitalize;" class="btn btn-outline-dark"
-                       for="btnRadioTableOn">Карточки</a>
+                       th:if="${scheme} == 'card'" style="text-transform: capitalize;" class="btn btn-sm btn-outline-dark"
+                       for="btnRadioTableOn"><span class="h6"><small>Карточки</small></span></a>
 
                     <input type="radio" class="btn-check" name="btnradio" id="btnRadioTable" autocomplete="off"
                            th:unless="${scheme} == 'card'">
                     <a th:href="@{'/places?' + ${keyword!=null && keyword!=''? 'keyword=' + keyword + '&' : ''} +
                 'page=' + ${currentPage} + '&size=' + ${pageSize} + '&sortField=' + ${sortField} + '&sortDir=' + ${sortDir} + '&scheme=card'}"
                        th:unless="${scheme} == 'card'" style="text-transform: capitalize;"
-                       class="btn btn-outline-dark" for="btnRadioTable">Карточки</a>
+                       class="btn btn-sm btn-outline-dark" for="btnRadioTable"><span class="h6"><small>Карточки</small></span></a>
 
                     <input type="radio" class="btn-check" name="btnradio" id="btnRadioListOn" autocomplete="off"
                            th:if="${scheme} == 'list'" checked>
                     <a th:href="@{'/places?' + ${keyword!=null && keyword!=''? 'keyword=' + keyword + '&' : ''} +
                 'page=' + ${currentPage} + '&size=' + ${pageSize} + '&sortField=' + ${sortField} + '&sortDir=' + ${sortDir} + '&scheme=list'}"
-                       th:if="${scheme} == 'list'" style="text-transform: capitalize;" class="btn btn-outline-dark"
-                       for="btnRadioListOn">Список</a>
+                       th:if="${scheme} == 'list'" style="text-transform: capitalize;" class="btn btn-sm btn-outline-dark"
+                       for="btnRadioListOn"><span class="h6"><small>Список</small></span></a>
 
                     <input type="radio" class="btn-check" name="btnradio" id="btnRadioList" autocomplete="off"
                            th:unless="${scheme} == 'list'">
                     <a th:href="@{'/places?' + ${keyword!=null && keyword!=''? 'keyword=' + keyword + '&' : ''} +
                 'page=' + ${currentPage} + '&size=' + ${pageSize} + '&sortField=' + ${sortField} + '&sortDir=' + ${sortDir} + '&scheme=list'}"
                        th:unless="${scheme} == 'list'" style="text-transform: capitalize;"
-                       class="btn btn-outline-dark" for="btnRadioList">Список</a>
+                       class="btn btn-sm btn-outline-dark" for="btnRadioList"><span class="h6"><small>Список</small></span></a>
                 </div>
             </div>
 
         </div>
-
 
     </div>
 
@@ -208,7 +199,7 @@
                     </div>
                 </div>
                 <!----------    Действия для зарег пользователя    ----------------------------------->
-                <div class="card-footer p-0" sec:authorize="hasRole('ROLE_USER') || hasRole('ROLE_GUIDE') || hasRole('ROLE_MODERATOR')"
+                <div class="card-footer p-0" sec:authorize="isAuthenticated()"
                      style="border-bottom-left-radius: 16px; border-bottom-right-radius: 16px;">
                     <form class="needs-validation" action="#" th:action="@{'/place/' + ${mark.id} + '/elect/places'}"
                           th:object="${mark}" enctype="multipart/form-data" method="post" id="form1">
@@ -238,7 +229,7 @@
                     </form>
                 </div>
                 <!----------    Действия для нерег пользователя    ----------------------------------->
-                <div class="card-footer p-0" sec:authorize="!isAuthenticated() || hasRole('ROLE_ADMIN')"
+                <div class="card-footer p-0" sec:authorize="!isAuthenticated()"
                      style="border-bottom-left-radius: 16px; border-bottom-right-radius: 16px;">
                     <!--                    <a class="btn btn-primary w-100" type="button" th:href="@{'/routes/details/' + ${route.id}}"-->
                     <!--                       style="border-bottom-left-radius: 16px; border-top-left-radius: 0px;-->
@@ -261,7 +252,7 @@
                         <button type="button" class="btn-close btn-close-white m-5 p-2"
                                 style="position: absolute; z-index: 2;" data-bs-dismiss="offcanvas"
                                 aria-label="Закрыть"></button>
-                        <!-----------Карусель---------->
+                        <!-------------------------Карусель-------------------------->
                         <div th:id="'carouselPlaceIndicators' + ${mark.id}"
                              class="carousel slide carousel-fade" data-bs-ride="carousel">
                             <div class="carousel-indicators" style="padding-bottom: 48px;">
@@ -382,22 +373,20 @@
                                                 style="box-shadow: 0 0.1875rem 1rem 0 rgba(0, 0, 0, 0.1) !important; border-bottom-right-radius: 16px; border-top-right-radius: 0px;"
                                                 class="btn btn-outline-danger w-100 rounded-4" th:id="${mark.id}" autocomplete="off">В избранное
                                         </button>
-
-<!--                                    <input type="checkbox" class="btn-check mt-2" th:id="${'btn' + mark.id}"-->
-<!--                                           autocomplete="off">-->
-<!--                                    <label class="btn btn-outline-danger w-100 rounded-4"-->
-<!--                                           style="box-shadow: 0 0.1875rem 1rem 0 rgba(0, 0, 0, 0.1) !important;"-->
-<!--                                           th:for="${'btn' + mark.id}">Избранное</label><br>-->
                                     </form>
                                 </li>
+
+                                <li class="nav-item" th:if="${#arrays.length(mark.routeMarks) > 0}">
+                                    <h4 class="pt-4 pb-4" style="margin-bottom: 0px;">В составе в маршрутов:</h4>
+                                </li>
+
                                 <li class="nav-item mt-4">
 
                                     <!-----------Карусель---------->
                                     <div th:id="'carouselRouteIndicators' + ${mark.id}"
-                                         class="carousel carousel-dark slide carousel-fade" data-bs-ride="carousel">
+                                         class="carousel carousel-dark slide carousel-fade" data-bs-ride="carousel"
+                                         th:if="${#arrays.length(mark.routeMarks) > 0}">
                                         <div class="carousel-inner px-5">
-                                            <!--                                            <div class="carousel-item" th:each="routeMark : ${mark.routeMarks}"-->
-                                            <!--                                                 th:classappend="${routeMarkStat.first} ? active : ''">-->
                                             <div class="carousel-item d-flex row row-cols-1 row-cols-md-2 g-4 ms-0"
                                                  th:each="item : ${arr}"
                                                  th:if="${#arrays.length(mark.routeMarks) >= item}"

@@ -5,14 +5,14 @@
     <title>Title</title>
 </head>
 <body>
-<div class="container" th:fragment="footer">
+<div th:fragment="footer">
     <footer class="py-3 my-4">
         <ul class="nav justify-content-center border-bottom pb-3 mb-3">
             <li class="nav-item"><a href="/" class="nav-link px-2 text-muted">Главная</a></li>
             <li class="nav-item"><a href="/map" class="nav-link px-2 text-muted">Карта</a></li>
-            <li class="nav-item"><a href="/places/1?sortField=title&sortDir=asc&scheme=list" class="nav-link px-2 text-muted">Достопримечательности</a></li>
+            <li class="nav-item"><a href="/places" class="nav-link px-2 text-muted">Достопримечательности</a></li>
             <li class="nav-item"><a href="/routes/1?sortField=title&sortDir=asc&scheme=list" class="nav-link px-2 text-muted">Маршруты</a></li>
-            <li class="nav-item"><a href="/excursions/1?sortField=title&sortDir=asc&scheme=list" class="nav-link px-2 text-muted">Экскурсии</a></li>
+            <li class="nav-item"><a href="/excursions" class="nav-link px-2 text-muted">Экскурсии</a></li>
         </ul>
         <p class="text-center text-muted">&copy; 2023 TurMurom, Inc</p>
     </footer>

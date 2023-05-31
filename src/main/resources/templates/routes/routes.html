@@ -27,61 +27,115 @@
         <a sec:authorize="hasRole('ROLE_MODERATOR')" href="/routes/create" class="col-sm-3 btn-lg btn btn-outline-dark">Добавить</a>
     </div>
     <hr class="my-4">
-    <div class="row justify-content-between">
-        <div class="col-sm-4 col-md-3 col-lg-2">
-            <h5 style="white-space: nowrap;">Сортировать по:</h5>
-        </div>
-        <div class="col-sm-6 col-md-7 col-lg-9">
-            <div class="btn-group btn-group-sm" role="group" aria-label="Small button group">
-                <a th:href="@{'/routes/' + ${currentPage} + '?sortField=id&sortDir=' + ${reverseSortDir} + '&scheme=' + ${scheme}}"
-                   class="btn btn-outline-dark">
-                    <span class="h6" th:if="${sortField} == 'id'"><em><strong>Id</strong></em></span>
-                    <span class="h6" th:unless="${sortField} == 'id'"><small>Id</small></span>
-                    <span th:if="${sortDir} == 'asc' and ${sortField} == 'id'">&#9650;</span>
-                    <span th:if="${sortDir} == 'desc' and ${sortField} == 'id'">&#9660;</span>
-                </a>
-                <a th:href="@{'/routes/' + ${currentPage} + '?sortField=title&sortDir=' + ${reverseSortDir} + '&scheme=' + ${scheme}}"
-                   class="btn btn-outline-dark">
-                    <span class="h6" th:if="${sortField} == 'title'"><em><strong>Названию</strong></em></span>
-                    <span class="h6" th:unless="${sortField} == 'title'"><small>Названию</small></span>
-                    <span th:if="${sortDir} == 'asc' and ${sortField} == 'title'">&#9650;</span>
-                    <span th:if="${sortDir} == 'desc' and ${sortField} == 'title'">&#9660;</span>
-                </a>
-                <a th:href="@{'/routes/' + ${currentPage} + '?sortField=duration&sortDir=' + ${reverseSortDir} + '&scheme=' + ${scheme}}"
-                   class="btn btn-outline-dark">
-                    <span class="h6"
-                          th:if="${sortField} == 'duration'"><em><strong>Продолжительности</strong></em></span>
-                    <span class="h6" th:unless="${sortField} == 'duration'"><small>Продолжительности</small></span>
-                    <span th:if="${sortDir} == 'asc' and ${sortField} == 'duration'">&#9650;</span>
-                    <span th:if="${sortDir} == 'desc' and ${sortField} == 'duration'">&#9660;</span>
-                </a>
-            </div>
+    <div class="d-flex">
+        <div class="input-group" role="group" aria-label="Small button group">
+            <label class="input-group-text">Сортировать по:</label>
+            <a th:href="@{'/routes/' + ${currentPage} + '?sortField=title&sortDir=' + ${reverseSortDir} + '&scheme=' + ${scheme}}"
+               class="btn btn-sm btn-outline-dark">
+                <span class="h6" th:if="${sortField} == 'title'">Названию</span>
+                <span class="h6" style="text-transform: capitalize;" th:unless="${sortField} == 'title'"><small>Названию</small></span>
+                <span th:if="${sortDir} == 'asc' and ${sortField} == 'title'">&#9650;</span>
+                <span th:if="${sortDir} == 'desc' and ${sortField} == 'title'">&#9660;</span>
+            </a>
+            <a th:href="@{'/routes/' + ${currentPage} + '?sortField=duration&sortDir=' + ${reverseSortDir} + '&scheme=' + ${scheme}}"
+               class="btn btn-sm btn-outline-dark">
+                <span class="h6" th:if="${sortField} == 'duration'">Продолжительности</span>
+                <span class="h6" style="text-transform: capitalize;"
+                      th:unless="${sortField} == 'duration'"><small>Продолжительности</small></span>
+                <span th:if="${sortDir} == 'asc' and ${sortField} == 'duration'">&#9650;</span>
+                <span th:if="${sortDir} == 'desc' and ${sortField} == 'duration'">&#9660;</span>
+            </a>
+
         </div>
 
+
+<!--        <div class="col-sm-4 col-md-3 col-lg-2">-->
+<!--            <h5 style="white-space: nowrap;">Сортировать по:</h5>-->
+<!--        </div>-->
+<!--        <div class="col-sm-6 col-md-7 col-lg-9">-->
+<!--            <div class="btn-group btn-group-sm" role="group" aria-label="Small button group">-->
+<!--                <a th:href="@{'/routes/' + ${currentPage} + '?sortField=id&sortDir=' + ${reverseSortDir} + '&scheme=' + ${scheme}}"-->
+<!--                   class="btn btn-outline-dark">-->
+<!--                    <span class="h6" th:if="${sortField} == 'id'"><em><strong>Id</strong></em></span>-->
+<!--                    <span class="h6" th:unless="${sortField} == 'id'"><small>Id</small></span>-->
+<!--                    <span th:if="${sortDir} == 'asc' and ${sortField} == 'id'">&#9650;</span>-->
+<!--                    <span th:if="${sortDir} == 'desc' and ${sortField} == 'id'">&#9660;</span>-->
+<!--                </a>-->
+<!--                <a th:href="@{'/routes/' + ${currentPage} + '?sortField=title&sortDir=' + ${reverseSortDir} + '&scheme=' + ${scheme}}"-->
+<!--                   class="btn btn-outline-dark">-->
+<!--                    <span class="h6" th:if="${sortField} == 'title'"><em><strong>Названию</strong></em></span>-->
+<!--                    <span class="h6" th:unless="${sortField} == 'title'"><small>Названию</small></span>-->
+<!--                    <span th:if="${sortDir} == 'asc' and ${sortField} == 'title'">&#9650;</span>-->
+<!--                    <span th:if="${sortDir} == 'desc' and ${sortField} == 'title'">&#9660;</span>-->
+<!--                </a>-->
+<!--                <a th:href="@{'/routes/' + ${currentPage} + '?sortField=duration&sortDir=' + ${reverseSortDir} + '&scheme=' + ${scheme}}"-->
+<!--                   class="btn btn-outline-dark">-->
+<!--                    <span class="h6"-->
+<!--                          th:if="${sortField} == 'duration'"><em><strong>Продолжительности</strong></em></span>-->
+<!--                    <span class="h6" th:unless="${sortField} == 'duration'"><small>Продолжительности</small></span>-->
+<!--                    <span th:if="${sortDir} == 'asc' and ${sortField} == 'duration'">&#9650;</span>-->
+<!--                    <span th:if="${sortDir} == 'desc' and ${sortField} == 'duration'">&#9660;</span>-->
+<!--                </a>-->
+<!--            </div>-->
+<!--        </div>-->
+
         <!--        Смена режима отображения каталога маршрутов-->
-        <div class="col-sm-2 col-md-2 col-lg-1">
-            <div class="btn-group" role="group" aria-label="Basic radio toggle button group">
+<!--        <div class="col-sm-2 col-md-2 col-lg-1">-->
+
+            <div class="input-group" role="group" aria-label="Basic radio toggle button group">
+                <label class="input-group-text">Отобразить:</label>
                 <input type="radio" class="btn-check" name="btnradio" id="btnRadioTableOn" autocomplete="off"
                        th:if="${scheme} == 'card'" checked>
                 <a th:href="@{'/routes/' + ${currentPage} + '?sortField=id&sortDir=' + ${sortDir} + '&scheme=card'}"
-                   th:if="${scheme} == 'card'" class="btn btn-outline-dark" for="btnRadioTableOn">&#9638;</a>
+                   th:if="${scheme} == 'card'" style="text-transform: capitalize;" class="btn btn-sm btn-outline-dark"
+                   for="btnRadioTableOn"><span class="h6"><small>Карточки</small></span></a>
 
                 <input type="radio" class="btn-check" name="btnradio" id="btnRadioTable" autocomplete="off"
                        th:unless="${scheme} == 'card'">
                 <a th:href="@{'/routes/' + ${currentPage} + '?sortField=id&sortDir=' + ${sortDir} + '&scheme=card'}"
-                   th:unless="${scheme} == 'card'" class="btn btn-outline-dark" for="btnRadioTable">&#9638;</a>
+                   th:unless="${scheme} == 'card'" style="text-transform: capitalize;"
+                   class="btn btn-sm btn-outline-dark" for="btnRadioTable"><span class="h6"><small>Карточки</small></span></a>
 
                 <input type="radio" class="btn-check" name="btnradio" id="btnRadioListOn" autocomplete="off"
                        th:if="${scheme} == 'list'" checked>
                 <a th:href="@{'/routes/' + ${currentPage} + '?sortField=id&sortDir=' + ${sortDir} + '&scheme=list'}"
-                   th:if="${scheme} == 'list'" class="btn btn-outline-dark" for="btnRadioListOn">&#9636;</a>
+                   th:if="${scheme} == 'list'" style="text-transform: capitalize;" class="btn btn-sm btn-outline-dark"
+                   for="btnRadioListOn"><span class="h6"><small>Список</small></span></a>
 
                 <input type="radio" class="btn-check" name="btnradio" id="btnRadioList" autocomplete="off"
                        th:unless="${scheme} == 'list'">
                 <a th:href="@{'/routes/' + ${currentPage} + '?sortField=id&sortDir=' + ${sortDir} + '&scheme=list'}"
-                   th:unless="${scheme} == 'list'" class="btn btn-outline-dark" for="btnRadioList">&#9636;</a>
+                   th:unless="${scheme} == 'list'" style="text-transform: capitalize;"
+                   class="btn btn-sm btn-outline-dark" for="btnRadioList"><span class="h6"><small>Список</small></span></a>
             </div>
-        </div>
+
+
+
+
+
+
+<!--            <div class="btn-group" role="group" aria-label="Basic radio toggle button group">-->
+<!--                <input type="radio" class="btn-check" name="btnradio" id="btnRadioTableOn" autocomplete="off"-->
+<!--                       th:if="${scheme} == 'card'" checked>-->
+<!--                <a th:href="@{'/routes/' + ${currentPage} + '?sortField=id&sortDir=' + ${sortDir} + '&scheme=card'}"-->
+<!--                   th:if="${scheme} == 'card'" class="btn btn-outline-dark" for="btnRadioTableOn">&#9638;</a>-->
+
+<!--                <input type="radio" class="btn-check" name="btnradio" id="btnRadioTable" autocomplete="off"-->
+<!--                       th:unless="${scheme} == 'card'">-->
+<!--                <a th:href="@{'/routes/' + ${currentPage} + '?sortField=id&sortDir=' + ${sortDir} + '&scheme=card'}"-->
+<!--                   th:unless="${scheme} == 'card'" class="btn btn-outline-dark" for="btnRadioTable">&#9638;</a>-->
+
+<!--                <input type="radio" class="btn-check" name="btnradio" id="btnRadioListOn" autocomplete="off"-->
+<!--                       th:if="${scheme} == 'list'" checked>-->
+<!--                <a th:href="@{'/routes/' + ${currentPage} + '?sortField=id&sortDir=' + ${sortDir} + '&scheme=list'}"-->
+<!--                   th:if="${scheme} == 'list'" class="btn btn-outline-dark" for="btnRadioListOn">&#9636;</a>-->
+
+<!--                <input type="radio" class="btn-check" name="btnradio" id="btnRadioList" autocomplete="off"-->
+<!--                       th:unless="${scheme} == 'list'">-->
+<!--                <a th:href="@{'/routes/' + ${currentPage} + '?sortField=id&sortDir=' + ${sortDir} + '&scheme=list'}"-->
+<!--                   th:unless="${scheme} == 'list'" class="btn btn-outline-dark" for="btnRadioList">&#9636;</a>-->
+<!--            </div>-->
+<!--        </div>-->
     </div>
 
     <hr class="my-4">

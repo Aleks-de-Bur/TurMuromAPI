@@ -219,13 +219,7 @@
 
                                         </li>
                                         <!-------------------------Избранное------------------------>
-                                        <li class="nav-item mt-4">
-<!--                                            <input type="checkbox" class="btn-check mt-2" th:id="${'btn' + mark.id}"-->
-<!--                                                   autocomplete="off">-->
-<!--                                            <label class="btn btn-outline-danger w-100 rounded-4"-->
-<!--                                                   style="box-shadow: 0 0.1875rem 1rem 0 rgba(0, 0, 0, 0.1) !important;"-->
-<!--                                                   th:for="${'btn' + mark.id}">Избранное</label><br>-->
-
+                                        <li class="nav-item mt-4" sec:authorize="isAuthenticated()">
                                             <form class="needs-validation" action="#" th:action="@{'/place/' + ${mark.id} + '/elect/' + ${route.id}}"
                                                   th:object="${mark}" enctype="multipart/form-data" method="post" th:id="'form' + ${mark.id}">
 

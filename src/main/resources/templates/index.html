@@ -116,36 +116,28 @@
             <div class="col-md-10 col-lg-8 mx-auto text-center">
                 <i class="far fa-paper-plane fa-2x mb-2 text-white"></i>
                 <h2 class="text-white mb-5">Подпишитесь на получение обновлений!</h2>
-                <!-- * * * * * * * * * * * * * * *-->
-                <!-- * * SB Forms Contact Form * *-->
-                <!-- * * * * * * * * * * * * * * *-->
-                <!-- This form is pre-integrated with SB Forms.-->
-                <!-- To make this form functional, sign up at-->
-                <!-- https://startbootstrap.com/solution/contact-forms-->
-                <!-- to get an API token!-->
+
                 <form class="form-signup" id="contactForm" data-sb-form-api-token="API_TOKEN">
                     <!-- Email address input-->
                     <div class="row input-group-newsletter">
                         <div class="col"><input class="form-control" id="emailAddress" type="email"
-                                                placeholder="Enter email address..." aria-label="Enter email address..."
+                                                placeholder="Введите email..." aria-label="Введите email..."
                                                 data-sb-validations="required,email"/></div>
                         <div class="col-auto">
                             <button class="btn btn-primary disabled" id="submitButton" type="submit">Уведомлять меня!</button>
                         </div>
                     </div>
-                    <div class="invalid-feedback mt-2" data-sb-feedback="emailAddress:required">An email is required.
+                    <div class="invalid-feedback mt-2" data-sb-feedback="emailAddress:required">Введите email.
                     </div>
-                    <div class="invalid-feedback mt-2" data-sb-feedback="emailAddress:email">Email is not valid.</div>
+                    <div class="invalid-feedback mt-2" data-sb-feedback="emailAddress:email">Адрес электронной почты недействителен.</div>
                     <!-- Submit success message-->
                     <!---->
                     <!-- This is what your users will see when the form-->
                     <!-- has successfully submitted-->
                     <div class="d-none" id="submitSuccessMessage">
                         <div class="text-center mb-3 mt-2 text-white">
-                            <div class="fw-bolder">Form submission successful!</div>
-                            To activate this form, sign up at
+                            <div class="fw-bolder">Вы успешно подписались на обновления!</div>
                             <br/>
-                            <a href="https://startbootstrap.com/solution/contact-forms">https://startbootstrap.com/solution/contact-forms</a>
                         </div>
                     </div>
                     <!-- Submit error message-->
@@ -207,15 +199,15 @@
 <!--    <div class="container px-4 px-lg-5">Copyright &copy; Your Website 2023</div>-->
 <!--</footer>-->
 <footer class="footer bg-black small text-center text-white-50">
-    <div class="container px-4 px-lg-5">
+    <div class="px-4 px-lg-5">
         <ul class="nav justify-content-center border-bottom pb-3 mb-3">
             <li class="nav-item"><a href="/" class="nav-link px-2">Главная</a></li>
             <li class="nav-item"><a href="/map" class="nav-link px-2">Карта</a></li>
-            <li class="nav-item"><a href="/places/1?sortField=title&sortDir=asc&scheme=list"
+            <li class="nav-item"><a href="/places"
                                     class="nav-link px-2">Достопримечательности</a></li>
-            <li class="nav-item"><a href="/routes/1?sortField=title&sortDir=asc&scheme=list"
+            <li class="nav-item"><a href="/routes/1?sortField=title&sortDir=asc&scheme=card"
                                     class="nav-link px-2">Маршруты</a></li>
-            <li class="nav-item"><a href="/excursions/1?sortField=title&sortDir=asc&scheme=list"
+            <li class="nav-item"><a href="/excursions"
                                     class="nav-link px-2">Экскурсии</a></li>
         </ul>
         <p class="text-center text-muted">&copy; 2023 TurMurom, Inc</p>

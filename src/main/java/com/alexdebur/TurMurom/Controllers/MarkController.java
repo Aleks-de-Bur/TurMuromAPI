@@ -78,7 +78,7 @@ public class MarkController {
 
     @GetMapping("/places")
     public String getAll(Model model, @RequestParam(required = false) String keyword,
-                         @RequestParam(defaultValue = "1") int page, @RequestParam(defaultValue = "9") int size,
+                         @RequestParam(defaultValue = "1") int page, @RequestParam(defaultValue = "6") int size,
                          @RequestParam(defaultValue = "title") String sortField,
                          @RequestParam(defaultValue = "asc") String sortDir, Principal principal,
                          @RequestParam(defaultValue = "card") String scheme) {
@@ -96,7 +96,7 @@ public class MarkController {
             }
 
             ArrayList<Long> list = new ArrayList<>();
-            ArrayList<Integer> arr = new ArrayList<>(Arrays.asList(0, 2, 4));
+            ArrayList<Integer> arr = new ArrayList<>(Arrays.asList(0, 2, 4, 6, 8, 10));
 
             for (var mark : marks){
                 for (var photo : mark.getMarkPhotos()){
