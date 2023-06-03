@@ -396,6 +396,8 @@ public class MarkController {
             return "redirect:/places";
         else if(locate.equals("elected"))
             return "redirect:/profile/elected";
+        else if(locate.equals("map"))
+            return "redirect:/map";
         else
             return "redirect:/routes/details/" + locate;
     }

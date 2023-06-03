@@ -421,12 +421,29 @@
                     </div>
                 </div>
 
-                <button class="btn btn-primary" type="button" data-bs-toggle="offcanvas"
-                        th:data-bs-target="'#offcanvasExcursion' + ${excursion.id}" aria-controls="offcanvasResponsive">
+                <p class="lead" th:text="${excursion.price}"></p>
+
+                <!----------    Действия для модератора    ----------------------------------------------->
+                <div class="btn-group" role="group" aria-label="Buttons for Moderator"
+                     sec:authorize="hasRole('ROLE_MODERATOR')">
+                    <button class="btn btn-primary" type="button" data-bs-toggle="offcanvas"
+                            th:data-bs-target="'#offcanvasPlace' + ${excursion.id}"
+                            aria-controls="offcanvasResponsive">
+                        Подробнее
+                    </button>
+                    <a type="button" class="btn btn-secondary"
+                       th:href="@{'/places/edit/' + ${excursion.id}}">Редактировать</a>
+                    <a type="button" class="btn btn-danger"
+                       th:href="@{'/places/delete/' + ${excursion.id}}">Удалить</a>
+                </div>
+                <!----------    Действия для незарег.пользователя    ------------------------------------->
+                <button sec:authorize="!hasRole('ROLE_MODERATOR')" class="btn btn-primary" type="button" data-bs-toggle="offcanvas"
+                        th:data-bs-target="'#offcanvasPlace' + ${excursion.id}"
+                        aria-controls="offcanvasResponsive">
                     Подробнее
                 </button>
 
-                <p class="lead" th:text="${excursion.price}"></p>
+
 
                 <!--                <a type="button" class="btn btn-secondary"-->
                 <!--                   data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight" aria-controls="offcanvasRight">Подробнее</a>-->
@@ -540,7 +557,7 @@
             </div>
 
             <div class="col-md-4 order-md-1">
-                <img class="bd-placeholder-img bd-placeholder-img-lg featurette-image img-fluid mx-auto" width="500"
+                <img class="bd-placeholder-img bd-placeholder-img-lg featurette-image img-fluid mx-auto rounded-4" width="500"
                      height="500" th:src="|data:image/jpeg;base64,${excursion.excursionPhotos[0].pathPhoto}|" role="img"
                      aria-label="Placeholder: 500x500"
                      preserveAspectRatio="xMidYMid slice" style="object-fit: cover;" focusable="false"><title>

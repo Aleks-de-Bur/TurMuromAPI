@@ -1,6 +1,7 @@
 package com.alexdebur.TurMurom.Services;
 
 import com.alexdebur.TurMurom.Models.Excursion;
+import com.alexdebur.TurMurom.Models.Guide;
 import com.alexdebur.TurMurom.Models.Route;
 import com.alexdebur.TurMurom.Models.RouteMark;
 import com.alexdebur.TurMurom.Repositories.*;
@@ -29,7 +30,12 @@ public class RouteService {
     }
 
     public List<Route> getAllRoutes() {
-        return routeRepository.findAll();
+        List<Route> routes = routeRepository.findAll();
+        routes.forEach(route -> {
+            route.setPathPhoto("http://192.168.0.75:8080/api/photo/routes/" + route.getId());
+        });
+
+        return routes;
     }
 
     public Route getRouteById(Long id) {
@@ -38,6 +44,10 @@ public class RouteService {
 
     public List<RouteMark> getRouteMarks(Long id) {
         return routeMarkRepository.findByRouteId(id);
+    }
+
+    public List<RouteMark> getAllRouteMarks() {
+        return routeMarkRepository.findAll();
     }
 
     public void insertRoute(Route route) {

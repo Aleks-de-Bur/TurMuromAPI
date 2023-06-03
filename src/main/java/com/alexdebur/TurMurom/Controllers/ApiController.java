@@ -1,6 +1,7 @@
 package com.alexdebur.TurMurom.Controllers;
 
 import com.alexdebur.TurMurom.Models.*;
+import com.alexdebur.TurMurom.Repositories.UserElectedMarkRepository;
 import com.alexdebur.TurMurom.Services.*;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -30,10 +31,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.security.Principal;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 @RestController
 @RequiredArgsConstructor
@@ -48,6 +46,8 @@ public class ApiController {
     private GuideService guideService;
     private ScheduleService scheduleService;
     private RouteService routeService;
+
+    private final UserElectedMarkRepository userElectedMarkRepository;
 
     public static String EXCURSION_UPLOAD_DIRECTORY = System.getProperty("user.dir") + "\\Photos\\Excursions\\";
     public static String GUIDE_UPLOAD_DIRECTORY = System.getProperty("user.dir") + "\\Photos\\Guides\\";
@@ -153,6 +153,70 @@ public class ApiController {
     @GetMapping("/guides")
     public List<Guide> getGuides(){
         return guideService.getAllGuides();
+    }
+
+    @GetMapping("/place/{markId}/elect/{userId}")
+    public String electMark(@PathVariable("userId") Long userId,
+                            @PathVariable("markId") Long markId) throws IOException {
+        User user = userService.getUserById(userId);
+        Set<UserElectedMark> elected = user.getUserElectedMarks();
+
+        UserElectedMark check = new UserElectedMark(user, markService.getMarkById(markId));
+
+        if (elected.contains(check)){
+            check = userElectedMarkRepository.findByUserIdAndMarkId(user.getId(), markId);
+            elected.remove(check);
+            markService.deleteElectedMark(check.getId());
+        } else {
+            elected.add(check);
+        }
+
+        user.setUserElectedMarks(elected);
+        userService.editUser(user);
+
+        return "ok";
+    }
+
+    @GetMapping("/routes")
+    public List<Route> getRoutes(){
+        return routeService.getAllRoutes();
+    }
+//    public List<ObjectNode> getRoutes(){
+//        List<Route> routes = routeService.getAllRoutes();
+//
+//        ObjectMapper mapper = new ObjectMapper();
+//
+//        List<ObjectNode> result = new ArrayList<>();
+//
+//        for(Route route : routes){
+//            ObjectNode objectNode = mapper.createObjectNode();
+//            objectNode.put("id", route.getId());
+//            objectNode.put("name", route.getTitle());
+//            objectNode.put("description", route.getDescription());
+//            objectNode.put("duration", route.getDuration());
+//            objectNode.put("duration", route.getPathPhoto());
+//            result.add(objectNode);
+//        }
+//        return result;
+//    }
+
+    @GetMapping("/routeMarks")
+    public List<ObjectNode> getRouteMarks(){
+        List<RouteMark> marks = routeService.getAllRouteMarks();
+
+        ObjectMapper mapper = new ObjectMapper();
+
+        List<ObjectNode> result = new ArrayList<>();
+
+        for(RouteMark mark : marks){
+            ObjectNode objectNode = mapper.createObjectNode();
+            objectNode.put("id", mark.getId());
+            objectNode.put("markId", mark.getMark().getId());
+            objectNode.put("routeId", mark.getRoute().getId());
+            objectNode.put("ordinal", mark.getOrdinal());
+            result.add(objectNode);
+        }
+        return result;
     }
 
     @GetMapping("/categories")

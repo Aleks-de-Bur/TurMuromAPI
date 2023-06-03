@@ -51,7 +51,7 @@
 
                             <select th:form="searchForm" name="size" th:value="${pageSize}" onchange="changePageSize()"
                                     class="form-select" id="pageSize">
-                                <option th:each="s : ${ {3, 6, 9} }" th:value="${s}" th:text="${s}"
+                                <option th:each="s : ${ {3, 6, 9, 12, 15} }" th:value="${s}" th:text="${s}"
                                         th:selected="${s == pageSize}"></option>
                             </select>
                         </div>
@@ -95,7 +95,8 @@
                            th:if="${scheme} == 'card'" checked>
                     <a th:href="@{'/places?' + ${keyword!=null && keyword!=''? 'keyword=' + keyword + '&' : ''} +
                 'page=' + ${currentPage} + '&size=' + ${pageSize} + '&sortField=' + ${sortField} + '&sortDir=' + ${sortDir} + '&scheme=card'}"
-                       th:if="${scheme} == 'card'" style="text-transform: capitalize;" class="btn btn-sm btn-outline-dark"
+                       th:if="${scheme} == 'card'" style="text-transform: capitalize;"
+                       class="btn btn-sm btn-outline-dark"
                        for="btnRadioTableOn"><span class="h6"><small>Карточки</small></span></a>
 
                     <input type="radio" class="btn-check" name="btnradio" id="btnRadioTable" autocomplete="off"
@@ -109,7 +110,8 @@
                            th:if="${scheme} == 'list'" checked>
                     <a th:href="@{'/places?' + ${keyword!=null && keyword!=''? 'keyword=' + keyword + '&' : ''} +
                 'page=' + ${currentPage} + '&size=' + ${pageSize} + '&sortField=' + ${sortField} + '&sortDir=' + ${sortDir} + '&scheme=list'}"
-                       th:if="${scheme} == 'list'" style="text-transform: capitalize;" class="btn btn-sm btn-outline-dark"
+                       th:if="${scheme} == 'list'" style="text-transform: capitalize;"
+                       class="btn btn-sm btn-outline-dark"
                        for="btnRadioListOn"><span class="h6"><small>Список</small></span></a>
 
                     <input type="radio" class="btn-check" name="btnradio" id="btnRadioList" autocomplete="off"
@@ -117,7 +119,8 @@
                     <a th:href="@{'/places?' + ${keyword!=null && keyword!=''? 'keyword=' + keyword + '&' : ''} +
                 'page=' + ${currentPage} + '&size=' + ${pageSize} + '&sortField=' + ${sortField} + '&sortDir=' + ${sortDir} + '&scheme=list'}"
                        th:unless="${scheme} == 'list'" style="text-transform: capitalize;"
-                       class="btn btn-sm btn-outline-dark" for="btnRadioList"><span class="h6"><small>Список</small></span></a>
+                       class="btn btn-sm btn-outline-dark" for="btnRadioList"><span
+                            class="h6"><small>Список</small></span></a>
                 </div>
             </div>
 
@@ -194,8 +197,44 @@
                     <div class="btn-group w-100" role="group" aria-label="Buttons for Moderator">
                         <a type="button" class="btn btn-primary w-100" th:href="@{'/places/edit/' + ${mark.id}}"
                            style="border-top-left-radius: 16px; border-bottom-left-radius: 0px;">Редактировать</a>
-                        <a type="button" class="btn btn-danger w-100" th:href="@{'/places/delete/' + ${mark.id}}"
-                           style="border-top-right-radius: 16px; border-bottom-right-radius: 0px;">Удалить</a>
+<!--                        <a type="button" class="btn btn-danger w-100" th:href="@{'/places/delete/' + ${mark.id}}"-->
+<!--                           style="border-top-right-radius: 16px; border-bottom-right-radius: 0px;">Удалить</a>-->
+
+                        <!-- Кнопка-триггер модального окна -->
+                        <button type="button" class="btn btn-danger w-100" data-bs-toggle="modal"
+                                style="border-top-right-radius: 16px; border-bottom-right-radius: 0px;"
+                                th:data-bs-target="'#deletePlaceModal' + ${mark.id}">Удалить
+                        </button>
+
+                        <!-- Модальное окно удаление-->
+                        <div class="modal fade" th:id="'deletePlaceModal' + ${mark.id}" tabindex="-1" aria-labelledby="deletePlaceModalLabel"
+                             aria-hidden="true">
+                            <div class="modal-dialog modal-dialog-centered">
+                                <div class="modal-content rounded-4">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title">Удаление достопримечательности</h5>
+                                    </div>
+                                    <div class="modal-body">
+                                        <h5 class="modal-title">Вы уверены, что хотите удалить достопримечательность: <span th:text="${mark.title}"></span>?</h5>
+                                    </div>
+                                    <div class="modal-footer p-0"
+                                         style="border-bottom-left-radius: 16px; border-bottom-right-radius: 16px;">
+
+                                        <div class="btn-group w-100 m-0" role="group">
+                                            <button type="button" class="btn btn-outline-dark" data-bs-dismiss="modal"
+                                                    style="border-bottom-left-radius: 12px; border-top-left-radius: 0px;">
+                                                Закрыть
+                                            </button>
+
+                                            <a type="button" th:href="@{'/places/delete/' + ${mark.id}}" class="btn btn-outline-danger"
+                                               style="border-bottom-right-radius: 12px; border-top-right-radius: 0px;">
+                                                Удалить
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <!----------    Действия для зарег пользователя    ----------------------------------->
@@ -362,16 +401,22 @@
                                 </li>
                                 <!-------------------------Избранное------------------------>
                                 <li class="nav-item mt-4" sec:authorize="isAuthenticated()">
-                                    <form class="needs-validation" action="#" th:action="@{'/place/' + ${mark.id} + '/elect/places'}"
-                                          th:object="${mark}" enctype="multipart/form-data" method="post" th:id="'form' + ${mark.id}">
+                                    <form class="needs-validation" action="#"
+                                          th:action="@{'/place/' + ${mark.id} + '/elect/places'}"
+                                          th:object="${mark}" enctype="multipart/form-data" method="post"
+                                          th:id="'form' + ${mark.id}">
 
-                                        <button type="submit" th:if="${not user.userElectedMarks.?[mark.title == '__${mark.title}__'].isEmpty()}"
+                                        <button type="submit"
+                                                th:if="${not user.userElectedMarks.?[mark.title == '__${mark.title}__'].isEmpty()}"
                                                 style="box-shadow: 0 0.1875rem 1rem 0 rgba(0, 0, 0, 0.1) !important; border-bottom-right-radius: 16px; border-top-right-radius: 0px;"
-                                                class="btn btn-danger w-100 rounded-4" th:id="${mark.id}" autocomplete="off">В избранном
+                                                class="btn btn-danger w-100 rounded-4" th:id="${mark.id}"
+                                                autocomplete="off">В избранном
                                         </button>
-                                        <button type="submit" th:unless="${not user.userElectedMarks.?[mark.title == '__${mark.title}__'].isEmpty()}"
+                                        <button type="submit"
+                                                th:unless="${not user.userElectedMarks.?[mark.title == '__${mark.title}__'].isEmpty()}"
                                                 style="box-shadow: 0 0.1875rem 1rem 0 rgba(0, 0, 0, 0.1) !important; border-bottom-right-radius: 16px; border-top-right-radius: 0px;"
-                                                class="btn btn-outline-danger w-100 rounded-4" th:id="${mark.id}" autocomplete="off">В избранное
+                                                class="btn btn-outline-danger w-100 rounded-4" th:id="${mark.id}"
+                                                autocomplete="off">В избранное
                                         </button>
                                     </form>
                                 </li>
@@ -501,14 +546,16 @@
 
                                             </div>
                                         </div>
-                                        <button class="carousel-control-prev" style="justify-content: flex-start; width: 3.75rem;"
+                                        <button class="carousel-control-prev"
+                                                style="justify-content: flex-start; width: 3.75rem;"
                                                 type="button"
                                                 th:data-bs-target="'#carouselRouteIndicators' + ${mark.id}"
                                                 data-bs-slide="prev">
                                             <span class="carousel-control-prev-icon" aria-hidden="true"></span>
                                             <span class="visually-hidden">Previous</span>
                                         </button>
-                                        <button class="carousel-control-next" style="justify-content: flex-end; width: 3.75rem;"
+                                        <button class="carousel-control-next"
+                                                style="justify-content: flex-end; width: 3.75rem;"
                                                 type="button"
                                                 th:data-bs-target="'#carouselRouteIndicators' + ${mark.id}"
                                                 data-bs-slide="next">
@@ -542,89 +589,84 @@
 
                 <div class="row">
                     <h2 class="featurette-heading fw-normal lh-1 col-md-9 col-lg-10" th:text="${mark.title}"></h2>
-                    <div class="col-md-3 col-lg-2">
-                        <input type="checkbox" class="btn-check" th:id="${mark.id}" autocomplete="off">
-                        <label class="btn btn-outline-danger" th:for="${mark.id}">Избранное</label><br>
+                    <div class="col-md-3 col-lg-2" sec:authorize="isAuthenticated()">
+                        <form class="needs-validation" action="#"
+                              th:action="@{'/place/' + ${mark.id} + '/elect/places'}"
+                              th:object="${mark}" enctype="multipart/form-data" method="post" id="form2">
+
+                            <button type="submit"
+                                    th:if="${not user.userElectedMarks.?[mark.title == '__${mark.title}__'].isEmpty()}"
+                                    class="btn btn-dange" th:id="${mark.id}" autocomplete="off">В избранном
+                            </button>
+                            <button type="submit"
+                                    th:unless="${not user.userElectedMarks.?[mark.title == '__${mark.title}__'].isEmpty()}"
+                                    class="btn btn-outline-danger" th:id="${mark.id}" autocomplete="off">В
+                                избранное
+                            </button>
+                        </form>
                     </div>
                 </div>
 
                 <p class="lead" th:text="${mark.address}"></p>
 
 
-                <!----------    Действия для админа    ----------------------------------------------->
-
-                <div class="btn-group" role="group" aria-label="Buttons for Admin">
-                    <a type="button" class="btn btn-secondary"
-                       th:href="@{'/places/details/' + ${mark.id}}">Подробнее</a>
+                <!----------    Действия для модератора    ----------------------------------------------->
+                <div class="btn-group" role="group" aria-label="Buttons for Admin"
+                     sec:authorize="hasRole('ROLE_MODERATOR')">
+                    <button class="btn btn-primary" type="button" data-bs-toggle="offcanvas"
+                            th:data-bs-target="'#offcanvasPlace' + ${mark.id}"
+                            aria-controls="offcanvasResponsive">
+                        Подробнее
+                    </button>
                     <a type="button" class="btn btn-secondary"
                        th:href="@{'/places/edit/' + ${mark.id}}">Редактировать</a>
-                    <a type="button" class="btn btn-danger"
-                       th:href="@{'/places/delete/' + ${mark.id}}">Удалить</a></div>
 
-                <!----------    Кнопка вызова расписания    ------------------------------------------>
-
-                <button type="button" class="btn btn-primary" data-bs-toggle="modal"
-                        th:data-bs-target="'#exampleModal' + ${mark.id}">
-                    Расписание
-                </button>
-
-                <!----------    Модальное окно расписания    ----------------------------------------->
-                <div class="modal fade" th:id="'exampleModal' + ${mark.id}" tabindex="-1"
-                     aria-labelledby="exampleModalLabel" aria-hidden="true">
-                    <div class="modal-dialog">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h1 class="modal-title fs-5">Расписание</h1>
-                                <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                        aria-label="Close"></button>
-                            </div>
-                            <div class="modal-body">
-
-                                <!--------------------------------------------------->
-
-                                <div th:each="schedule : ${mark.schedules}">
-                                    <div class="row justify-content-end">
-                                        <div class="col-6" th:switch="${schedule.day}">
-                                            <h6 class="text-end" th:case="1"> Понедельник</h6>
-                                            <h6 class="text-end" th:case="2"> Вторник</h6>
-                                            <h6 class="text-end" th:case="3"> Среда</h6>
-                                            <h6 class="text-end" th:case="4"> Четверг</h6>
-                                            <h6 class="text-end" th:case="5"> Пятница</h6>
-                                            <h6 class="text-end" th:case="6"> Суббота</h6>
-                                            <h6 class="text-end" th:case="7"> Воскресенье</h6>
-                                        </div>
-                                    </div>
-                                    <div class="row g-3">
-                                        <div class="col-6">
-                                            <div class="cs-form">
-                                                <input type="time" class="form-control"
-                                                       th:value="${schedule.start}" disabled readonly/>
-                                            </div>
-                                        </div>
-
-                                        <div class="col-6">
-                                            <div class="cs-form">
-                                                <input type="time" class="form-control"
-                                                       th:value="${schedule.end}" disabled readonly/>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <hr class="featurette-divider">
+                    <!-- Модальное окно удаление-->
+                    <div class="modal fade" th:id="'deletePlaceModal' + ${mark.id}" tabindex="-1" aria-labelledby="deletePlaceModalLabel"
+                         aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered">
+                            <div class="modal-content rounded-4">
+                                <div class="modal-header">
+                                    <h5 class="modal-title">Удаление достопримечательности</h5>
                                 </div>
-                                <!--------------------------------------------------->
+                                <div class="modal-body">
+                                    <h5 class="modal-title">Вы уверены, что хотите удалить достопримечательность: <span th:text="${mark.title}"></span>?</h5>
+                                </div>
+                                <div class="modal-footer p-0"
+                                     style="border-bottom-left-radius: 16px; border-bottom-right-radius: 16px;">
+
+                                    <div class="btn-group w-100 m-0" role="group">
+                                        <button type="button" class="btn btn-outline-dark" data-bs-dismiss="modal"
+                                                style="border-bottom-left-radius: 12px; border-top-left-radius: 0px;">
+                                            Закрыть
+                                        </button>
+
+                                        <a type="button" th:href="@{'/places/delete/' + ${mark.id}}" class="btn btn-outline-danger"
+                                           style="border-bottom-right-radius: 12px; border-top-right-radius: 0px;">
+                                            Удалить
+                                        </a>
+                                    </div>
+                                </div>
                             </div>
-                            <!--                            <div class="modal-footer">-->
-                            <!--                                <button type="button" class="btn btn-secondary " data-bs-dismiss="modal">Закрыть</button>-->
-                            <!--                            </div>-->
                         </div>
                     </div>
-                </div>
-                <!----------    Конец блока: Модальное окно расписания    ----------------------------------------->
 
+                    <!-- Кнопка-триггер модального окна -->
+                    <button type="button" class="btn btn-danger" data-bs-toggle="modal"
+                            th:data-bs-target="'#deletePlaceModal' + ${mark.id}">Удалить
+                    </button>
+                </div>
+                <!----------    Действия для незарег.пользователя    ------------------------------------->
+                    <button sec:authorize="!hasRole('ROLE_MODERATOR')" class="btn btn-primary" type="button" data-bs-toggle="offcanvas"
+                            th:data-bs-target="'#offcanvasPlace' + ${mark.id}"
+                            aria-controls="offcanvasResponsive">
+                        Подробнее
+                    </button>
             </div>
 
             <div class="col-md-4 order-md-1">
-                <img class="bd-placeholder-img bd-placeholder-img-lg featurette-image img-fluid mx-auto" width="500"
+                <img class="bd-placeholder-img bd-placeholder-img-lg featurette-image img-fluid mx-auto rounded-4"
+                     width="500"
                      height="500" th:src="|data:image/jpeg;base64,${mark.markPhotos[0].pathPhoto}|" role="img"
                      aria-label="Placeholder: 500x500"
                      preserveAspectRatio="xMidYMid slice" style="object-fit: cover;" focusable="false"><title>
@@ -634,6 +676,298 @@
                 </img>
 
             </div>
+
+            <!-----------Канвас---------->
+            <div class="container-fluid">
+                <div class="offcanvas offcanvas-size-xl offcanvas-end" tabindex="-1"
+                     th:id="'offcanvasPlace' + ${mark.id}" aria-labelledby="offcanvasResponsiveLabel">
+                    <div class="offcanvas-body" th:id="places-offcanvas">
+                        <button type="button" class="btn-close btn-close-white m-5 p-2"
+                                style="position: absolute; z-index: 2;" data-bs-dismiss="offcanvas"
+                                aria-label="Закрыть"></button>
+                        <!-------------------------Карусель-------------------------->
+                        <div th:id="'carouselPlaceIndicators' + ${mark.id}"
+                             class="carousel slide carousel-fade" data-bs-ride="carousel">
+                            <div class="carousel-indicators" style="padding-bottom: 48px;">
+                                <button type="button" th:each="photo : ${mark.markPhotos}"
+                                        th:classappend="${photoStat.first} ? active : ''"
+                                        th:data-bs-target="'#carouselPlaceIndicators' + ${mark.id}"
+                                        th:data-bs-slide-to="${photoStat.index}" aria-label="Slide"></button>
+                            </div>
+                            <div class="carousel-inner">
+                                <div class="carousel-item" th:each="photo : ${mark.markPhotos}"
+                                     th:classappend="${photoStat.first} ? active : ''">
+                                    <a th:href="|data:image/jpeg;base64,${photo.pathPhoto}|"
+                                       th:data-fancybox="'gallery' + ${mark.id}">
+                                        <img th:src="|data:image/jpeg;base64,${photo.pathPhoto}|" class="d-block w-100"
+                                             style="object-fit: cover;"
+                                             height="600px" alt="Фотография достопримечательности">
+                                    </a>
+                                </div>
+                            </div>
+                            <button class="carousel-control-prev" type="button"
+                                    th:data-bs-target="'#carouselPlaceIndicators' + ${mark.id}"
+                                    data-bs-slide="prev">
+                                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                <span class="visually-hidden">Previous</span>
+                            </button>
+                            <button class="carousel-control-next" type="button"
+                                    th:data-bs-target="'#carouselPlaceIndicators' + ${mark.id}"
+                                    data-bs-slide="next">
+                                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                <span class="visually-hidden">Next</span>
+                            </button>
+                        </div>
+
+                        <div th:id="placeOffcanvasContainer" class="bg-light text-center pb-4">
+                            <!-------------------------Категория------------------------->
+                            <h3 style="margin-top: -20px;position: absolute;left: 0;right: 0;text-align: center;">
+                                <span class="badge bg-warning rounded-5" th:text="${mark.category.title}"></span></h3>
+
+                            <ul class="navbar-nav justify-content-end flex-grow-1 pe-5 ps-5">
+                                <!-------------------------Название-------------------------->
+                                <li class="nav-item">
+                                    <h2 class="pt-4 pb-4" style="margin-bottom: 0px;" th:text="${mark.title}"></h2>
+                                </li>
+                                <!-------------------------Описание-------------------------->
+                                <li class="nav-item">
+                                    <div class="card text-bg-light w-100 mb-3 rounded-4">
+                                        <div class="card-body">
+                                            <p class="card-text"
+                                               th:text="${mark.description}"></p>
+                                        </div>
+                                    </div>
+                                </li>
+                                <!-------------------------Расписание------------------------>
+                                <li class="nav-item">
+                                    <div class="accordion accordion-flush" id="accordionFlushSchedule1"
+                                         style="--bs-accordion-bg: rgba(255, 255, 255, 0);">
+                                        <div class="accordion-item">
+                                            <h2 class="accordion-header" id="flush-headingTwo">
+                                                <button class="accordion-button collapsed" type="button"
+                                                        data-bs-toggle="collapse" data-bs-target="#flush-collapseTwo"
+                                                        aria-expanded="false" aria-controls="flush-collapseTwo">
+                                                    Расписание
+                                                </button>
+                                            </h2>
+                                            <div id="flush-collapseTwo" class="accordion-collapse collapse"
+                                                 aria-labelledby="flush-headingTwo"
+                                                 data-bs-parent="#accordionFlushSchedule1">
+                                                <div class="accordion-body">
+                                                    <div th:each="schedule : ${mark.schedules}">
+                                                        <div class="row d-flex align-items-end">
+                                                            <div class="col-6" th:switch="${schedule.day}">
+                                                                <h6 class="text-start mt-1 mb-1" th:case="1">
+                                                                    Понедельник</h6>
+                                                                <h6 class="text-start mt-1 mb-1" th:case="2">
+                                                                    Вторник</h6>
+                                                                <h6 class="text-start mt-1 mb-1" th:case="3"> Среда</h6>
+                                                                <h6 class="text-start mt-1 mb-1" th:case="4">
+                                                                    Четверг</h6>
+                                                                <h6 class="text-start mt-1 mb-1" th:case="5">
+                                                                    Пятница</h6>
+                                                                <h6 class="text-start mt-1 mb-1" th:case="6">
+                                                                    Суббота</h6>
+                                                                <h6 class="text-start mt-1 mb-1" th:case="7">
+                                                                    Воскресенье</h6>
+                                                            </div>
+
+                                                            <div class="col-6">
+                                                                <p class="text-end mt-1 mb-1"
+                                                                   th:if="${schedule.start == schedule.end}"
+                                                                   th:text="Выходной"></p>
+                                                                <p class="text-end mt-1 mb-1"
+                                                                   th:if="${schedule.start == '00:00' && schedule.end == '23:59'}"
+                                                                   th:text="Круглосуточно"></p>
+                                                                <p class="text-end mt-1 mb-1"
+                                                                   th:if="${schedule.start != schedule.end && schedule.end != '23:59'}"
+                                                                   th:text="${schedule.start} + '-' + ${schedule.end}"></p>
+                                                            </div>
+
+                                                        </div>
+                                                        <hr class="featurette-divider">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </li>
+                                <!-------------------------Избранное------------------------>
+                                <li class="nav-item mt-4" sec:authorize="isAuthenticated()">
+                                    <form class="needs-validation" action="#"
+                                          th:action="@{'/place/' + ${mark.id} + '/elect/places'}"
+                                          th:object="${mark}" enctype="multipart/form-data" method="post"
+                                          th:id="'form' + ${mark.id}">
+
+                                        <button type="submit"
+                                                th:if="${not user.userElectedMarks.?[mark.title == '__${mark.title}__'].isEmpty()}"
+                                                style="box-shadow: 0 0.1875rem 1rem 0 rgba(0, 0, 0, 0.1) !important; border-bottom-right-radius: 16px; border-top-right-radius: 0px;"
+                                                class="btn btn-danger w-100 rounded-4" th:id="${mark.id}"
+                                                autocomplete="off">В избранном
+                                        </button>
+                                        <button type="submit"
+                                                th:unless="${not user.userElectedMarks.?[mark.title == '__${mark.title}__'].isEmpty()}"
+                                                style="box-shadow: 0 0.1875rem 1rem 0 rgba(0, 0, 0, 0.1) !important; border-bottom-right-radius: 16px; border-top-right-radius: 0px;"
+                                                class="btn btn-outline-danger w-100 rounded-4" th:id="${mark.id}"
+                                                autocomplete="off">В избранное
+                                        </button>
+                                    </form>
+                                </li>
+
+                                <li class="nav-item" th:if="${#arrays.length(mark.routeMarks) > 0}">
+                                    <h4 class="pt-4 pb-4" style="margin-bottom: 0px;">В составе в маршрутов:</h4>
+                                </li>
+
+                                <li class="nav-item mt-4">
+
+                                    <!-----------Карусель---------->
+                                    <div th:id="'carouselRouteIndicators' + ${mark.id}"
+                                         class="carousel carousel-dark slide carousel-fade" data-bs-ride="carousel"
+                                         th:if="${#arrays.length(mark.routeMarks) > 0}">
+                                        <div class="carousel-inner px-5">
+                                            <div class="carousel-item d-flex row row-cols-1 row-cols-md-2 g-4 ms-0"
+                                                 th:each="item : ${arr}"
+                                                 th:if="${#arrays.length(mark.routeMarks) >= item}"
+                                                 th:classappend="${itemStat.first} ? active : ''">
+
+                                                <div class="col">
+                                                    <div class="card h-100 rounded-4"
+                                                         th:if="${#arrays.length(mark.routeMarks) > item}">
+                                                        <img th:src="|data:image/jpeg;base64,${mark.routeMarks[item].route.pathPhoto}|"
+                                                             class="card-img-top rounded-4"
+                                                             style="object-fit: cover; height: 280px; margin-bottom: -12px;"
+                                                             alt="...">
+                                                        <div class="card-body">
+                                                            <h5 class="title pb-1 pt-3"
+                                                                th:text="${mark.routeMarks[item].route.title}"></h5>
+                                                            <!--                                                        <h5 class="title pb-1 pt-3" th:text="${mark.routeMarks[#ctx.item].route.title}"></h5>-->
+                                                            <h6><span class="badge bg-warning"
+                                                                      th:text="${mark.routeMarks[item].route.duration}"></span>
+                                                            </h6>
+                                                        </div>
+                                                        <div class="card-body">
+
+                                                            <p class="text-truncate" style="-webkit-line-clamp: 3; display: -webkit-box;
+                        -webkit-box-orient: vertical; overflow: hidden; white-space: inherit;"
+                                                               th:text="${mark.routeMarks[item].route.description}"></p>
+                                                        </div>
+
+                                                        <!----------    Действия для зарег пользователя    ----------------------------------->
+                                                        <div class="card-footer p-0"
+                                                             sec:authorize="hasRole('ROLE_USER') || hasRole('ROLE_GUIDE') || hasRole('ROLE_MODERATOR')"
+                                                             style="border-bottom-left-radius: 16px; border-bottom-right-radius: 16px;">
+                                                            <div class="btn-group w-100" role="group"
+                                                                 aria-label="Базовая группа переключателей флажков">
+                                                                <a class="btn btn-primary w-100" type="button"
+                                                                   th:href="@{'/routes/details/' + ${mark.routeMarks[item].route.id}}"
+                                                                   style="border-bottom-left-radius: 16px; border-top-left-radius: 0px;
+                                                                            border-bottom-right-radius: 16px; border-top-right-radius: 0px;">Подробнее
+                                                                </a>
+
+                                                                <!--                                                                <input type="checkbox" class="btn-check"-->
+                                                                <!--                                                                       th:id="${routeMark.route.id}" autocomplete="off">-->
+                                                                <!--                                                                <label class="btn btn-outline-danger"-->
+                                                                <!--                                                                       style="border-bottom-right-radius: 16px; border-top-right-radius: 0px;"-->
+                                                                <!--                                                                       th:for="${mark.routeMarks[item].route.id}">Избранное</label><br>-->
+                                                            </div>
+                                                        </div>
+                                                        <!----------    Действия для нерег пользователя    ----------------------------------->
+                                                        <div class="card-footer p-0"
+                                                             sec:authorize="!isAuthenticated() || hasRole('ROLE_ADMIN')"
+                                                             style="border-bottom-left-radius: 16px; border-bottom-right-radius: 16px;">
+                                                            <a class="btn btn-primary w-100" type="button"
+                                                               th:href="@{'/routes/details/' + ${mark.routeMarks[item].route.id}}"
+                                                               style="border-bottom-left-radius: 16px; border-top-left-radius: 0px;
+                                border-bottom-right-radius: 16px; border-top-right-radius: 0px;">Подробнее
+                                                            </a>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="col">
+                                                    <div class="card h-100 rounded-4"
+                                                         th:if="${#arrays.length(mark.routeMarks) > (item + 1)}">
+                                                        <img th:src="|data:image/jpeg;base64,${mark.routeMarks[item + 1].route.pathPhoto}|"
+                                                             class="card-img-top rounded-4"
+                                                             style="object-fit: cover; height: 280px; margin-bottom: -12px;"
+                                                             alt="...">
+                                                        <div class="card-body">
+                                                            <h5 class="title pb-1 pt-3"
+                                                                th:text="${mark.routeMarks[item + 1].route.title}"></h5>
+                                                            <h6><span class="badge bg-warning"
+                                                                      th:text="${mark.routeMarks[item + 1].route.duration}"></span>
+                                                            </h6>
+                                                        </div>
+                                                        <div class="card-body">
+
+                                                            <p class="text-truncate" style="-webkit-line-clamp: 3; display: -webkit-box;
+                        -webkit-box-orient: vertical; overflow: hidden; white-space: inherit;"
+                                                               th:text="${mark.routeMarks[item + 1].route.description}"></p>
+                                                        </div>
+
+                                                        <!----------    Действия для зарег пользователя    ----------------------------------->
+                                                        <div class="card-footer p-0"
+                                                             sec:authorize="hasRole('ROLE_USER') || hasRole('ROLE_GUIDE') || hasRole('ROLE_MODERATOR')"
+                                                             style="border-bottom-left-radius: 16px; border-bottom-right-radius: 16px;">
+                                                            <div class="btn-group w-100" role="group"
+                                                                 aria-label="Базовая группа переключателей флажков">
+                                                                <a class="btn btn-primary" type="button"
+                                                                   th:href="@{'/routes/details/' + ${mark.routeMarks[item + 1].route.id}}"
+                                                                   style="border-bottom-left-radius: 16px; border-top-left-radius: 0px;
+                                                                            border-bottom-right-radius: 16px; border-top-right-radius: 0px;">Подробнее
+                                                                </a>
+
+                                                                <!--                                                                <input type="checkbox" class="btn-check"-->
+                                                                <!--                                                                       th:id="${routeMark.route.id}" autocomplete="off">-->
+                                                                <!--                                                                <label class="btn btn-outline-danger"-->
+                                                                <!--                                                                       style="border-bottom-right-radius: 16px; border-top-right-radius: 0px;"-->
+                                                                <!--                                                                       th:for="${mark.routeMarks[item + 1].route.id}">Избранное</label><br>-->
+                                                            </div>
+                                                        </div>
+                                                        <!----------    Действия для нерег пользователя    ----------------------------------->
+                                                        <div class="card-footer p-0"
+                                                             sec:authorize="!isAuthenticated() || hasRole('ROLE_ADMIN')"
+                                                             style="border-bottom-left-radius: 16px; border-bottom-right-radius: 16px;">
+                                                            <a class="btn btn-primary w-100" type="button"
+                                                               th:href="@{'/routes/details/' + ${mark.routeMarks[item + 1].route.id}}"
+                                                               style="border-bottom-left-radius: 16px; border-top-left-radius: 0px;
+                                                                                    border-bottom-right-radius: 16px; border-top-right-radius: 0px;">Подробнее
+                                                            </a>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                        <button class="carousel-control-prev"
+                                                style="justify-content: flex-start; width: 3.75rem;"
+                                                type="button"
+                                                th:data-bs-target="'#carouselRouteIndicators' + ${mark.id}"
+                                                data-bs-slide="prev">
+                                            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                            <span class="visually-hidden">Previous</span>
+                                        </button>
+                                        <button class="carousel-control-next"
+                                                style="justify-content: flex-end; width: 3.75rem;"
+                                                type="button"
+                                                th:data-bs-target="'#carouselRouteIndicators' + ${mark.id}"
+                                                data-bs-slide="next">
+                                            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                            <span class="visually-hidden">Next</span>
+                                        </button>
+                                    </div>
+
+                                </li>
+                            </ul>
+                        </div>
+
+
+                    </div>
+                </div>
+            </div>
+            <!-------------------Конец канваса------------------>
+
         </div>
         <hr class="featurette-divider">
     </div>
@@ -676,6 +1010,7 @@
     function changePageSize() {
       $("#searchForm").submit();
     }
+
 
 
 </script>
