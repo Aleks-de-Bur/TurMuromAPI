@@ -8,7 +8,7 @@
           rel="stylesheet" integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65"
           crossorigin="anonymous">
 
-    <!--    <link rel="icon" type="image/x-icon" href="assets/favicon.ico"/>-->
+    <link rel="icon" type="image/x-icon" href="/assets/brand/tur-murom-logo-dark.ico"/>
     <!-- Font Awesome icons (free version)-->
     <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js" crossorigin="anonymous"></script>
     <!-- Google fonts-->
@@ -90,7 +90,8 @@
 <!--            <td th:text="${user.roles[0]}"/>-->
             <td>
                 <div class="mb-3">
-                    <select class="form-select role" th:onchange="'changeRole(' + ${user.id} + ')'" aria-label="select role" th:id="'role' + ${user.id}" name="role">
+                    <select class="form-select role" th:onchange="'changeRole(' + ${user.id} + ')'"
+                            aria-label="select role" th:id="'role' + ${user.id}" name="role">
                         <option th:each="role : ${roles}" th:value="${role}" th:text="${role.displayValue}"
                                 th:selected="${user.roles[0] == role}"></option>
                     </select>
@@ -102,12 +103,12 @@
                     <input type="submit" class="btn btn-light btn-sm" value="Бан">
                 </form>
             </td>
-            <!--            <td><img src="/assets/static/photos/guides/${guide.pathPhoto}.jpg"></td>-->
+
             <td class="align-self-end">
                 <a type="button" class="btn btn-secondary btn-sm"
                    th:href="@{'/admin_cabinet/user/' + ${user.id}}">Подробнее</a>
-                <a type="button" class="btn btn-secondary btn-sm"
-                   th:href="@{'/admin_cabinet/user/edit/' + ${user.id}}">Редактировать</a>
+<!--                <a type="button" class="btn btn-secondary btn-sm"-->
+<!--                   th:href="@{'/admin_cabinet/user/edit/' + ${user.id}}">Редактировать</a>-->
 <!--                <a type="button" class="btn btn-danger btn-sm"-->
 <!--                   th:href="@{'/admin_cabinet/user/delete/' + ${user.id}}">Удалить</a>-->
 
@@ -139,7 +140,8 @@
                                 </div>
                         </div>
                     </div>
-                </div></td>
+                </div>
+            </td>
         </tr>
         </tbody>
     </table>
@@ -152,7 +154,7 @@
                 method: "GET" // default, so we can ignore
             });
 
-            alert("Изменено");
+            //alert("Изменено");
         }
     </script>
 

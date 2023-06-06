@@ -1,8 +1,10 @@
 package com.alexdebur.TurMurom.Controllers;
 
+import com.alexdebur.TurMurom.Models.Guide;
 import com.alexdebur.TurMurom.Models.Mark;
 import com.alexdebur.TurMurom.Models.Role;
 import com.alexdebur.TurMurom.Models.User;
+import com.alexdebur.TurMurom.Services.GuideService;
 import com.alexdebur.TurMurom.Services.UserService;
 import com.alexdebur.TurMurom.WorkClasses.InteractionPhoto;
 import lombok.RequiredArgsConstructor;
@@ -27,6 +29,7 @@ import static com.alexdebur.TurMurom.Services.UserService.UPLOAD_DIRECTORY;
 @PreAuthorize("hasAuthority('ROLE_ADMIN')")
 public class AdminController {
     private final UserService userService;
+    private final GuideService guideService;
     private static final int BUTTONS_TO_SHOW = 3;
     private static final int INITIAL_PAGE = 0;
     private static final int INITIAL_PAGE_SIZE = 3;
@@ -69,13 +72,13 @@ public class AdminController {
         return "redirect:/admin_cabinet/1?sortField=lastName&sortDir=asc";
     }
 
-    @GetMapping("/admin_cabinet/user/edit/{user}")
-    public String userEdit(@PathVariable("user") User user, Model model, Principal principal) {
-        model.addAttribute("user", user);
-//        model.addAttribute("user", userService.getUserByPrincipal(principal));
-        model.addAttribute("roles", Role.values());
-        return "authorization/user-edit";
-    }
+//    @GetMapping("/admin_cabinet/user/edit/{user}")
+//    public String userEdit(@PathVariable("user") User user, Model model, Principal principal) {
+//        model.addAttribute("user", user);
+////        model.addAttribute("user", userService.getUserByPrincipal(principal));
+//        model.addAttribute("roles", Role.values());
+//        return "authorization/user-edit";
+//    }
 
     @PostMapping("/admin_cabinet/user/edit")
     public String userEdit(@RequestParam("userId") User user, @RequestParam Map<String, String> form) {
@@ -113,6 +116,11 @@ public class AdminController {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+
+        if(user.getGuideId() != null){
+            Guide guide = guideService.getGuideById(user.getGuideId()).get();
+            model.addAttribute("guide", guide);
+        } else model.addAttribute("guide", "");
 
         model.addAttribute("user", user);
         model.addAttribute("photo", photo);

@@ -1,9 +1,6 @@
 package com.alexdebur.TurMurom.Controllers;
 
-import com.alexdebur.TurMurom.Models.Excursion;
-import com.alexdebur.TurMurom.Models.Guide;
-import com.alexdebur.TurMurom.Models.Mark;
-import com.alexdebur.TurMurom.Models.User;
+import com.alexdebur.TurMurom.Models.*;
 import com.alexdebur.TurMurom.Services.ExcursionService;
 import com.alexdebur.TurMurom.Services.GuideService;
 import com.alexdebur.TurMurom.Services.MarkService;
@@ -153,7 +150,12 @@ public class AuthorizationController {
     @PostMapping("/profile/editGuide")
     public String editGuide(Guide guide, @RequestParam("image") MultipartFile file, Principal principal) throws IOException {
 
+        Boolean admin = false;
         User user = userService.getUserByPrincipal(principal);
+        if (user.getRoles().stream().findFirst().get() == Role.ROLE_ADMIN){
+            user = userService.getUserByGuideId(guide.getId());
+            admin = true;
+        }
         if (!file.isEmpty()) {
 //            String fileName = guide.getLastName() + "_" + guide.getTelNumber() +
 //                    file.getOriginalFilename().substring(file.getOriginalFilename().length() - 4);
@@ -183,7 +185,10 @@ public class AuthorizationController {
 
         userService.editUser(user);
         guideService.insertGuide(guide);
-        return "redirect:/profile";
+        if(admin)
+            return "redirect:/admin_cabinet/1?sortField=lastName&sortDir=asc";
+        else
+            return "redirect:/profile";
     }
 
     @GetMapping("/sign_up")

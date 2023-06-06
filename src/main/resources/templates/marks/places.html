@@ -34,7 +34,7 @@
     <hr class="my-4">
 
     <div class="row justify-content-between">
-        <div class="col-6">
+        <div class="col-7">
             <form th:action="@{/places}" th:id="searchForm">
                 <div class="col-12 mb-4">
                     <div class="input-group">
@@ -44,8 +44,21 @@
                         <button class="btn btn-info btn-sm" type="submit" id="button-addon1">Найти</button>
                     </div>
                 </div>
+
                 <div class="row">
-                    <div class="col-6">
+                    <div class="col-xl-5 col-lg-12 col-md-12 col-sm-12">
+                        <div class="input-group">
+                            <label class="input-group-text" for="pageSize">Категория:</label>
+
+                            <select th:form="searchForm" name="filter" th:value="${filter}" onchange="changeFilter()"
+                                    class="form-select" id="filter">
+                                <option th:each="category : ${categories}" th:value="${category}" th:text="${category}"
+                                        th:selected="${category == filter}"></option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="col-xl-5 col-lg-12 col-md-12 col-sm-12">
                         <div class="input-group">
                             <label class="input-group-text" for="pageSize">Кол-во элементов:</label>
 
@@ -56,14 +69,15 @@
                             </select>
                         </div>
                     </div>
-                    <div class="col-3">
+
+                    <div class="col-xl-2 col-lg-12 col-md-12 col-sm-12 d-flex justify-content-end">
                         <a id="btnClear" th:href="@{/places}" class="btn btn-info btn-sm">Очистить</a>
                     </div>
                 </div>
             </form>
         </div>
 
-        <div class="col-6">
+        <div class="col-5">
             <div class="row justify-content-between mb-4">
                 <div class="input-group" role="group" aria-label="Small button group">
                     <label class="input-group-text">Сортировать по:</label>
@@ -175,7 +189,7 @@
     <!--    Отображение достопримечательностей карточками-->
     <!------------------------------------------------------------------------------------>
 
-    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4" th:if="${marks.size() > 0}  and ${scheme} == 'card'">
+    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-2 row-cols-xl-3 g-4" th:if="${marks.size() > 0}  and ${scheme} == 'card'">
         <div class="col" th:each="mark : ${marks}">
             <div class="card h-100 rounded-4">
                 <img th:src="|data:image/jpeg;base64,${mark.markPhotos[0].pathPhoto}|" class="card-img-top rounded-4"
@@ -1008,6 +1022,9 @@
 
 <script type="text/javascript">
     function changePageSize() {
+      $("#searchForm").submit();
+    }
+    function changeFilter() {
       $("#searchForm").submit();
     }
 

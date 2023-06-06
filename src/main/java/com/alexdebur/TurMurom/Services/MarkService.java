@@ -85,7 +85,7 @@ public class MarkService {
     /*
      * TODO: Get Mark By keyword and Pagination
      */
-    public Page<Mark> listAll(int pageNum, int size, String keyword, String sortField, String sortDir) {
+    public Page<Mark> listAll(int pageNum, int size, String filter, String keyword, String sortField, String sortDir) {
 
         Pageable pageable = PageRequest.of(pageNum - 1, size,
                 sortDir.equals("asc") ? Sort.by(sortField).ascending()
@@ -93,11 +93,14 @@ public class MarkService {
         );
 
         Page<Mark> pageMarks;
-        if (keyword == null) {
+        if (keyword == null && filter.equals("Все")) {
             pageMarks = markRepository.findAll(pageable);
-        } else {
+        } else if(keyword != null && filter.equals("Все")){
             pageMarks = markRepository.findByTitleContainingIgnoreCase(keyword, pageable);
-        }
+        } else if(keyword == null){
+            pageMarks = markRepository.findByCategoryTitleContainingIgnoreCase(filter, pageable);
+        } else
+            pageMarks = markRepository.findByTitleContainingIgnoreCaseAndCategoryTitleContainingIgnoreCase(keyword, filter, pageable);
 
         return pageMarks;
     }

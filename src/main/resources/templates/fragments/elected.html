@@ -344,8 +344,9 @@
         <div class="card-body">
             <h5 class="title pb-1 pt-3"
                 th:text="${excursions[item + index].title}"></h5>
-            <h6><span class="badge bg-warning"
-                      th:text="${excursions[item + index].price}"></span>
+            <h6><span class="badge bg-warning">
+                            <span th:text="${excursions[item + index].price}"></span>
+                            <i class="fa fa-rub" aria-hidden="true"></i></span>
             </h6>
         </div>
         <div class="card-body">
@@ -473,7 +474,9 @@
                     <hr class="my-4">
                     <li class="nav-item">
                         <h3><span class="badge bg-warning" th:text="${excursions[item + index].duration}"></span>
-                            <span class="badge bg-warning" th:text="${excursions[item + index].price}"></span></h3>
+                            <span class="badge bg-warning">
+                            <span th:text="${excursions[item + index].price}"></span>
+                            <i class="fa fa-rub" aria-hidden="true"></i></span></h3>
                     </li>
                     <li class="nav-item">
                         <p th:text="${excursions[item + index].description}"></p>

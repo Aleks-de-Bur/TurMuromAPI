@@ -22,5 +22,7 @@ import java.util.Optional;
 @Transactional
 public interface MarkRepository extends JpaRepository<Mark, Long> {
     Page<Mark> findByTitleContainingIgnoreCase(String keyword, Pageable pageable);
+    Page<Mark> findByCategoryTitleContainingIgnoreCase(String filter, Pageable pageable);
+    Page<Mark> findByTitleContainingIgnoreCaseAndCategoryTitleContainingIgnoreCase(String keyword, String filter, Pageable pageable);
     Optional<Mark> findByTitleAndDescription(String title, String description);
 }

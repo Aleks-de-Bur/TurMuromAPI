@@ -93,6 +93,9 @@ public class UserService {
     public User getUserById(Long id) {
         return userRepository.findById(id).get();
     }
+    public User getUserByGuideId(Long guideId) {
+        return userRepository.findByGuideId(guideId);
+    }
 
     public void deleteUserById(Long id) {
         userRepository.deleteById(id);

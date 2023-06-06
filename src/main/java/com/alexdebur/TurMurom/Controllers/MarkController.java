@@ -77,7 +77,7 @@ public class MarkController {
     }
 
     @GetMapping("/places")
-    public String getAll(Model model, @RequestParam(required = false) String keyword,
+    public String getAll(Model model, @RequestParam(required = false) String keyword, @RequestParam(defaultValue = "Все") String filter,
                          @RequestParam(defaultValue = "1") int page, @RequestParam(defaultValue = "6") int size,
                          @RequestParam(defaultValue = "title") String sortField,
                          @RequestParam(defaultValue = "asc") String sortDir, Principal principal,
@@ -86,8 +86,11 @@ public class MarkController {
             if (keyword != null) {
                 model.addAttribute("keyword", keyword);
             }
+            if (filter != null) {
+                model.addAttribute("filter", filter);
+            }
 
-            Page<Mark> pageMarks = markService.listAll(page, size, keyword,sortField, sortDir);
+            Page<Mark> pageMarks = markService.listAll(page, size, filter, keyword, sortField, sortDir);
             List<Mark> marks = pageMarks.getContent();
 
             if(principal != null){
@@ -118,7 +121,14 @@ public class MarkController {
                 }
             }
 
+            List<String> categories = new ArrayList<>();
+            categories.add("Все");
+            categoryService.getAllCategories().forEach(category -> {
+                categories.add(category.getTitle());
+            });
+
             model.addAttribute("marks", marks);
+            model.addAttribute("categories", categories);
             model.addAttribute("activePage", "places");
 
             model.addAttribute("arr", arr);

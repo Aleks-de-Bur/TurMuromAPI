@@ -186,7 +186,7 @@ public class ExcursionController {
             photo.setPathPhoto(item.getOriginalFilename());
             excursionPhotoService.insertExcursionPhoto(photo);
         }
-        return "redirect:/guides/details/" + guideId;
+        return "redirect:/excursions";
     }
 
     @GetMapping("/guides/edit/{guideId}/excursion/{excursionId}/details")
@@ -255,10 +255,11 @@ public class ExcursionController {
                 ExcursionPhoto photo = new ExcursionPhoto();
                 photo.setExcursion(excursion);
                 photo.setPathPhoto(item.getOriginalFilename());
+
                 excursionPhotoService.insertExcursionPhoto(photo);
             }
         }
-        return "redirect:/guides/edit/" + guideId;
+        return "redirect:/excursions";
     }
 
     @GetMapping("/guides/edit/{guideId}/excursion/{excursionId}/delete")

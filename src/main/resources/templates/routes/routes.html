@@ -86,25 +86,25 @@
                 <label class="input-group-text">Отобразить:</label>
                 <input type="radio" class="btn-check" name="btnradio" id="btnRadioTableOn" autocomplete="off"
                        th:if="${scheme} == 'card'" checked>
-                <a th:href="@{'/routes/' + ${currentPage} + '?sortField=id&sortDir=' + ${sortDir} + '&scheme=card'}"
+                <a th:href="@{'/routes/' + ${currentPage} + '?sortField=' + ${sortField} + '&sortDir=' + ${sortDir} + '&scheme=card'}"
                    th:if="${scheme} == 'card'" style="text-transform: capitalize;" class="btn btn-sm btn-outline-dark"
                    for="btnRadioTableOn"><span class="h6"><small>Карточки</small></span></a>
 
                 <input type="radio" class="btn-check" name="btnradio" id="btnRadioTable" autocomplete="off"
                        th:unless="${scheme} == 'card'">
-                <a th:href="@{'/routes/' + ${currentPage} + '?sortField=id&sortDir=' + ${sortDir} + '&scheme=card'}"
+                <a th:href="@{'/routes/' + ${currentPage} + '?sortField=' + ${sortField} + '&sortDir=' + ${sortDir} + '&scheme=card'}"
                    th:unless="${scheme} == 'card'" style="text-transform: capitalize;"
                    class="btn btn-sm btn-outline-dark" for="btnRadioTable"><span class="h6"><small>Карточки</small></span></a>
 
                 <input type="radio" class="btn-check" name="btnradio" id="btnRadioListOn" autocomplete="off"
                        th:if="${scheme} == 'list'" checked>
-                <a th:href="@{'/routes/' + ${currentPage} + '?sortField=id&sortDir=' + ${sortDir} + '&scheme=list'}"
+                <a th:href="@{'/routes/' + ${currentPage} + '?sortField=' + ${sortField} + '&sortDir=' + ${sortDir} + '&scheme=list'}"
                    th:if="${scheme} == 'list'" style="text-transform: capitalize;" class="btn btn-sm btn-outline-dark"
                    for="btnRadioListOn"><span class="h6"><small>Список</small></span></a>
 
                 <input type="radio" class="btn-check" name="btnradio" id="btnRadioList" autocomplete="off"
                        th:unless="${scheme} == 'list'">
-                <a th:href="@{'/routes/' + ${currentPage} + '?sortField=id&sortDir=' + ${sortDir} + '&scheme=list'}"
+                <a th:href="@{'/routes/' + ${currentPage} + '?sortField=' + ${sortField} + '&sortDir=' + ${sortDir} + '&scheme=list'}"
                    th:unless="${scheme} == 'list'" style="text-transform: capitalize;"
                    class="btn btn-sm btn-outline-dark" for="btnRadioList"><span class="h6"><small>Список</small></span></a>
             </div>
