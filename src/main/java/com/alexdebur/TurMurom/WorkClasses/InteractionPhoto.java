@@ -1,7 +1,5 @@
 package com.alexdebur.TurMurom.WorkClasses;
 
-import com.alexdebur.TurMurom.Models.Guide;
-import com.alexdebur.TurMurom.Models.MarkPhoto;
 import org.apache.tomcat.util.codec.binary.Base64;
 import org.springframework.web.multipart.MultipartFile;
 

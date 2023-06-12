@@ -1,7 +1,5 @@
 package com.alexdebur.TurMurom.Services;
 
-import com.alexdebur.TurMurom.Models.Excursion;
-import com.alexdebur.TurMurom.Models.Guide;
 import com.alexdebur.TurMurom.Models.Route;
 import com.alexdebur.TurMurom.Models.RouteMark;
 import com.alexdebur.TurMurom.Repositories.*;
@@ -13,7 +11,6 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class RouteService {

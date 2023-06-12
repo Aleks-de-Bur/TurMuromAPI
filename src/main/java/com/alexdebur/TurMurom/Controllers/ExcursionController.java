@@ -67,7 +67,7 @@ public class ExcursionController {
     @GetMapping("/excursions")
     public String excursionsPage(@RequestHeader(value = HttpHeaders.REFERER, required = false) final String referrer,
                                  Model model, @RequestParam(required = false) String keyword,
-                                 @RequestParam(defaultValue = "1") int page, @RequestParam(defaultValue = "9") int size,
+                                 @RequestParam(defaultValue = "1") int page, @RequestParam(defaultValue = "6") int size,
                                  @RequestParam(defaultValue = "title") String sortField,
                                  @RequestParam(defaultValue = "asc") String sortDir,
                                  @RequestParam(defaultValue = "card") String scheme,

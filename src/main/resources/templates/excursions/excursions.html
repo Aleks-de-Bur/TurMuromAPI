@@ -47,9 +47,9 @@
                      th:if="${#arrays.length(guide.excursions) >= item}"
                      th:classappend="${itemStat.first} ? active : ''">
 
-                    <div th:replace="fragments/elected :: electedExcursions(${item}, 0)"></div>
-                    <div th:replace="fragments/elected :: electedExcursions(${item}, 1)"></div>
-                    <div th:replace="fragments/elected :: electedExcursions(${item}, 2)"></div>
+                    <div th:replace="fragments/elected :: guideExcursions(${item}, 0)"></div>
+                    <div th:replace="fragments/elected :: guideExcursions(${item}, 1)"></div>
+                    <div th:replace="fragments/elected :: guideExcursions(${item}, 2)"></div>
 
                 </div>
             </div>
@@ -73,9 +73,9 @@
 
         <div th:each="item : ${arr}">
             <!-----------Канвас---------->
-            <div th:replace="fragments/elected :: electedExcursionsCanvas(${item}, 0)"></div>
-            <div th:replace="fragments/elected :: electedExcursionsCanvas(${item}, 1)"></div>
-            <div th:replace="fragments/elected :: electedExcursionsCanvas(${item}, 2)"></div>
+            <div th:replace="fragments/elected :: guideExcursionsCanvas(${item}, 0)"></div>
+            <div th:replace="fragments/elected :: guideExcursionsCanvas(${item}, 1)"></div>
+            <div th:replace="fragments/elected :: guideExcursionsCanvas(${item}, 2)"></div>
             <!-------------------Конец канваса------------------>
         </div>
 
